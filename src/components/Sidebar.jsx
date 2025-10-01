@@ -1,8 +1,22 @@
-import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const location = useLocation()
+  const navigate = useNavigate()
+  const { currentUser, logout } = useAuth()
+  const [error, setError] = useState('')
+
+  async function handleLogout() {
+    try {
+      setError('')
+      await logout()
+      navigate('/login')
+    } catch {
+      setError('Failed to log out')
+    }
+  }
 
   const menuItems = [
     {
@@ -62,8 +76,36 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </button>
         </div>
 
+        {/* User Info */}
+        {currentUser && (
+          <div className="px-4 py-3 border-b">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-sm font-medium">
+                  {currentUser.email?.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 truncate">
+                  {currentUser.displayName || 'User'}
+                </p>
+                <p className="text-sm text-gray-500 truncate">
+                  {currentUser.email}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Error message */}
+        {error && (
+          <div className="mx-4 mt-2 p-3 bg-red-100 border border-red-400 text-red-700 text-sm rounded">
+            {error}
+          </div>
+        )}
+
         {/* Menu Items */}
-        <nav className="mt-4">
+        <nav className="mt-4 flex-1">
           <ul className="space-y-2 px-4">
             {menuItems.map((item) => (
               <li key={item.path}>
@@ -81,6 +123,19 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 </Link>
               </li>
             ))}
+
+            {/* Logout button */}
+            <li>
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 text-gray-700 hover:bg-red-50 hover:text-red-700"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>Logout</span>
+              </button>
+            </li>
           </ul>
         </nav>
 

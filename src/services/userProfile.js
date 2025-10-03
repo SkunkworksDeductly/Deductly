@@ -15,26 +15,6 @@ export async function createUserProfile(user, additionalInfo = {}) {
   }
 
   try {
-    // Get geolocation data from backend (IP-based)
-    let geoData = {}
-    try {
-      const geoResponse = await api.get('/user-profile/geolocation')
-      if (geoResponse && geoResponse.status === 'success') {
-        geoData = {
-          country: geoResponse.country || null,
-          countryCode: geoResponse.countryCode || null,
-          region: geoResponse.regionName || null,
-          city: geoResponse.city || null,
-          timezone: geoResponse.timezone || null,
-          latitude: geoResponse.lat || null,
-          longitude: geoResponse.lon || null,
-          ip: geoResponse.ip || null
-        }
-      }
-    } catch (geoError) {
-      console.warn('Failed to fetch geolocation data:', geoError)
-    }
-
     // Build profile data
     const profileData = {
       // User identification
@@ -50,9 +30,6 @@ export async function createUserProfile(user, additionalInfo = {}) {
       emailVerified: user.emailVerified,
       createdAt: serverTimestamp(),
       lastLogin: serverTimestamp(),
-
-      // Geolocation data
-      location: geoData,
 
       // User preferences and settings (empty for now, can be updated later)
       preferences: {
@@ -125,37 +102,8 @@ export async function updateLastLogin(uid) {
   if (!uid) return
 
   try {
-    // Get fresh geolocation data from IP
-    let geoData = {}
-    try {
-      const geoResponse = await api.get('/user-profile/geolocation')
-      if (geoResponse && geoResponse.status === 'success') {
-        geoData = {
-          country: geoResponse.country || null,
-          countryCode: geoResponse.countryCode || null,
-          region: geoResponse.regionName || null,
-          city: geoResponse.city || null,
-          timezone: geoResponse.timezone || null,
-          latitude: geoResponse.lat || null,
-          longitude: geoResponse.lon || null,
-          ip: geoResponse.ip || null
-        }
-      }
-    } catch (geoError) {
-      console.warn('Failed to fetch geolocation data on login:', geoError)
-    }
-
     const userRef = doc(db, 'users', uid)
-    const updateData = {
-      lastLogin: serverTimestamp()
-    }
-
-    // Only update location if we successfully fetched it
-    if (Object.keys(geoData).length > 0) {
-      updateData.location = geoData
-    }
-
-    await setDoc(userRef, updateData, { merge: true })
+    await setDoc(userRef, { lastLogin: serverTimestamp() }, { merge: true })
   } catch (error) {
     console.error('Error updating last login:', error)
     // Don't throw - this is not critical

@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 from insights.routes import insights_bp
 from personalization.routes import personalization_bp
 from skill_builder.routes import skill_builder_bp
-from user_profile.routes import user_profile_bp
 
 load_dotenv()
 
@@ -21,7 +20,6 @@ CORS(app, origins=[
 app.register_blueprint(insights_bp)
 app.register_blueprint(personalization_bp)
 app.register_blueprint(skill_builder_bp)
-app.register_blueprint(user_profile_bp)
 
 @app.route('/')
 def home():

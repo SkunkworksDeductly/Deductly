@@ -7,16 +7,21 @@ from dotenv import load_dotenv
 from insights.routes import insights_bp
 from personalization.routes import personalization_bp
 from skill_builder.routes import skill_builder_bp
+from user_profile.routes import user_profile_bp
 
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=[
+    'http://localhost:5173',  # Local development
+    'https://nikhilanand1998.github.io'  # GitHub Pages production
+])
 
 # Register blueprints for each layer
 app.register_blueprint(insights_bp)
 app.register_blueprint(personalization_bp)
 app.register_blueprint(skill_builder_bp)
+app.register_blueprint(user_profile_bp)
 
 @app.route('/')
 def home():
@@ -83,4 +88,4 @@ def legacy_drill_submit():
     return jsonify(submit_drill_answers(session_id, answers))
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)

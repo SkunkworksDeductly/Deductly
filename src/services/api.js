@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'
 
 class ApiService {
   async request(endpoint, options = {}) {
@@ -23,6 +23,19 @@ class ApiService {
       console.error('API request failed:', error)
       throw error
     }
+  }
+
+  // Generic HTTP methods
+  async get(endpoint, options = {}) {
+    return this.request(endpoint, { ...options, method: 'GET' })
+  }
+
+  async post(endpoint, data, options = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
   }
 
   // Diagnostics API

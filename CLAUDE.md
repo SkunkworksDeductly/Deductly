@@ -50,11 +50,19 @@ npm run preview
 
 ### Backend Development
 ```bash
-# Install Python dependencies
+# First time setup - Create virtual environment
 cd backend
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 
 # Start Flask development server (http://localhost:5000)
+# Use the shortcut script:
+npm run backend
+
+# Or manually:
+cd backend
+source venv/bin/activate
 python app.py
 ```
 

@@ -240,3 +240,10 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# SQLite artifacts
+*.db-shm
+*.db-wal
+*sqlite-journal
+*sqlite3-journal
+backend/data/deductly.db

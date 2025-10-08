@@ -3,8 +3,10 @@ from .logic import (
     get_all_study_plans,
     get_study_plan_by_id,
     create_personalized_plan,
-    update_plan_progress
+    update_plan_progress,
+    create_diagnostic_session
 )
+from skill_builder.logic import DrillConfigurationError, QuestionAvailabilityError
 
 personalization_bp = Blueprint('personalization', __name__, url_prefix='/api/personalization')
 
@@ -63,3 +65,16 @@ def update_progress(plan_id):
 
     except Exception as e:
         return jsonify({'error': f'Internal server error: {str(e)}'}), 500
+
+@personalization_bp.route('/diagnostic', methods=['POST'])
+def create_diagnostic():
+    """Generate a 5-question LSAT diagnostic session."""
+    try:
+        result = create_diagnostic_session()
+        return jsonify(result), 201
+    except DrillConfigurationError as exc:
+        return jsonify({'error': str(exc)}), 400
+    except QuestionAvailabilityError as exc:
+        return jsonify({'error': str(exc)}), 409
+    except Exception as exc:
+        return jsonify({'error': f'Internal server error: {exc}'}), 500

@@ -13,6 +13,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, origins=[
     'http://localhost:5173',  # Local development
+    'http://localhost:5174',  # Local development (alternate port)
     'https://nikhilanand1998.github.io'  # GitHub Pages production
 ])
 

@@ -1,6 +1,8 @@
 import sqlite3
 import json
 
+from backend.skill_builder.skills import QUESTION_TYPE_TO_SKILL_MAP
+
 # Connect to database
 conn = sqlite3.connect('backend/data/deductly.db')
 cursor = conn.cursor()
@@ -43,32 +45,8 @@ for q in questions_data:
     # Get the question ID that was just inserted
     question_id = cursor.lastrowid
 
-    # Map question_type to skill_id based on the taxonomy from lsat_skills_taxonomy.json
-    question_type_to_skill_map = {
-        'Assumption': 'LR-03',  # Identify Assumptions
-        'Weaken the Argument': 'LR-05',  # Weaken Argument
-        'Weaken': 'LR-05',  # Weaken Argument
-        'Find the flaw in the Argument': 'LR-06',  # Identify Flaw
-        'Flaw in the Reasoning': 'LR-06',  # Identify Flaw
-        'Inference': 'LR-10',  # Must Be True/Inference
-        'Cannot be Inferred': 'LR-10',  # Must Be True/Inference
-        'Parallel flaw in the argument': 'LR-13',  # Parallel Flaw
-        'Method of Reasoning': 'LR-14',  # Method of Reasoning
-        'Method of Reasoning (MoR)': 'LR-14',  # Method of Reasoning
-        'Point at Issue': 'LR-16',  # Point of Agreement/Disagreement (closest match)
-        'Role Play': 'LR-15',  # Role of Statement
-        'Justify the Conclusion (JTC)': 'LR-08',  # Sufficient Conditions
-        'Strengthen': 'LR-04',  # Strengthen Argument
-        'Principle': 'LR-16',  # Principle - Identify
-        'Principal': 'LR-17',  # Principle - Apply
-        'Parallel Reasoning': 'LR-12',  # Parallel Reasoning
-        'Resolve the Paradox': 'LR-11',  # Resolve Paradox
-        'Evaluate the Argument': 'LR-18',  # Evaluate Argument
-        'Main Point': 'LR-01',  # Main Point/Primary Purpose (using RC skill)
-    }
-
     # Get the skill_id for this question type
-    skill_id_str = question_type_to_skill_map.get(q['question_type'])
+    skill_id_str = QUESTION_TYPE_TO_SKILL_MAP.get(q['question_type'])
 
     if skill_id_str:
         # Find the skill ID in the database

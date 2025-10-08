@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Deductly Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7317cf",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#1a1122",
+                        "matte-purple": "#5C3C58",
+                        "matte-red": "#9D3C40",
+                        "dark-gray": "#2D2D2D",
+                        "light-gray": "#F5F5F5",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-matte-purple dark group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/20 px-4 sm:px-10 py-3">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-matte-red">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M39.5563 34.1455V13.8546C39.5563 15.708 36.8773 17.3437 32.7927 18.3189C30.2914 18.916 27.263 19.2655 24 19.2655C20.737 19.2655 17.7086 18.916 15.2073 18.3189C11.1227 17.3437 8.44365 15.708 8.44365 13.8546V34.1455C8.44365 35.9988 11.1227 37.6346 15.2073 38.6098C17.7086 39.2069 20.737 39.5564 24 39.5564C27.263 39.5564 30.2914 39.2069 32.7927 38.6098C36.8773 37.6346 39.5563 35.9988 39.5563 34.1455Z" fill="currentColor"></path>
+<path clip-rule="evenodd" d="M10.4485 13.8519C10.4749 13.9271 10.6203 14.246 11.379 14.7361C12.298 15.3298 13.7492 15.9145 15.6717 16.3735C18.0007 16.9296 20.8712 17.2655 24 17.2655C27.1288 17.2655 29.9993 16.9296 32.3283 16.3735C34.2508 15.9145 35.702 15.3298 36.621 14.7361C37.3796 14.246 37.5251 13.9271 37.5515 13.8519C37.5287 13.7876 37.4333 13.5973 37.0635 13.2931C36.5266 12.8516 35.6288 12.3647 34.343 11.9175C31.79 11.0295 28.1333 10.4437 24 10.4437C19.8667 10.4437 16.2099 11.0295 13.657 11.9175C12.3712 12.3647 11.4734 12.8516 10.9365 13.2931C10.5667 13.5973 10.4713 13.7876 10.4485 13.8519ZM37.5563 18.7877C36.3176 19.3925 34.8502 19.8839 33.2571 20.2642C30.5836 20.9025 27.3973 21.2655 24 21.2655C20.6027 21.2655 17.4164 20.9025 14.7429 20.2642C13.1498 19.8839 11.6824 19.3925 10.4436 18.7877V34.1275C10.4515 34.1545 10.5427 34.4867 11.379 35.027C12.298 35.6207 13.7492 36.2054 15.6717 36.6644C18.0007 37.2205 20.8712 37.5564 24 37.5564C27.1288 37.5564 29.9993 37.2205 32.3283 36.6644C34.2508 36.2054 35.702 35.6207 36.621 35.027C37.4573 34.4867 37.5485 34.1546 37.5563 34.1275V18.7877ZM41.5563 13.8546V34.1455C41.5563 36.1078 40.158 37.5042 38.7915 38.3869C37.3498 39.3182 35.4192 40.0389 33.2571 40.5551C30.5836 41.1934 27.3973 41.5564 24 41.5564C20.6027 41.5564 17.4164 41.1934 14.7429 40.5551C12.5808 40.0389 10.6502 39.3182 9.20848 38.3869C7.84205 37.5042 6.44365 36.1078 6.44365 34.1455L6.44365 13.8546C6.44365 12.2684 7.37223 11.0454 8.39581 10.2036C9.43325 9.3505 10.8137 8.67141 12.343 8.13948C15.4203 7.06909 19.5418 6.44366 24 6.44366C28.4582 6.44366 32.5797 7.06909 35.657 8.13948C37.1863 8.67141 38.5667 9.3505 39.6042 10.2036C40.6278 11.0454 41.5563 12.2684 41.5563 13.8546Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">Deductly</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-center gap-8">
+<a class="text-white/80 hover:text-white text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-white/80 hover:text-white text-sm font-medium leading-normal" href="#">Practice</a>
+<a class="text-white/80 hover:text-white text-sm font-medium leading-normal" href="#">Lessons</a>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBmjAqXKP5k0u7FnkK6_cFagzB4Edvld-yCdJ3T22b_tZVhW6WdhrMw03bxvJF_S9JRdDBOE9pWZeNiFO9taGtigRmyqtLT3nyBv8xp43F-II-iy_KIFFijCexyBrlRx-vMUOlOfv-m27Bx7Z87FbJwPl0kZiJHJds7X4WxBKWz8W-Ez-JDL2XDyCF1xBGSc_oPne3Vw2VX-HQNKUko0C9USNP6kgJL_ftpKb7_vSxMJenFfMVYvsE19bDoR4_dsQsyGPn3IVyaDVjs");'></div>
+</div>
+</header>
+<main class="flex-1">
+<div class="px-4 py-8">
+<h1 class="text-white tracking-light text-[32px] font-bold leading-tight text-left pb-3">Welcome back, Alex!</h1>
+<p class="text-white/70 text-base">Here's a look at your progress. Keep up the great work!</p>
+</div>
+<div class="flex justify-stretch mb-8">
+<div class="flex flex-1 gap-3 flex-wrap px-4 py-3 justify-start">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-matte-red hover:bg-matte-red/80 text-white text-base font-bold leading-normal tracking-[0.015em] transition-colors">
+<span class="truncate">Start New Practice Test</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-white/10 hover:bg-white/20 text-white text-base font-bold leading-normal tracking-[0.015em] transition-colors">
+<span class="truncate">Continue Last Lesson</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-4">
+<div class="lg:col-span-2 flex flex-col gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col gap-2 rounded-xl p-6">
+<p class="text-white/80 text-base font-medium leading-normal">Overall Progress</p>
+<div class="flex items-center gap-4">
+<div class="relative size-24">
+<svg class="size-full" height="36" viewBox="0 0 36 36" width="36" xmlns="http://www.w3.org/2000/svg">
+<circle class="stroke-current text-white/10" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-current text-matte-red" cx="18" cy="18" fill="none" r="16" stroke-dasharray="75 100" stroke-dashoffset="25" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-white text-lg font-bold">75%</span>
+</div>
+</div>
+<div>
+<p class="text-white tracking-light text-[32px] font-bold leading-tight">Good</p>
+<div class="flex gap-1">
+<p class="text-white/60 text-base font-normal leading-normal">All Time</p>
+<p class="text-[#0bda73] text-base font-medium leading-normal">+5%</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6">
+<p class="text-white/80 text-base font-medium leading-normal">Score Trend</p>
+<p class="text-white tracking-light text-[32px] font-bold leading-tight truncate">168</p>
+<div class="flex gap-1">
+<p class="text-white/60 text-base font-normal leading-normal">Last 30 Days</p>
+<p class="text-[#0bda73] text-base font-medium leading-normal">+12</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6">
+<p class="text-white/80 text-base font-medium leading-normal mb-4">Score Improvement</p>
+<div class="flex min-h-[200px] flex-1 flex-col gap-8">
+<svg fill="none" height="100%" preserveAspectRatio="none" viewBox="0 0 475 150" width="100%" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25" stroke="#9D3C40" stroke-linecap="round" stroke-width="3"></path>
+<defs>
+<linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_1131_5935_mod" x1="236" x2="236" y1="1" y2="149">
+<stop stop-color="#9D3C40" stop-opacity="0.3"></stop>
+<stop offset="1" stop-color="#9D3C40" stop-opacity="0"></stop>
+</linearGradient>
+</defs>
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25V149H0V109Z" fill="url(#paint0_linear_1131_5935_mod)"></path>
+</svg>
+<div class="flex justify-around">
+<p class="text-white/60 text-[13px] font-bold leading-normal tracking-[0.015em]">Jan</p>
+<p class="text-white/60 text-[13px] font-bold leading-normal tracking-[0.015em]">Feb</p>
+<p class="text-white/60 text-[13px] font-bold leading-normal tracking-[0.015em]">Mar</p>
+<p class="text-white/60 text-[13px] font-bold leading-normal tracking-[0.015em]">Apr</p>
+<p class="text-white/60 text-[13px] font-bold leading-normal tracking-[0.015em]">May</p>
+<p class="text-white/60 text-[13px] font-bold leading-normal tracking-[0.015em]">Jun</p>
+<p class="text-white/60 text-[13px] font-bold leading-normal tracking-[0.015em]">Jul</p>
+</div>
+</div>
+</div>
+<div>
+<h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Question Type Breakdown</h2>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="flex flex-col gap-2 rounded-lg p-4 text-center">
+<p class="text-white/80 text-base font-medium">Logical Reasoning</p>
+<p class="text-white text-3xl font-bold">85%</p>
+<p class="text-[#0bda73] text-sm">+5%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-lg p-4 text-center">
+<p class="text-white/80 text-base font-medium">Reading Comp</p>
+<p class="text-white text-3xl font-bold">78%</p>
+<p class="text-[#0bda73] text-sm">+2%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-lg p-4 text-center">
+<p class="text-white/80 text-base font-medium">Logic Games</p>
+<p class="text-white text-3xl font-bold">92%</p>
+<p class="text-red-500 text-sm">-1%</p>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-1 flex flex-col gap-6">
+<div class="rounded-xl p-6">
+<h2 class="text-white text-lg font-bold mb-4">Recent Activity</h2>
+<ul class="space-y-4">
+<li class="flex items-center gap-4">
+<div class="bg-matte-red/20 rounded-full p-2"><span class="material-symbols-outlined text-matte-red">check_circle</span></div>
+<div>
+<p class="text-white font-medium">Practice Test #5</p>
+<p class="text-white/60 text-sm">Completed 2 days ago</p>
+</div>
+<p class="text-white ml-auto font-bold">170</p>
+</li>
+<li class="flex items-center gap-4">
+<div class="bg-matte-red/20 rounded-full p-2"><span class="material-symbols-outlined text-matte-red">school</span></div>
+<div>
+<p class="text-white font-medium">Advanced Logic Games</p>
+<p class="text-white/60 text-sm">Completed 4 days ago</p>
+</div>
+</li>
+<li class="flex items-center gap-4">
+<div class="bg-matte-red/20 rounded-full p-2"><span class="material-symbols-outlined text-matte-red">check_circle</span></div>
+<div>
+<p class="text-white font-medium">Practice Test #4</p>
+<p class="text-white/60 text-sm">Completed 1 week ago</p>
+</div>
+<p class="text-white ml-auto font-bold">165</p>
+</li>
+</ul>
+</div>
+<div class="rounded-xl p-6">
+<h2 class="text-white text-lg font-bold mb-4">Study Plan</h2>
+<div class="flex items-center gap-4 p-4 rounded-lg bg-matte-red/20">
+<span class="material-symbols-outlined text-matte-red text-3xl">lightbulb</span>
+<div>
+<p class="text-white font-bold">Next Up: Reading Comprehension</p>
+<p class="text-white/80 text-sm">Focus on identifying main ideas.</p>
+</div>
+</div>
+</div>
+<div class="rounded-xl p-6">
+<p class="text-white/60 italic text-center">"The will to win is important, but the will to prepare is vital." - Joe Paterno</p>
+</div>
+</div>
+</div>
+</main>
+<footer class="text-center text-white/60 py-8 mt-12 border-t border-solid border-white/20 text-sm">
+<div class="flex justify-center gap-6 mb-4">
+<a class="hover:text-white" href="#">Support</a>
+<a class="hover:text-white" href="#">Terms of Service</a>
+<a class="hover:text-white" href="#">Privacy Policy</a>
+</div>
+<p>© 2024 Deductly. All rights reserved.</p>
+</footer>
+</div>
+</div>
+</div>
+</div></body></html>

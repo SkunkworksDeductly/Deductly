@@ -17,7 +17,7 @@ export default function Login() {
       setError('')
       setLoading(true)
       await login(email, password)
-      navigate('/')
+      navigate('/dashboard')
     } catch (error) {
       setError('Failed to log in')
     }
@@ -30,7 +30,7 @@ export default function Login() {
       setError('')
       setLoading(true)
       await loginWithGoogle()
-      navigate('/')
+      navigate('/dashboard')
     } catch (error) {
       setError('Failed to log in with Google')
     }

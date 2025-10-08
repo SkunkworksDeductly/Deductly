@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
 class ApiService {
   async request(endpoint, options = {}) {
@@ -72,6 +72,15 @@ class ApiService {
         answers: answers,
       }),
     })
+  }
+
+  // Insights API
+  async getAbilityEstimate(userId) {
+    return this.get(`/insights/ability/${userId}`)
+  }
+
+  async getSkillMastery(userId) {
+    return this.get(`/insights/mastery/${userId}`)
   }
 }
 

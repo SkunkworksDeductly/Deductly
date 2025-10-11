@@ -8,14 +8,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        "primary": "#7317cf",
-        "background-light": "#f7f6f8",
-        "background-dark": "#1a1122",
-        "matte-purple": "#5C3C58",
-        "matte-red": "#9D3C40",
-        "dark-gray": "#2D2D2D",
-        "light-gray": "#F5F5F5",
-        "success-green": "#0bda73",
+        "primary": "#818CF8",
+        "background-light": "#FAFAF9",
+        "background-dark": "#F5F5F4",
+        "accent-peach": "#FCA5A5",
+        "accent-mint": "#86EFAC",
+        "accent-lavender": "#DDD6FE",
+        "text-primary": "#1E293B",
+        "text-secondary": "#64748B",
+        "border-light": "#E7E5E4",
       },
       fontFamily: {
         "display": ["Lexend", "sans-serif"],

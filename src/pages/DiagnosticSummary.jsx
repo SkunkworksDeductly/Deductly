@@ -87,54 +87,54 @@ const DiagnosticSummary = () => {
   return (
     <div className="py-10">
       <div className="max-w-4xl mx-auto px-4 space-y-6">
-        <section className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-8 text-white">
+        <section className="rounded-2xl border border-border-light bg-white p-8 text-text-primary shadow-md">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">Diagnostic Summary</h1>
-          <p className="text-white/70">
+          <p className="text-text-secondary">
             Here&rsquo;s how you performed on your latest diagnostic session.
           </p>
 
           <div className="grid gap-4 sm:grid-cols-3 mt-8">
-            <div className="bg-white/10 border border-white/10 rounded-xl p-4 text-center">
-              <p className="text-sm text-white/60 uppercase tracking-wide">Total Questions</p>
+            <div className="bg-accent-lavender/20 border border-border-light rounded-xl p-4 text-center">
+              <p className="text-sm text-text-secondary uppercase tracking-wide">Total Questions</p>
               <p className="text-2xl font-semibold mt-2">{formattedSummary.totalQuestions}</p>
             </div>
-            <div className="bg-white/10 border border-white/10 rounded-xl p-4 text-center">
-              <p className="text-sm text-white/60 uppercase tracking-wide">Correct Answers</p>
-              <p className="text-2xl font-semibold mt-2 text-success-green">{formattedSummary.correctAnswers}</p>
+            <div className="bg-accent-mint/20 border border-border-light rounded-xl p-4 text-center">
+              <p className="text-sm text-text-secondary uppercase tracking-wide">Correct Answers</p>
+              <p className="text-2xl font-semibold mt-2 text-accent-mint">{formattedSummary.correctAnswers}</p>
             </div>
-            <div className="bg-white/10 border border-white/10 rounded-xl p-4 text-center">
-              <p className="text-sm text-white/60 uppercase tracking-wide">Score</p>
+            <div className="bg-primary/20 border border-border-light rounded-xl p-4 text-center">
+              <p className="text-sm text-text-secondary uppercase tracking-wide">Score</p>
               <p className="text-2xl font-semibold mt-2">{formattedSummary.score}%</p>
             </div>
           </div>
 
           {!summaryState && (
-            <p className="text-sm text-white/60 mt-4">
+            <p className="text-sm text-text-secondary mt-4">
               We didn&rsquo;t detect a recent diagnostic session, so the stats above are showing defaults.
               Start a new diagnostic to populate this view.
             </p>
           )}
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6 text-white">
+        <section className="rounded-2xl border border-border-light bg-white p-6 text-text-primary shadow-md">
           <h2 className="text-2xl font-semibold mb-4">Ability Estimate</h2>
           {loading && !ability ? (
-            <p className="text-white/60">Loading your latest ability estimate...</p>
+            <p className="text-text-secondary">Loading your latest ability estimate...</p>
           ) : errors.ability ? (
             <p className="text-sm text-red-300">{errors.ability}</p>
           ) : (
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <p className="text-sm text-white/60 uppercase tracking-wide">Ability θ</p>
+                <p className="text-sm text-text-secondary uppercase tracking-wide">Ability θ</p>
                 <p className="text-3xl font-bold mt-1">{ability?.ability_theta?.toFixed(2) ?? '—'}</p>
               </div>
               <div>
-                <p className="text-sm text-white/60 uppercase tracking-wide">Std. Error</p>
+                <p className="text-sm text-text-secondary uppercase tracking-wide">Std. Error</p>
                 <p className="text-xl font-semibold mt-1">{ability?.standard_error?.toFixed(2) ?? '—'}</p>
               </div>
               <div>
-                <p className="text-sm text-white/60 uppercase tracking-wide">Last Updated</p>
-                <p className="text-sm mt-1 text-white/70">
+                <p className="text-sm text-text-secondary uppercase tracking-wide">Last Updated</p>
+                <p className="text-sm mt-1 text-text-secondary">
                   {ability?.last_updated ? new Date(ability.last_updated).toLocaleString() : '—'}
                 </p>
               </div>
@@ -142,32 +142,32 @@ const DiagnosticSummary = () => {
           )}
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6 text-white">
+        <section className="rounded-2xl border border-border-light bg-white p-6 text-text-primary shadow-md">
           <h2 className="text-2xl font-semibold mb-4">Strengths &amp; Weaknesses</h2>
           {loading && !mastery ? (
-            <p className="text-white/60">Analyzing your skill profile...</p>
+            <p className="text-text-secondary">Analyzing your skill profile...</p>
           ) : errors.mastery ? (
-            <p className="text-sm text-red-300">{errors.mastery}</p>
+            <p className="text-sm text-red-600">{errors.mastery}</p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="bg-success-green/10 border border-success-green/30 rounded-xl p-4">
-                <p className="text-sm text-white/60 uppercase tracking-wide">Strength</p>
-                <p className="text-xl font-semibold text-success-green mt-1">
+              <div className="bg-accent-mint/10 border border-accent-mint rounded-xl p-4">
+                <p className="text-sm text-text-secondary uppercase tracking-wide">Strength</p>
+                <p className="text-xl font-semibold text-accent-mint mt-1">
                   {strengthWeakness.strongest?.skill_id ?? 'Coming soon'}
                 </p>
                 {strengthWeakness.strongest && (
-                  <p className="text-sm text-white/70 mt-2">
+                  <p className="text-sm text-text-secondary mt-2">
                     Mastery probability: {(strengthWeakness.strongest.mastery_probability * 100).toFixed(0)}%
                   </p>
                 )}
               </div>
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
-                <p className="text-sm text-white/60 uppercase tracking-wide">Weakness</p>
-                <p className="text-xl font-semibold text-red-300 mt-1">
+                <p className="text-sm text-text-secondary uppercase tracking-wide">Weakness</p>
+                <p className="text-xl font-semibold text-red-600 mt-1">
                   {strengthWeakness.weakest?.skill_id ?? 'Coming soon'}
                 </p>
                 {strengthWeakness.weakest && (
-                  <p className="text-sm text-white/70 mt-2">
+                  <p className="text-sm text-text-secondary mt-2">
                     Mastery probability: {(strengthWeakness.weakest.mastery_probability * 100).toFixed(0)}%
                   </p>
                 )}
@@ -176,10 +176,10 @@ const DiagnosticSummary = () => {
           )}
         </section>
 
-        <div className="flex flex-col sm:flex-row sm:justify-end gap-3 text-white">
+        <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
           <button
             type="button"
-            className="px-4 py-2 rounded-lg bg-matte-red hover:bg-matte-red/90 transition"
+            className="px-4 py-2 rounded-lg bg-accent-peach hover:bg-accent-peach/80 transition text-white"
             onClick={() => navigate('/study-plan')}
           >
             Generate Study Plan

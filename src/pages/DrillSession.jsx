@@ -58,9 +58,9 @@ const DrillSession = () => {
     return (
       <div className="py-10">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-white/80">
-            <p className="text-lg font-semibold text-white">No drill found</p>
-            <p className="mt-2 text-sm text-white/70">
+          <div className="rounded-2xl border border-border-light bg-white p-6 text-text-secondary shadow-md">
+            <p className="text-lg font-semibold text-text-primary">No drill found</p>
+            <p className="mt-2 text-sm text-text-secondary">
               We couldn&rsquo;t find an active drill session. Redirecting you back to the practice builder.
             </p>
           </div>
@@ -72,7 +72,6 @@ const DrillSession = () => {
   const normalizedOptions = Array.isArray(currentQuestionData?.answer_choices)
     ? currentQuestionData.answer_choices
     : []
-  const hasSelection = typeof selectedAnswers[currentQuestionIndex] === 'number'
 
   const handleAnswerSelect = (optionIndex) => {
     setSelectedAnswers((prev) => ({
@@ -160,18 +159,18 @@ const DrillSession = () => {
   return (
     <div className="py-10">
       <div className="max-w-5xl mx-auto px-4 space-y-6">
-        <div className="rounded-2xl border-0 p-8">
+        <div className="rounded-2xl border border-border-light bg-white p-8 shadow-md">
           <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
             <div>
-              <p className="text-xs uppercase tracking-wide text-white/50">
+              <p className="text-xs uppercase tracking-wide text-text-secondary">
                 Session | {drillSession.created_at ? new Date(drillSession.created_at).toLocaleString() : 'just now'}
               </p>
-              <h2 className="text-2xl font-semibold text-white mt-1">Adaptive LSAT Drill</h2>
-              <p className="text-white/60 text-sm mt-1">
+              <h2 className="text-2xl font-semibold text-text-primary mt-1">Adaptive LSAT Drill</h2>
+              <p className="text-text-secondary text-sm mt-1">
                 Time limit: {drillSession.time_limit_minutes ? `${drillSession.time_limit_minutes} minutes` : 'untimed'}
               </p>
             </div>
-            <div className="text-sm text-white/60 bg-white/5 rounded-lg border-0 px-4 py-2">
+            <div className="text-sm text-text-secondary bg-accent-lavender/20 rounded-lg border border-border-light px-4 py-2">
               Question {questions.length > 0 ? currentQuestionIndex + 1 : 0} of {questions.length}
             </div>
           </header>
@@ -180,18 +179,18 @@ const DrillSession = () => {
             <>
               <div className="space-y-4 mb-6">
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white/80">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/20 text-primary">
                     {currentQuestionData.question_type}
                   </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white/80">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-accent-peach/20 text-accent-peach">
                     Difficulty: {currentQuestionData.difficulty_level}
                   </span>
                 </div>
-                <p className="text-white text-lg leading-relaxed">
+                <p className="text-text-primary text-lg leading-relaxed">
                   {currentQuestionData.question_text}
                 </p>
                 {currentQuestionData.passage_text && (
-                  <div className="bg-white/5 rounded-xl border-0 p-4 text-sm text-white/70 leading-relaxed">
+                  <div className="bg-accent-lavender/10 rounded-xl border border-border-light p-4 text-sm text-text-secondary leading-relaxed">
                     {currentQuestionData.passage_text}
                   </div>
                 )}
@@ -207,35 +206,30 @@ const DrillSession = () => {
                     <button
                       key={`${option}-${optionIndex}`}
                       type="button"
-                      className={`text-left px-4 py-3 rounded-lg transition ${
+                      className={`text-left px-4 py-3 rounded-lg transition border ${
                         isSelected
-                          ? 'bg-primary/40 text-white shadow-md'
-                          : 'bg-transparent text-white/80 hover:bg-white/10'
+                          ? 'bg-primary/20 text-text-primary border-primary shadow-sm font-medium'
+                          : 'bg-white text-text-primary border-border-light hover:bg-stone-50'
                       }`}
                       onClick={() => handleAnswerSelect(optionIndex)}
                     >
-                      <span className="font-medium text-white">{optionLetter}.</span>{' '}
-                      <span className="text-sm text-white/80">{optionText}</span>
+                      <span className="font-medium text-text-primary">{optionLetter}.</span>{' '}
+                      <span className="text-sm">{optionText}</span>
                     </button>
                   )
                 })}
                 {normalizedOptions.length === 0 && (
-                  <div className="px-4 py-3 rounded-lg border-0 bg-white/5 text-sm text-white/60">
+                  <div className="px-4 py-3 rounded-lg border border-border-light bg-red-50 text-sm text-red-600">
                     We could not load answer choices for this question. Try generating a new drill.
                   </div>
                 )}
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                {!hasSelection && (
-                  <div className="text-sm text-white/60">
-                    Select an answer to continue.
-                  </div>
-                )}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                   <button
                     type="button"
-                    className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition"
+                    className="px-4 py-2 bg-white border border-border-light hover:bg-stone-50 rounded-lg text-text-secondary transition"
                     onClick={handleExit}
                   >
                     Exit Drill
@@ -244,7 +238,7 @@ const DrillSession = () => {
                     {currentQuestionIndex > 0 && (
                       <button
                         type="button"
-                        className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition"
+                        className="px-4 py-2 bg-white border border-border-light hover:bg-stone-50 rounded-lg text-text-primary transition"
                         onClick={handlePrevious}
                       >
                         Previous
@@ -253,7 +247,7 @@ const DrillSession = () => {
                     {currentQuestionIndex < questions.length - 1 && (
                       <button
                         type="button"
-                        className="px-4 py-2 bg-matte-red hover:bg-matte-red/90 rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="px-4 py-2 bg-accent-peach hover:bg-accent-peach/80 rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
                         onClick={handleNext}
                         disabled={normalizedOptions.length === 0}
                       >
@@ -264,7 +258,7 @@ const DrillSession = () => {
                   {currentQuestionIndex === questions.length - 1 && questions.length > 0 && (
                     <button
                       type="button"
-                      className="px-4 py-2 bg-success-green/30 hover:bg-success-green/40 rounded-lg text-success-green transition disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="px-4 py-2 bg-accent-mint hover:bg-accent-mint/80 rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
                       onClick={handleSubmit}
                       disabled={normalizedOptions.length === 0}
                     >
@@ -275,7 +269,7 @@ const DrillSession = () => {
               </div>
             </>
           ) : (
-            <div className="text-white/70 text-center py-10">
+            <div className="text-text-secondary text-center py-10">
               We couldn't load this question. Please return to the builder and generate a new drill.
             </div>
           )}

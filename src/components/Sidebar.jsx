@@ -80,7 +80,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {currentUser && (
           <div className="px-4 py-3 border-b">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-accent-peach to-primary rounded-full flex items-center justify-center">
                 <span className="text-white text-sm font-medium">
                   {currentUser.email?.charAt(0).toUpperCase()}
                 </span>
@@ -114,7 +114,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   onClick={() => toggleSidebar()}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
                     location.pathname === item.path
-                      ? 'bg-blue-100 text-blue-700 font-medium'
+                      ? 'bg-primary/20 text-primary font-medium'
                       : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >

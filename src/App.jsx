@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { DrillProvider } from './contexts/DrillContext'
+import PrivateRoute from './components/PrivateRoute'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -23,12 +24,13 @@ function App() {
       <DrillProvider>
         <Router basename={routerBaseName}>
           <Routes>
-            {/* Public routes - temporarily disabled login */}
+            {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 
-            {/* All routes temporarily accessible without authentication */}
+            {/* Protected routes */}
             <Route path="/*" element={
+              <PrivateRoute>
               <div className="relative flex h-auto min-h-screen w-full flex-col bg-background-light">
                 <div className="layout-container flex h-full grow flex-col">
                   <div className="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
@@ -54,6 +56,7 @@ function App() {
                   </div>
                 </div>
               </div>
+              </PrivateRoute>
             } />
           </Routes>
         </Router>

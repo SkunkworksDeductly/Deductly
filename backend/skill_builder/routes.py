@@ -1,11 +1,5 @@
 from flask import Blueprint, jsonify, request
-
-from .logic import (
-    DrillConfigurationError,
-    QuestionAvailabilityError,
-    create_drill_session,
-    submit_drill_answers,
-)
+from .logic import create_drill_session, submit_drill_answers
 
 skill_builder_bp = Blueprint('skill_builder', __name__, url_prefix='/api/skill-builder')
 
@@ -13,15 +7,7 @@ skill_builder_bp = Blueprint('skill_builder', __name__, url_prefix='/api/skill-b
 def drill():
     """Create a drill session backed by LSAT question inventory."""
     payload = request.get_json() or {}
-    try:
-        result = create_drill_session(payload)
-    except DrillConfigurationError as exc:
-        return jsonify({'error': str(exc)}), 400
-    except QuestionAvailabilityError as exc:
-        return jsonify({'error': str(exc)}), 409
-    except Exception as exc:  # pragma: no cover
-        return jsonify({'error': f'Internal server error: {exc}'}), 500
-
+    result = create_drill_session(payload)
     return jsonify(result)
 
 @skill_builder_bp.route('/drill/submit', methods=['POST'])
@@ -30,7 +16,6 @@ def submit():
     data = request.get_json()
     session_id = data.get('session_id')
     answers = data.get('answers', [])
-
     result = submit_drill_answers(session_id, answers)
     return jsonify(result)
 
@@ -38,13 +23,5 @@ def submit():
 def generate():
     """Alias for drill creation to support legacy clients."""
     payload = request.get_json() or {}
-    try:
-        result = create_drill_session(payload)
-    except DrillConfigurationError as exc:
-        return jsonify({'error': str(exc)}), 400
-    except QuestionAvailabilityError as exc:
-        return jsonify({'error': str(exc)}), 409
-    except Exception as exc:  # pragma: no cover
-        return jsonify({'error': f'Internal server error: {exc}'}), 500
-
+    result = create_drill_session(payload)
     return jsonify(result)

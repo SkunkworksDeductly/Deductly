@@ -16,6 +16,12 @@ DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
 SECONDS_PER_QUESTION = 90
 TIMING_MULTIPLIERS = {70: 0.7, 100: 1.0, 130: 1.3}
 
+# Query constants
+QUESTION_SELECT_FIELDS = [
+    'id', 'question_text', 'answer_choices', 'correct_answer',
+    'difficulty_level', 'question_type', 'passage_text'
+]
+
 def get_db_connection():
     """Create a database connection."""
     conn = sqlite3.connect(DB_PATH)
@@ -60,11 +66,48 @@ def submit_drill_answers(session_id, answers):
     }
 
 
+def _build_question_query(where_filters, exclude_ids=None):
+    """Build a parameterized question query with optional ID exclusion."""
+    fields = ', '.join(QUESTION_SELECT_FIELDS)
+    where_clause = ' AND '.join(where_filters)
+
+    if exclude_ids:
+        id_placeholders = ','.join('?' * len(exclude_ids))
+        where_clause = f"{where_clause} AND id NOT IN ({id_placeholders})"
+
+    return f"""
+        SELECT {fields}
+        FROM questions
+        WHERE {where_clause}
+        ORDER BY RANDOM()
+        LIMIT ?
+    """
+
+
+def _transform_question_row(row):
+    """Transform a SQLite row into a structured question dict."""
+    try:
+        choices = json.loads(row['answer_choices']) if row['answer_choices'] else []
+    except json.JSONDecodeError:
+        choices = []
+
+    return {
+        'id': row['id'],
+        'question_text': row['question_text'],
+        'answer_choices': choices,
+        'correct_answer': row['correct_answer'],
+        'difficulty_level': row['difficulty_level'],
+        'question_type': row['question_type'],
+        'passage_text': row['passage_text'],
+    }
+
+
 def _fetch_questions(difficulties, skills, question_count):
     """Pull questions from SQLite for the requested filters."""
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
+        # Build primary query filters
         filters = ['domain = ?']
         params = ['lsat']
 
@@ -78,16 +121,8 @@ def _fetch_questions(difficulties, skills, question_count):
             filters.append(f'question_type IN ({placeholders})')
             params.extend(skills)
 
-        where_clause = ' AND '.join(filters)
-        query = f"""
-            SELECT id, question_text, answer_choices, correct_answer,
-                   difficulty_level, question_type, passage_text
-            FROM questions
-            WHERE {where_clause}
-            ORDER BY RANDOM()
-            LIMIT ?
-        """
-
+        # Execute primary query
+        query = _build_question_query(filters)
         rows = cursor.execute(query, [*params, question_count]).fetchall()
 
         # Fallback if not enough questions found
@@ -95,50 +130,17 @@ def _fetch_questions(difficulties, skills, question_count):
             remaining = question_count - len(rows)
             selected_ids = [row['id'] for row in rows]
 
+            # Build fallback query with ID exclusion
+            fallback_query = _build_question_query(['domain = ?'], exclude_ids=selected_ids)
+            fallback_params = ['lsat']
             if selected_ids:
-                id_placeholders = ','.join('?' * len(selected_ids))
-                fallback_query = f"""
-                    SELECT id, question_text, answer_choices, correct_answer,
-                           difficulty_level, question_type, passage_text
-                    FROM questions
-                    WHERE domain = ? AND id NOT IN ({id_placeholders})
-                    ORDER BY RANDOM()
-                    LIMIT ?
-                """
-                fallback_rows = cursor.execute(
-                    fallback_query, ['lsat', *selected_ids, remaining]
-                ).fetchall()
-            else:
-                fallback_query = """
-                    SELECT id, question_text, answer_choices, correct_answer,
-                           difficulty_level, question_type, passage_text
-                    FROM questions
-                    WHERE domain = ?
-                    ORDER BY RANDOM()
-                    LIMIT ?
-                """
-                fallback_rows = cursor.execute(fallback_query, ['lsat', remaining]).fetchall()
+                fallback_params.extend(selected_ids)
+            fallback_params.append(remaining)
 
+            fallback_rows = cursor.execute(fallback_query, fallback_params).fetchall()
             rows.extend(fallback_rows)
 
-    questions = []
-    for row in rows:
-        try:
-            choices = json.loads(row['answer_choices']) if row['answer_choices'] else []
-        except json.JSONDecodeError:
-            choices = []
-
-        questions.append({
-            'id': row['id'],
-            'question_text': row['question_text'],
-            'answer_choices': choices,
-            'correct_answer': row['correct_answer'],
-            'difficulty_level': row['difficulty_level'],
-            'question_type': row['question_type'],
-            'passage_text': row['passage_text'],
-        })
-
-    return questions
+    return [_transform_question_row(row) for row in rows]
 
 
 def _compute_time_limit(question_count, time_percentage):

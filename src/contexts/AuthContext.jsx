@@ -16,11 +16,42 @@ export function useAuth() {
   return useContext(AuthContext)
 }
 
+// Check if dev mode is enabled
+const isDevMode = import.meta.env.VITE_DEV_MODE === 'true'
+
+// Mock user for dev mode
+const mockDevUser = {
+  uid: 'dev-user-mock-id',
+  email: 'dev@example.com',
+  displayName: 'Dev User',
+  emailVerified: true,
+  photoURL: null,
+  providerId: 'dev-mode',
+  metadata: {
+    creationTime: new Date().toISOString(),
+    lastSignInTime: new Date().toISOString()
+  }
+}
+
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  // If dev mode is enabled, immediately set mock user
+  useEffect(() => {
+    if (isDevMode) {
+      console.log('🔧 DEV MODE: Authentication bypassed with mock user')
+      setCurrentUser(mockDevUser)
+      setLoading(false)
+    }
+  }, [])
+
   async function signup(email, password) {
+    if (isDevMode) {
+      console.log('🔧 DEV MODE: Signup bypassed')
+      return { user: mockDevUser }
+    }
+
     const userCredential = await createUserWithEmailAndPassword(auth, email, password)
 
     // Create user profile in Firestore
@@ -35,6 +66,11 @@ export function AuthProvider({ children }) {
   }
 
   async function login(email, password) {
+    if (isDevMode) {
+      console.log('🔧 DEV MODE: Login bypassed')
+      return { user: mockDevUser }
+    }
+
     const userCredential = await signInWithEmailAndPassword(auth, email, password)
 
     // Update last login timestamp
@@ -48,10 +84,19 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
+    if (isDevMode) {
+      console.log('🔧 DEV MODE: Logout bypassed')
+      return Promise.resolve()
+    }
     return signOut(auth)
   }
 
   async function loginWithGoogle() {
+    if (isDevMode) {
+      console.log('🔧 DEV MODE: Google login bypassed')
+      return { user: mockDevUser }
+    }
+
     const provider = new GoogleAuthProvider()
     const userCredential = await signInWithPopup(auth, provider)
 
@@ -82,6 +127,11 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    // Skip Firebase auth state listener in dev mode
+    if (isDevMode) {
+      return
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user)
       setLoading(false)

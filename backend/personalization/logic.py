@@ -6,6 +6,8 @@ import sqlite3
 import os
 from datetime import datetime, timedelta
 
+from skill_builder.logic import create_drill_session
+
 # Path to data files
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
@@ -91,3 +93,14 @@ def get_recommendations(user_id):
     # TODO: Implement recommendation algorithm
     # This would analyze user performance and suggest topics/resources
     pass
+
+
+def create_diagnostic_session():
+    """Create a standardized diagnostic drill of 5 LSAT questions."""
+    payload = {
+        'question_count': 5,
+        'difficulties': ['Easy', 'Medium', 'Hard', 'Challenging'],
+        'skills': [],
+        'time_percentage': 'untimed'
+    }
+    return create_drill_session(payload)

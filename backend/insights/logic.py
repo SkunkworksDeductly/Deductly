@@ -1,101 +1,131 @@
 """
-Business logic for Insights layer
-Handles diagnostic assessments and performance analytics
+Business logic stubs for the Insights layer.
+These helpers back the ability estimation (IRT) and skill mastery (CDM) routes.
 """
-import sqlite3
-import json
-import os
+from datetime import datetime, timedelta
+from typing import Any, Dict, List
 
-# Path to data files
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
-TAXONOMY_PATH = os.path.join(BASE_DIR, 'data', 'lsat_skills_taxonomy.json')
 
-# Sample data (will be replaced with database queries)
-sample_diagnostics = [
-    {
-        'id': 1,
-        'subject': 'Mathematics',
-        'topic': 'Algebra',
-        'question': 'Solve for x: 2x + 5 = 13',
-        'options': ['x = 3', 'x = 4', 'x = 5', 'x = 6'],
-        'correct_answer': 'x = 4'
-    },
-    {
-        'id': 2,
-        'subject': 'Science',
-        'topic': 'Physics',
-        'question': 'What is the speed of light in vacuum?',
-        'options': ['299,792,458 m/s', '300,000,000 m/s', '299,000,000 m/s', '298,000,000 m/s'],
-        'correct_answer': '299,792,458 m/s'
-    }
-]
-
-def get_db_connection():
-    """Create a database connection"""
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-def load_taxonomy():
-    """Load the LSAT skills taxonomy"""
-    try:
-        with open(TAXONOMY_PATH, 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
-
-def get_all_diagnostics():
-    """Retrieve all diagnostic questions"""
-    # TODO: Replace with database query
-    return sample_diagnostics
-
-def get_diagnostic_by_id(diagnostic_id):
-    """Retrieve a specific diagnostic by ID"""
-    # TODO: Replace with database query
-    return next((d for d in sample_diagnostics if d['id'] == diagnostic_id), None)
-
-def validate_diagnostic_answer(question_id, user_answer):
-    """Validate a user's answer and return feedback"""
-    question = get_diagnostic_by_id(question_id)
-
-    if not question:
-        return None
-
-    is_correct = question['correct_answer'] == user_answer
+def prepare_ability_estimation(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Placeholder for orchestrating an IRT ability estimation run."""
+    user_id = payload.get('user_id', 'demo-user')
+    responses = payload.get('responses', [])
 
     return {
-        'question_id': question_id,
-        'is_correct': is_correct,
-        'correct_answer': question['correct_answer'] if not is_correct else None,
-        'explanation': f"The correct answer is {question['correct_answer']}" if not is_correct else "Correct!"
+        'user_id': user_id,
+        'model': 'irt-placeholder',
+        'ability_theta': 0.63,
+        'standard_error': 0.19,
+        'evidence_ingested': len(responses),
+        'raw_inputs_echo': responses,
+        'metadata': {
+            'message': 'Using placeholder IRT outputs.',
+            'calibration_set': 'demo-calibration-a'
+        }
     }
 
-def get_questions_filtered(subject=None, topic=None, difficulty=None, limit=None):
-    """Get questions with optional filtering"""
-    questions = sample_diagnostics.copy()
 
-    # Apply filters
-    if subject:
-        questions = [q for q in questions if q.get('subject', '').lower() == subject.lower()]
+def fetch_current_ability(user_id: str) -> Dict[str, Any]:
+    """Placeholder for retrieving the latest overall ability score."""
+    return {
+        'user_id': user_id,
+        'model': 'irt-placeholder',
+        'ability_theta': 0.58,
+        'standard_error': 0.21,
+        'last_updated': datetime.utcnow().isoformat() + 'Z',
+        'metadata': {
+            'message': 'Placeholder ability record.',
+            'source': 'synthetic-run-001'
+        }
+    }
 
-    if topic:
-        questions = [q for q in questions if q.get('topic', '').lower() == topic.lower()]
 
-    if difficulty:
-        questions = [q for q in questions if q.get('difficulty', '').lower() == difficulty.lower()]
-
-    # Apply limit
-    if limit and limit > 0:
-        questions = questions[:limit]
+def fetch_ability_history(user_id: str) -> Dict[str, Any]:
+    """Placeholder for retrieving historical overall ability scores."""
+    now = datetime.utcnow()
+    history: List[Dict[str, Any]] = [
+        {
+            'timestamp': (now - timedelta(days=idx * 7)).isoformat() + 'Z',
+            'ability_theta': 0.45 + 0.05 * idx,
+            'standard_error': 0.25 - 0.02 * idx
+        }
+        for idx in range(4)
+    ]
 
     return {
-        'questions': questions,
-        'total': len(questions),
-        'filters_applied': {
-            'subject': subject,
-            'topic': topic,
-            'difficulty': difficulty,
-            'limit': limit
+        'user_id': user_id,
+        'model': 'irt-placeholder',
+        'history': history,
+        'metadata': {
+            'message': 'Placeholder ability history.',
+            'bucket': 'weekly'
+        }
+    }
+
+
+def prepare_skill_mastery_estimation(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Placeholder for orchestrating a CDM-based skill mastery estimation run."""
+    user_id = payload.get('user_id', 'demo-user')
+    evidence = payload.get('evidence', [])
+    skills = payload.get('skills', ['logic-games', 'logical-reasoning', 'reading-comprehension'])
+
+    return {
+        'user_id': user_id,
+        'model': 'cdm-placeholder',
+        'skills': [
+            {
+                'skill_id': skill,
+                'mastery_probability': 0.4 + 0.1 * idx,
+                'supporting_evidence': len(evidence)
+            }
+            for idx, skill in enumerate(skills)
+        ],
+        'metadata': {
+            'message': 'Using placeholder CDM outputs.',
+            'calibration_set': 'demo-skill-calibration-a'
+        },
+        'raw_inputs_echo': evidence
+    }
+
+
+def fetch_skill_mastery(user_id: str) -> Dict[str, Any]:
+    """Placeholder for retrieving the latest per-skill mastery profile."""
+    return {
+        'user_id': user_id,
+        'model': 'cdm-placeholder',
+        'skills': [
+            {'skill_id': 'logic-games', 'mastery_probability': 0.61},
+            {'skill_id': 'logical-reasoning', 'mastery_probability': 0.54},
+            {'skill_id': 'reading-comprehension', 'mastery_probability': 0.68}
+        ],
+        'last_updated': datetime.utcnow().isoformat() + 'Z',
+        'metadata': {
+            'message': 'Placeholder mastery record.',
+            'source': 'synthetic-run-042'
+        }
+    }
+
+
+def fetch_skill_mastery_history(user_id: str) -> Dict[str, Any]:
+    """Placeholder for retrieving historical per-skill mastery snapshots."""
+    now = datetime.utcnow()
+    snapshots: List[Dict[str, Any]] = []
+    for idx in range(3):
+        snapshots.append({
+            'timestamp': (now - timedelta(days=idx * 14)).isoformat() + 'Z',
+            'skills': [
+                {'skill_id': 'logic-games', 'mastery_probability': 0.5 + 0.03 * idx},
+                {'skill_id': 'logical-reasoning', 'mastery_probability': 0.46 + 0.02 * idx},
+                {'skill_id': 'reading-comprehension', 'mastery_probability': 0.6 + 0.025 * idx}
+            ]
+        })
+
+    return {
+        'user_id': user_id,
+        'model': 'cdm-placeholder',
+        'history': snapshots,
+        'metadata': {
+            'message': 'Placeholder mastery history.',
+            'bucket': 'biweekly'
         }
     }

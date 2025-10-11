@@ -22,7 +22,7 @@ export default function Signup() {
       setError('')
       setLoading(true)
       await signup(email, password)
-      navigate('/')
+      navigate('/dashboard')
     } catch (error) {
       setError('Failed to create an account')
     }
@@ -35,7 +35,7 @@ export default function Signup() {
       setError('')
       setLoading(true)
       await loginWithGoogle()
-      navigate('/')
+      navigate('/dashboard')
     } catch (error) {
       setError('Failed to sign up with Google')
     }

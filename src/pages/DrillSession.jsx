@@ -35,6 +35,7 @@ const DrillSession = () => {
   const questions = Array.isArray(drillSession?.questions) ? drillSession.questions : []
   const fallbackPath = location.pathname.startsWith('/diagnostics') ? '/diagnostics' : '/drill'
   const isDiagnosticSession = drillSession?.origin === 'diagnostic'
+  const task_id = location.state?.task_id // Task ID if this drill is from a study plan
 
   useEffect(() => {
     if (!drillSession) {
@@ -159,6 +160,28 @@ const DrillSession = () => {
       } else {
         const result = await response.json()
         console.log('Drill submitted successfully:', result)
+
+        // If this drill is from a study plan task, mark task as completed
+        if (task_id) {
+          try {
+            const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
+            const taskResponse = await fetch(`${apiBaseUrl}/personalization/study-plan/task/${task_id}/complete`, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify({
+                drill_id: drillSession.drill_id || drillSession.session_id
+              })
+            })
+
+            if (taskResponse.ok) {
+              console.log('Task marked as completed')
+            } else {
+              console.error('Failed to mark task as completed')
+            }
+          } catch (taskError) {
+            console.error('Error marking task as completed:', taskError)
+          }
+        }
       }
     } catch (error) {
       console.error('Error submitting drill:', error)

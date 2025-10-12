@@ -7,6 +7,7 @@ import {
   DRILL_TIME_OPTIONS
 } from '../config/skillBuilder'
 import { useDrill } from '../contexts/DrillContext'
+import { useAuth } from '../contexts/AuthContext'
 
 const SingleSelectDropdown = ({
   label,
@@ -184,6 +185,7 @@ const MultiSelectDropdown = ({
 
 const DrillBuilder = () => {
   const navigate = useNavigate()
+  const { getAuthHeaders } = useAuth()
   const {
     drillConfig,
     setDrillConfig,
@@ -207,9 +209,11 @@ const DrillBuilder = () => {
         time_percentage: drillConfig.timePercentage
       }
 
+      const headers = await getAuthHeaders()
+
       const response = await fetch('/api/skill-builder/drill', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(payload)
       })
 

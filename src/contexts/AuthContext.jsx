@@ -140,12 +140,36 @@ export function AuthProvider({ children }) {
     return unsubscribe
   }, [])
 
+  async function getAuthHeaders() {
+    const headers = {
+      'Content-Type': 'application/json'
+    }
+
+    // Skip token in dev mode
+    if (isDevMode) {
+      return headers
+    }
+
+    // Get Firebase ID token if user is logged in
+    if (currentUser && typeof currentUser.getIdToken === 'function') {
+      try {
+        const idToken = await currentUser.getIdToken()
+        headers['Authorization'] = `Bearer ${idToken}`
+      } catch (error) {
+        console.warn('Failed to get Firebase ID token:', error)
+      }
+    }
+
+    return headers
+  }
+
   const value = {
     currentUser,
     signup,
     login,
     logout,
-    loginWithGoogle
+    loginWithGoogle,
+    getAuthHeaders
   }
 
   return (

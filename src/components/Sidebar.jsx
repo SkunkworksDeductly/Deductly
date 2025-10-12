@@ -142,7 +142,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {/* Footer */}
         <div className="absolute bottom-0 w-full p-4 border-t">
           <div className="text-sm text-gray-500 text-center">
-            <p>&copy; 2024 Deductly</p>
+            <p>&copy; 2025 Deductly</p>
             <p className="mt-1">Education Tech Platform</p>
           </div>
         </div>

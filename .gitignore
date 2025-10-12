@@ -144,6 +144,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Firebase credentials (NEVER commit!)
+backend/firebase-credentials.json
+firebase-credentials.json
+
 # Spyder project settings
 .spyderproject
 .spyproject

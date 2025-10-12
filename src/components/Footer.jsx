@@ -15,7 +15,7 @@ const Footer = () => {
           Privacy Policy
         </Link>
       </div>
-      <p>© 2024 Deductly. All rights reserved.</p>
+      <p>© 2025 Deductly. All rights reserved.</p>
     </footer>
   )
 }

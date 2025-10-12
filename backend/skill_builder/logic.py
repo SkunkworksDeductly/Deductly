@@ -30,17 +30,45 @@ def get_db_connection():
 
 
 def create_drill_session(payload):
-    """Generate a drill session using LSAT questions from SQLite."""
+    """Generate a drill session using LSAT questions from SQLite and save to DB."""
+    user_id = payload.get('user_id', 'anonymous')
     question_count = payload.get('question_count', 5)
     difficulties = payload.get('difficulties', ['Medium'])
     skills = payload.get('skills', [])
     time_percentage = payload.get('time_percentage', 100)
+    drill_type = payload.get('drill_type', 'practice')
 
     questions = _fetch_questions(difficulties, skills, question_count)
     time_limit_seconds = _compute_time_limit(question_count, time_percentage)
+    drill_id = str(uuid.uuid4())
+
+    # Extract question IDs for storage
+    question_ids = [q['id'] for q in questions]
+
+    # Save drill to database
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO drills (
+                drill_id, user_id, question_count, timing,
+                difficulty, skills, drill_type, question_ids, status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            drill_id,
+            user_id,
+            question_count,
+            time_limit_seconds,
+            json.dumps(difficulties) if isinstance(difficulties, list) else difficulties,
+            json.dumps(skills),
+            drill_type,
+            json.dumps(question_ids),
+            'generated'
+        ))
+        conn.commit()
 
     return {
-        'session_id': str(uuid.uuid4()),
+        'drill_id': drill_id,
+        'session_id': drill_id,  # Keep for backwards compatibility
         'question_count': question_count,
         'difficulties': difficulties,
         'skills': skills,
@@ -50,19 +78,72 @@ def create_drill_session(payload):
     }
 
 
-def submit_drill_answers(session_id, answers):
-    """Process drill answers and calculate score."""
+def submit_drill_answers(drill_id, user_id, answers, time_taken=None):
+    """Process drill answers, calculate score, and save results to DB."""
+    # Calculate metrics
     total_questions = len(answers)
     correct_answers = sum(1 for answer in answers if answer.get('is_correct', False))
-    score = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
+    incorrect_answers = sum(1 for answer in answers if not answer.get('is_correct', False) and answer.get('user_answer'))
+    skipped_questions = sum(1 for answer in answers if not answer.get('user_answer'))
+    score_percentage = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
+
+    # Calculate skill-level performance
+    skill_performance = {}
+    for answer in answers:
+        question_skills = answer.get('skills', [])
+        is_correct = answer.get('is_correct', False)
+
+        for skill in question_skills:
+            if skill not in skill_performance:
+                skill_performance[skill] = {'correct': 0, 'total': 0}
+            skill_performance[skill]['total'] += 1
+            if is_correct:
+                skill_performance[skill]['correct'] += 1
+
+    # Save results to database
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+
+        # Insert drill results
+        cursor.execute("""
+            INSERT INTO drill_results (
+                drill_id, user_id, total_questions, correct_answers,
+                incorrect_answers, skipped_questions, score_percentage,
+                time_taken, question_results, skill_performance
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            drill_id,
+            user_id,
+            total_questions,
+            correct_answers,
+            incorrect_answers,
+            skipped_questions,
+            score_percentage,
+            time_taken,
+            json.dumps(answers),
+            json.dumps(skill_performance)
+        ))
+
+        # Update drill status to completed
+        cursor.execute("""
+            UPDATE drills
+            SET status = 'completed', completed_at = CURRENT_TIMESTAMP
+            WHERE drill_id = ?
+        """, (drill_id,))
+
+        conn.commit()
 
     return {
-        'session_id': session_id,
+        'drill_id': drill_id,
+        'session_id': drill_id,  # Keep for backwards compatibility
         'total_questions': total_questions,
         'correct_answers': correct_answers,
-        'score': score,
-        'feedback': 'Great job!' if score >= 80 else 'Keep practicing!',
-        'submitted_at': datetime.now().isoformat()
+        'incorrect_answers': incorrect_answers,
+        'skipped_questions': skipped_questions,
+        'score': score_percentage,
+        'skill_performance': skill_performance,
+        'feedback': 'Great job!' if score_percentage >= 80 else 'Keep practicing!',
+        'submitted_at': datetime.now(timezone.utc).isoformat()
     }
 
 
@@ -150,6 +231,127 @@ def _compute_time_limit(question_count, time_percentage):
 
     multiplier = TIMING_MULTIPLIERS.get(time_percentage, 1.0)
     return int(question_count * SECONDS_PER_QUESTION * multiplier)
+
+
+def start_drill(drill_id):
+    """Mark a drill as started and set the started_at timestamp."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE drills
+            SET status = 'in_progress', started_at = CURRENT_TIMESTAMP
+            WHERE drill_id = ? AND status = 'generated'
+        """, (drill_id,))
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            return None
+
+        return {'drill_id': drill_id, 'status': 'in_progress', 'started_at': datetime.now(timezone.utc).isoformat()}
+
+
+def get_user_drill_history(user_id, limit=50):
+    """Retrieve drill history for a user."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        rows = cursor.execute("""
+            SELECT d.drill_id, d.question_count, d.timing, d.difficulty,
+                   d.skills, d.drill_type, d.status, d.created_at, d.completed_at,
+                   dr.score_percentage, dr.correct_answers, dr.total_questions
+            FROM drills d
+            LEFT JOIN drill_results dr ON d.drill_id = dr.drill_id
+            WHERE d.user_id = ?
+            ORDER BY d.created_at DESC
+            LIMIT ?
+        """, (user_id, limit)).fetchall()
+
+        drills = []
+        for row in rows:
+            drill = {
+                'drill_id': row['drill_id'],
+                'question_count': row['question_count'],
+                'timing': row['timing'],
+                'difficulty': json.loads(row['difficulty']) if row['difficulty'] else None,
+                'skills': json.loads(row['skills']) if row['skills'] else [],
+                'drill_type': row['drill_type'],
+                'status': row['status'],
+                'created_at': row['created_at'],
+                'completed_at': row['completed_at'],
+            }
+            # Add result info if completed
+            if row['score_percentage'] is not None:
+                drill['score_percentage'] = row['score_percentage']
+                drill['correct_answers'] = row['correct_answers']
+                drill['total_questions'] = row['total_questions']
+
+            drills.append(drill)
+
+        return drills
+
+
+def get_drill_by_id(drill_id):
+    """Retrieve a specific drill by ID."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        row = cursor.execute("""
+            SELECT drill_id, user_id, question_count, timing, difficulty,
+                   skills, drill_type, question_ids, status, created_at, completed_at
+            FROM drills
+            WHERE drill_id = ?
+        """, (drill_id,)).fetchone()
+
+        if not row:
+            return None
+
+        return {
+            'drill_id': row['drill_id'],
+            'user_id': row['user_id'],
+            'question_count': row['question_count'],
+            'timing': row['timing'],
+            'difficulty': json.loads(row['difficulty']) if row['difficulty'] else None,
+            'skills': json.loads(row['skills']) if row['skills'] else [],
+            'drill_type': row['drill_type'],
+            'question_ids': json.loads(row['question_ids']) if row['question_ids'] else [],
+            'status': row['status'],
+            'created_at': row['created_at'],
+            'completed_at': row['completed_at'],
+        }
+
+
+def get_drill_result(drill_id, user_id):
+    """Retrieve results for a specific drill."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        row = cursor.execute("""
+            SELECT dr.*, d.question_count, d.timing, d.difficulty, d.skills, d.drill_type
+            FROM drill_results dr
+            JOIN drills d ON dr.drill_id = d.drill_id
+            WHERE dr.drill_id = ? AND dr.user_id = ?
+        """, (drill_id, user_id)).fetchone()
+
+        if not row:
+            return None
+
+        return {
+            'drill_id': row['drill_id'],
+            'user_id': row['user_id'],
+            'total_questions': row['total_questions'],
+            'correct_answers': row['correct_answers'],
+            'incorrect_answers': row['incorrect_answers'],
+            'skipped_questions': row['skipped_questions'],
+            'score_percentage': row['score_percentage'],
+            'time_taken': row['time_taken'],
+            'question_results': json.loads(row['question_results']) if row['question_results'] else [],
+            'skill_performance': json.loads(row['skill_performance']) if row['skill_performance'] else {},
+            'completed_at': row['completed_at'],
+            'drill_config': {
+                'question_count': row['question_count'],
+                'timing': row['timing'],
+                'difficulty': json.loads(row['difficulty']) if row['difficulty'] else None,
+                'skills': json.loads(row['skills']) if row['skills'] else [],
+                'drill_type': row['drill_type'],
+            }
+        }
 
 
 def get_skill_progression(user_id, subject):

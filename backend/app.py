@@ -2,13 +2,30 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
+import firebase_admin
+from firebase_admin import credentials
 
 # Import blueprints from each layer
 from insights.routes import insights_bp
 from personalization.routes import personalization_bp
 from skill_builder.routes import skill_builder_bp
 
-load_dotenv()
+# Load .env from parent directory (root of project)
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
+
+# Initialize Firebase Admin SDK
+if not firebase_admin._apps:
+    try:
+        # Try to find credentials file in order of preference:
+        # 1. Render secret file (set via FIREBASE_CREDENTIALS_PATH env var)
+        # 2. Local development file
+        cred_path = os.getenv('FIREBASE_CREDENTIALS_PATH') or os.path.join(os.path.dirname(__file__), 'firebase-credentials.json')
+
+        if os.path.exists(cred_path):
+            cred = credentials.Certificate(cred_path)
+            firebase_admin.initialize_app(cred)
+    except Exception as e:
+        print(f"Warning: Firebase Admin SDK initialization failed: {e}")
 
 app = Flask(__name__)
 CORS(app, origins=[
@@ -82,9 +99,11 @@ def legacy_drill_submit():
     from flask import request
     from skill_builder.logic import submit_drill_answers
     data = request.get_json()
-    session_id = data.get('session_id')
+    drill_id = data.get('session_id') or data.get('drill_id')
+    user_id = data.get('user_id', 'anonymous')
     answers = data.get('answers', [])
-    return jsonify(submit_drill_answers(session_id, answers))
+    time_taken = data.get('time_taken')
+    return jsonify(submit_drill_answers(drill_id, user_id, answers, time_taken))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)

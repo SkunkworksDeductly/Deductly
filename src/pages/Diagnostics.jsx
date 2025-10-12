@@ -51,34 +51,34 @@ const Diagnostics = () => {
   return (
     <div className="py-10">
       <div className="max-w-4xl mx-auto px-4 space-y-8">
-        <section className="rounded-2xl border border-border-light bg-white p-8 shadow-md">
+        <section className="rounded-2xl border border-border-default bg-surface-primary p-8 shadow-md">
           <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">LSAT Diagnostic</h1>
           <p className="text-text-secondary text-lg mb-6">
             Kick off your prep with a focused 5-question diagnostic that mirrors the LSAT's logical reasoning workload.
             You'll get a clear read on your baseline and the skills to sharpen next.
           </p>
           <div className="grid gap-4 md:grid-cols-3 text-sm text-text-secondary">
-            <div className="rounded-xl border border-border-light bg-accent-lavender/10 p-4">
+            <div className="rounded-xl border border-border-default bg-accent-info-bg p-4">
               <p className="text-text-primary font-semibold mb-2">Why take it</p>
               <p>Surface strengths and blind spots so your study plan targets the right mix of skills.</p>
             </div>
-            <div className="rounded-xl border border-border-light bg-accent-lavender/10 p-4">
+            <div className="rounded-xl border border-border-default bg-accent-info-bg p-4">
               <p className="text-text-primary font-semibold mb-2">What to expect</p>
               <p>5 official-style LSAT questions spanning core reasoning skills, delivered one at a time.</p>
             </div>
-            <div className="rounded-xl border border-border-light bg-accent-lavender/10 p-4">
+            <div className="rounded-xl border border-border-default bg-accent-info-bg p-4">
               <p className="text-text-primary font-semibold mb-2">How it works</p>
               <p>Navigate forward and back between questions and review performance the moment you finish.</p>
             </div>
           </div>
           {errorMessage && (
-            <div className="mt-6 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+            <div className="mt-6 rounded-lg bg-status-error-bg border border-status-error-border px-4 py-3 text-sm text-status-error-text">
               {errorMessage}
             </div>
           )}
           <button
             type="button"
-            className="mt-8 inline-flex items-center justify-center rounded-lg bg-accent-peach px-6 py-3 font-semibold text-white transition hover:bg-accent-peach/80 disabled:cursor-not-allowed disabled:opacity-70 shadow-sm"
+            className="mt-8 inline-flex items-center justify-center rounded-lg bg-button-primary px-6 py-3 font-semibold text-white transition hover:bg-button-primary-hover disabled:cursor-not-allowed disabled:opacity-70 shadow-sm"
             onClick={handleStartDiagnostic}
             disabled={isStarting}
           >
@@ -86,7 +86,7 @@ const Diagnostics = () => {
           </button>
         </section>
 
-        <section className="rounded-2xl border border-border-light bg-primary/10 p-6 text-text-secondary shadow-sm">
+        <section className="rounded-2xl border border-border-default bg-status-info-bg p-6 text-text-secondary shadow-sm">
           <h2 className="text-xl font-semibold text-text-primary mb-3">PACE TIP</h2>
           <p className="text-sm">
             Plan for about 10 minutes end-to-end. You can pause between questions, but

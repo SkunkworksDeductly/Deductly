@@ -9,7 +9,8 @@ from .logic import (
     has_study_plan,
     get_user_study_plan,
     generate_study_plan_from_diagnostic,
-    mark_task_completed
+    mark_task_completed,
+    link_drill_to_task
 )
 import firebase_admin
 from firebase_admin import auth as firebase_auth
@@ -153,6 +154,33 @@ def generate_plan():
     except Exception as e:
         print(f"Error generating study plan: {e}")
         return jsonify({'error': 'Failed to generate study plan'}), 500
+
+
+@personalization_bp.route('/study-plan/task/<int:task_id>/link-drill', methods=['POST'])
+def link_task_drill(task_id):
+    """Link a drill to a task and mark it as in_progress."""
+    # Extract user_id from Firebase auth token
+    user_id = get_user_id_from_token()
+
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+
+    data = request.get_json() or {}
+    drill_id = data.get('drill_id')
+
+    if not drill_id:
+        return jsonify({'error': 'drill_id is required'}), 400
+
+    try:
+        success = link_drill_to_task(task_id, drill_id)
+
+        if success:
+            return jsonify({'message': 'Drill linked to task', 'task_id': task_id}), 200
+        else:
+            return jsonify({'error': 'Task not found'}), 404
+    except Exception as e:
+        print(f"Error linking drill to task: {e}")
+        return jsonify({'error': 'Failed to link drill'}), 500
 
 
 @personalization_bp.route('/study-plan/task/<int:task_id>/complete', methods=['POST'])

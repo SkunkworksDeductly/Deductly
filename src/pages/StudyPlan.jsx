@@ -82,18 +82,44 @@ const StudyPlan = () => {
   }
 
   const handleStartTask = async (task) => {
-    // Create drill session from task config
-    const taskConfig = task.task_config
-
     try {
       const headers = await getAuthHeaders()
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
 
+      // Check if task has an existing incomplete drill
+      if (task.drill_id && task.status !== 'completed') {
+        // Resume existing drill
+        const drillResponse = await fetch(`${apiBaseUrl}/skill-builder/drills/${task.drill_id}?include_questions=true`, {
+          method: 'GET',
+          headers
+        })
+
+        if (drillResponse.ok) {
+          const drillData = await drillResponse.json()
+
+          // Only resume if drill is incomplete
+          if (drillData.status !== 'completed') {
+            // Set drill session in context with saved progress
+            setDrillSession(drillData)
+
+            // Navigate to drill session with task_id in state
+            navigate('/drill/session', {
+              state: {
+                task_id: task.id
+              }
+            })
+            return
+          }
+        }
+      }
+
+      // Create new drill session from task config
+      const taskConfig = task.task_config
       const payload = {
         user_id: currentUser?.uid || 'anonymous',
         ...taskConfig
       }
 
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
       const response = await fetch(`${apiBaseUrl}/skill-builder/drill`, {
         method: 'POST',
         headers,
@@ -107,6 +133,20 @@ const StudyPlan = () => {
       }
 
       const drillData = await response.json()
+
+      // Link drill_id to task immediately
+      try {
+        await fetch(`${apiBaseUrl}/personalization/study-plan/task/${task.id}/link-drill`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            drill_id: drillData.drill_id
+          })
+        })
+      } catch (linkError) {
+        console.error('Error linking drill to task:', linkError)
+        // Continue anyway - we'll still track completion
+      }
 
       // Set drill session in context
       setDrillSession(drillData)
@@ -442,21 +482,29 @@ const WeekCard = ({ week, isCurrentWeek, isCompleted, weekProgress, onStartTask 
 // TaskCard Component
 const TaskCard = ({ task, onStartTask }) => {
   const isCompleted = task.status === 'completed'
+  const isInProgress = task.status === 'in_progress' || (task.drill_id && task.status !== 'completed')
 
   return (
     <div className={`flex items-center justify-between p-4 rounded-lg border transition-all ${
       isCompleted
         ? 'bg-accent-success-bg border-status-success'
+        : isInProgress
+        ? 'bg-accent-info-bg border-button-primary'
         : 'bg-surface-primary border-border-default hover:border-button-primary'
     }`}>
       <div className="flex items-center space-x-4 flex-1">
         {/* Task status icon */}
         <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-          isCompleted ? 'bg-status-success' : 'bg-surface-tertiary'
+          isCompleted ? 'bg-status-success' : isInProgress ? 'bg-button-primary' : 'bg-surface-tertiary'
         }`}>
           {isCompleted ? (
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          ) : isInProgress ? (
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           ) : (
             <svg className="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -481,9 +529,14 @@ const TaskCard = ({ task, onStartTask }) => {
             <span className="text-xs text-text-secondary">
               {task.task_config.question_count} questions
             </span>
-            {task.completed_at && (
+            {isCompleted && task.completed_at && (
               <span className="text-xs text-status-success">
                 ✓ Completed
+              </span>
+            )}
+            {isInProgress && !isCompleted && (
+              <span className="text-xs text-button-primary font-medium">
+                In Progress
               </span>
             )}
           </div>
@@ -496,7 +549,7 @@ const TaskCard = ({ task, onStartTask }) => {
           onClick={() => onStartTask(task)}
           className="ml-4 px-4 py-2 bg-button-primary text-white text-sm font-medium rounded-lg hover:bg-button-primary-hover transition duration-300 whitespace-nowrap"
         >
-          Start Drill
+          {isInProgress ? 'Continue Drill' : 'Start Drill'}
         </button>
       )}
       {isCompleted && task.drill_id && (

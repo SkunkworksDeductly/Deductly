@@ -48,8 +48,23 @@ const DrillSession = () => {
       startTimeRef.current = Date.now()
     }
 
-    setCurrentQuestionIndex(0)
-  }, [drillSession, navigate, setCurrentQuestionIndex, fallbackPath])
+    // Restore saved progress if available
+    if (drillSession.current_question_index !== undefined && drillSession.current_question_index > 0) {
+      setCurrentQuestionIndex(drillSession.current_question_index)
+    } else {
+      setCurrentQuestionIndex(0)
+    }
+
+    // Restore saved answers if available
+    if (drillSession.user_answers && Object.keys(drillSession.user_answers).length > 0) {
+      // Convert string keys to numbers for selectedAnswers state
+      const restoredAnswers = {}
+      Object.keys(drillSession.user_answers).forEach(key => {
+        restoredAnswers[parseInt(key)] = drillSession.user_answers[key]
+      })
+      setSelectedAnswers(restoredAnswers)
+    }
+  }, [drillSession, navigate, setCurrentQuestionIndex, setSelectedAnswers, fallbackPath])
 
   const currentQuestionData = useMemo(() => {
     if (questions.length === 0) return null
@@ -222,7 +237,34 @@ const DrillSession = () => {
     })
   }
 
-  const handleExit = () => {
+  const handleExit = async () => {
+    // Save progress before exiting (unless it's a diagnostic)
+    if (!isDiagnosticSession && drillSession) {
+      try {
+        const headers = await getAuthHeaders()
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'
+
+        // Convert selectedAnswers object to match backend format (string keys)
+        const answersForBackend = {}
+        Object.keys(selectedAnswers).forEach(key => {
+          answersForBackend[key] = selectedAnswers[key]
+        })
+
+        await fetch(`${apiBaseUrl}/skill-builder/drills/${drillSession.drill_id}/progress`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            current_question_index: currentQuestionIndex,
+            user_answers: answersForBackend
+          })
+        })
+
+        console.log('Progress saved on exit')
+      } catch (error) {
+        console.error('Error saving progress on exit:', error)
+      }
+    }
+
     const exitPath = isDiagnosticSession ? '/diagnostics' : '/drill'
     resetSession()
     navigate(exitPath)

@@ -213,6 +213,19 @@ def get_user_study_plan(user_id):
         }
 
 
+def link_drill_to_task(task_id, drill_id):
+    """Link a drill_id to a task and mark it as in_progress."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE study_plan_tasks
+            SET drill_id = ?, status = 'in_progress'
+            WHERE id = ?
+        """, (drill_id, task_id))
+        conn.commit()
+        return cursor.rowcount > 0
+
+
 def mark_task_completed(task_id, drill_id):
     """Mark a task as completed after drill submission."""
     with get_db_connection() as conn:

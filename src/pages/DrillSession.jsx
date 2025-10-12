@@ -28,18 +28,18 @@ const CountdownTimer = ({ totalSeconds, onTimeUp }) => {
   const percentage = (secondsRemaining / totalSeconds) * 100
 
   // Determine color based on time remaining
-  let bgColor = 'bg-accent-mint'
-  let textColor = 'text-accent-mint'
-  let borderColor = 'border-accent-mint'
+  let bgColor = 'bg-status-success'
+  let textColor = 'text-status-success'
+  let borderColor = 'border-status-success'
 
   if (percentage <= 25) {
-    bgColor = 'bg-red-500'
-    textColor = 'text-red-500'
-    borderColor = 'border-red-500'
+    bgColor = 'bg-status-error'
+    textColor = 'text-status-error'
+    borderColor = 'border-status-error'
   } else if (percentage <= 50) {
-    bgColor = 'bg-accent-peach'
-    textColor = 'text-accent-peach'
-    borderColor = 'border-accent-peach'
+    bgColor = 'bg-button-primary'
+    textColor = 'text-button-primary'
+    borderColor = 'border-button-primary'
   }
 
   return (
@@ -53,7 +53,7 @@ const CountdownTimer = ({ totalSeconds, onTimeUp }) => {
         </span>
       </div>
       <div className="flex-1 max-w-xs">
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="h-2 bg-border-light rounded-full overflow-hidden">
           <div
             className={`h-full ${bgColor} transition-all duration-1000 ease-linear`}
             style={{ width: `${percentage}%` }}
@@ -128,7 +128,7 @@ const DrillSession = () => {
     return (
       <div className="py-10">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="rounded-2xl border border-border-light bg-white p-6 text-text-secondary shadow-md">
+          <div className="rounded-2xl border border-border-default bg-surface-primary p-6 text-text-secondary shadow-md">
             <p className="text-lg font-semibold text-text-primary">No drill found</p>
             <p className="mt-2 text-sm text-text-secondary">
               We couldn&rsquo;t find an active drill session. Redirecting you back to the practice builder.
@@ -274,7 +274,7 @@ const DrillSession = () => {
   return (
     <div className="py-10">
       <div className="max-w-5xl mx-auto px-4 space-y-6">
-        <div className="rounded-2xl border border-border-light bg-white p-8 shadow-md">
+        <div className="rounded-2xl border border-border-default bg-surface-primary p-8 shadow-md">
           <header className="space-y-4 mb-6">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
               <div>
@@ -283,7 +283,7 @@ const DrillSession = () => {
                 </p>
                 <h2 className="text-2xl font-semibold text-text-primary mt-1">Adaptive LSAT Drill</h2>
               </div>
-              <div className="text-sm text-text-secondary bg-accent-lavender/20 rounded-lg border border-border-light px-4 py-2 whitespace-nowrap">
+              <div className="text-sm text-text-secondary bg-accent-info-bg rounded-lg border border-border-default px-4 py-2 whitespace-nowrap">
                 Question {questions.length > 0 ? currentQuestionIndex + 1 : 0} of {questions.length}
               </div>
             </div>
@@ -302,10 +302,10 @@ const DrillSession = () => {
             <>
               <div className="space-y-4 mb-6">
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/20 text-primary">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-surface-active text-brand-primary">
                     {currentQuestionData.question_type}
                   </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-accent-peach/20 text-accent-peach">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-accent-warning-bg text-button-primary">
                     Difficulty: {currentQuestionData.difficulty_level}
                   </span>
                 </div>
@@ -313,7 +313,7 @@ const DrillSession = () => {
                   {currentQuestionData.question_text}
                 </p>
                 {currentQuestionData.passage_text && (
-                  <div className="bg-accent-lavender/10 rounded-xl border border-border-light p-4 text-sm text-text-secondary leading-relaxed">
+                  <div className="bg-accent-info-bg rounded-xl border border-border-default p-4 text-sm text-text-secondary leading-relaxed">
                     {currentQuestionData.passage_text}
                   </div>
                 )}
@@ -331,8 +331,8 @@ const DrillSession = () => {
                       type="button"
                       className={`text-left px-4 py-3 rounded-lg transition border ${
                         isSelected
-                          ? 'bg-primary/20 text-text-primary border-primary shadow-sm font-medium'
-                          : 'bg-white text-text-primary border-border-light hover:bg-stone-50'
+                          ? 'bg-surface-active text-text-primary border-border-active shadow-sm font-medium'
+                          : 'bg-surface-primary text-text-primary border-border-default hover:bg-surface-hover'
                       }`}
                       onClick={() => handleAnswerSelect(optionIndex)}
                     >
@@ -342,7 +342,7 @@ const DrillSession = () => {
                   )
                 })}
                 {normalizedOptions.length === 0 && (
-                  <div className="px-4 py-3 rounded-lg border border-border-light bg-red-50 text-sm text-red-600">
+                  <div className="px-4 py-3 rounded-lg border border-border-default bg-status-error-bg text-sm text-status-error-text">
                     We could not load answer choices for this question. Try generating a new drill.
                   </div>
                 )}
@@ -352,7 +352,7 @@ const DrillSession = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                   <button
                     type="button"
-                    className="px-4 py-2 bg-white border border-border-light hover:bg-stone-50 rounded-lg text-text-secondary transition"
+                    className="px-4 py-2 bg-button-secondary border border-border-default hover:bg-surface-hover rounded-lg text-text-secondary transition"
                     onClick={handleExit}
                   >
                     Exit Drill
@@ -361,7 +361,7 @@ const DrillSession = () => {
                     {currentQuestionIndex > 0 && (
                       <button
                         type="button"
-                        className="px-4 py-2 bg-white border border-border-light hover:bg-stone-50 rounded-lg text-text-primary transition"
+                        className="px-4 py-2 bg-button-secondary border border-border-default hover:bg-surface-hover rounded-lg text-text-primary transition"
                         onClick={handlePrevious}
                       >
                         Previous
@@ -370,7 +370,7 @@ const DrillSession = () => {
                     {currentQuestionIndex < questions.length - 1 && (
                       <button
                         type="button"
-                        className="px-4 py-2 bg-accent-peach hover:bg-accent-peach/80 rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
+                        className="px-4 py-2 bg-button-primary hover:bg-button-primary-hover rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
                         onClick={handleNext}
                         disabled={normalizedOptions.length === 0}
                       >
@@ -381,7 +381,7 @@ const DrillSession = () => {
                   {currentQuestionIndex === questions.length - 1 && questions.length > 0 && (
                     <button
                       type="button"
-                      className="px-4 py-2 bg-accent-mint hover:bg-accent-mint/80 rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
+                      className="px-4 py-2 bg-button-success hover:bg-button-success-hover rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
                       onClick={handleSubmit}
                       disabled={normalizedOptions.length === 0}
                     >

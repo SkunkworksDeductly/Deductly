@@ -4,110 +4,160 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Deductly is an education tech platform built with React frontend and Flask/Python backend. The platform provides diagnostic assessments, personalized study plans, and interactive drill practice sessions.
+Deductly is an education tech platform focused on LSAT preparation, featuring diagnostic assessments, personalized study plans, and practice drills. Built with React frontend (Vite + Tailwind) and Flask/Python backend with SQLite database.
 
 ## Architecture
 
-### Frontend (React + Vite + Tailwind CSS)
-- **Main App**: `src/App.jsx` - Router setup and main layout with sidebar navigation
-- **Components**:
-  - `src/components/Sidebar.jsx` - Hamburger menu navigation component
-- **Pages**:
-  - `src/pages/Landing.jsx` - Home page with hero section and feature cards
-  - `src/pages/Diagnostics.jsx` - Interactive diagnostic assessment interface
-  - `src/pages/StudyPlan.jsx` - Personalized study plan dashboard
-  - `src/pages/Drill.jsx` - Practice drill sessions with customizable settings
-- **Services**: `src/services/api.js` - API service for backend communication
-- **Styling**: Tailwind CSS with responsive design and clean minimalistic UI
+### Backend Architecture (Flask + SQLite)
 
-### Backend (Flask/Python)
-- **Main App**: `backend/app.py` - Flask server with CORS enabled
-- **API Endpoints**:
-  - `/` - Welcome message
-  - `/api/diagnostics` - Get all diagnostic questions
-  - `/api/diagnostics/<id>` - Get specific diagnostic
-  - `/api/study-plans` - Get all study plans
-  - `/api/study-plans/<id>` - Get specific study plan
-  - `/api/drill` - POST to create drill session
-  - `/api/drill/submit` - POST to submit drill answers
+**Three-layer architecture:**
+- **Insights Layer** (`backend/insights/`) - Diagnostic assessments and performance analytics
+- **Personalization Layer** (`backend/personalization/`) - Study plans and adaptive learning paths
+- **Skill Builder Layer** (`backend/skill_builder/`) - Practice drills and skill-targeted exercises
+
+Each layer follows the pattern: `routes.py` (API endpoints) → `logic.py` (business logic)
+
+**Database:**
+- SQLite database at `backend/data/deductly.db`
+- Schema defined in `setup_database.py`
+- Key tables: `skills`, `questions`, `question_skills`
+- LSAT skills taxonomy in `backend/data/lsat_skills_taxonomy.json`
+- Questions scraped from LSAT resources in `backend/data/lsat_questions.json`
+
+**Main app:** `backend/app.py`
+- Runs on port 5001 (not 5000)
+- Registers blueprints from all three layers
+- Maintains legacy endpoints for backward compatibility
+- CORS configured for both local dev (`localhost:5173`) and production (`nikhilanand1998.github.io`)
+
+### Frontend Architecture (React)
+
+**Authentication:** Firebase Authentication
+- Context: `src/contexts/AuthContext.jsx` - Email/password and Google OAuth
+- Service: `src/services/userProfile.js` - Firestore user profile management
+- Protected routes via `src/components/PrivateRoute.jsx`
+- Public routes: `/login`, `/signup`
+
+**API Communication:**
+- Service: `src/services/api.js`
+- Base URL from environment variable `VITE_API_BASE_URL`
+- Defaults to `http://localhost:5001/api` in development
+
+**Pages:**
+- `Landing.jsx` - Home page (protected)
+- `Login.jsx` / `Signup.jsx` - Authentication (public)
+- `Diagnostics.jsx` - LSAT diagnostic assessments
+- `StudyPlan.jsx` - Personalized study planning
+- `Drill.jsx` - Practice sessions
+
+**Navigation:**
+- Hamburger sidebar (`src/components/Sidebar.jsx`)
+- Routes in `src/App.jsx`
 
 ## Development Commands
 
-### Frontend Development
+### Initial Setup
+
+**Backend:**
 ```bash
-# Install dependencies
-npm install
-
-# Start development server (http://localhost:5173)
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-```
-
-### Backend Development
-```bash
-# First time setup - Create virtual environment
 cd backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
 
-# Start Flask development server (http://localhost:5000)
-# Use the shortcut script:
+**Database Setup:**
+```bash
+# From project root
+python setup_database.py          # Create tables and load skills taxonomy
+python insert_lsat_questions.py   # Load LSAT questions
+```
+
+**Frontend:**
+```bash
+npm install
+```
+
+### Running the Application
+
+**Frontend (port 5173):**
+```bash
+npm run dev
+```
+
+**Backend (port 5001):**
+```bash
 npm run backend
-
 # Or manually:
 cd backend
 source venv/bin/activate
 python app.py
 ```
 
-## Key Features
+### Building
 
-1. **Responsive Navigation**: Hamburger menu sidebar that works on mobile and desktop
-2. **Diagnostic Assessment**: Multi-question assessment with progress tracking and results
-3. **Study Plans**: Progress tracking with visual indicators and topic management
-4. **Drill Practice**: Customizable practice sessions with different subjects and difficulty levels
-5. **Clean UI**: Minimalistic design with Tailwind CSS, proper spacing, and modern aesthetics
-
-## Technology Stack
-
-- **Frontend**: React 18, Vite, React Router, Tailwind CSS
-- **Backend**: Flask, Flask-CORS, Python-dotenv
-- **Development**: Hot reload, responsive design, component-based architecture
-
-## Project Structure
-
-```
-├── backend/
-│   ├── app.py              # Flask server
-│   ├── requirements.txt    # Python dependencies
-│   └── .env               # Environment variables
-├── src/
-│   ├── components/        # Reusable React components
-│   ├── pages/            # Page components
-│   ├── services/         # API services
-│   ├── App.jsx           # Main app component
-│   ├── main.jsx          # React entry point
-│   └── index.css         # Tailwind imports
-├── public/               # Static assets
-├── index.html           # HTML template
-├── package.json         # Node dependencies
-├── tailwind.config.js   # Tailwind configuration
-├── postcss.config.js    # PostCSS configuration
-└── vite.config.js       # Vite configuration
+```bash
+npm run build       # Production build
+npm run preview     # Preview production build
 ```
 
-## Development Notes
+## Environment Variables
 
-- Frontend runs on port 5173 (Vite default)
-- Backend runs on port 5000 (Flask default)
-- CORS is enabled for frontend-backend communication
-- Mock data is currently used in frontend components
-- API service is ready for backend integration
-- All components use modern React hooks and functional components
-- Responsive design works on mobile, tablet, and desktop screen sizes
+### Development
+Create `.env` in project root:
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_API_BASE_URL=http://localhost:5001/api
+```
+
+### Production
+- Frontend: Set in GitHub Secrets (see DEPLOYMENT.md)
+- Backend: Set in Render dashboard environment variables
+
+## API Endpoints
+
+### New Structure (v2.0.0)
+- `/api/insights/*` - Diagnostics and analytics
+- `/api/personalization/*` - Study plans and recommendations
+- `/api/skill-builder/*` - Practice drills
+
+### Legacy Endpoints (maintained for compatibility)
+- `GET /api/diagnostics` → insights layer
+- `GET /api/study-plans` → personalization layer
+- `POST /api/drill` → skill builder layer
+
+## Data Pipeline
+
+### LSAT Content Scrapers
+Located in `backend/scrapers/`:
+- `lsat_scraper.py` / `lsat_scraper_enhanced.py` - Web scraping for LSAT questions
+- `run_lsat_scraper.py` - Execute scrapers
+- Output: `backend/data/lsat_questions.json`
+
+### Skills Taxonomy
+- Defined in `backend/data/lsat_skills_taxonomy.json`
+- Two domains: Logical Reasoning (LR) and Reading Comprehension (RC)
+- Each skill has ID, name, category, and description
+- Loaded into database via `setup_database.py`
+
+## Deployment
+
+- **Frontend:** GitHub Pages (via GitHub Actions)
+- **Backend:** Render (free tier)
+- **Database:** SQLite (file-based, deployed with backend)
+
+See DEPLOYMENT.md for detailed deployment instructions.
+
+## Key Implementation Details
+
+1. **Backend runs on port 5001** (not 5000) - check `backend/app.py:89`
+2. **Firebase for authentication** - user profiles stored in Firestore
+3. **SQLite database** - located at `backend/data/deductly.db`
+4. **Three-layer backend architecture** - each layer is a Flask Blueprint
+5. **Legacy endpoint support** - old API routes redirect to new structure
+6. **Environment-based API URL** - frontend uses `VITE_API_BASE_URL`

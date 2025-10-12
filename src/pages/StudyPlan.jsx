@@ -61,24 +61,24 @@ const StudyPlan = () => {
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty) {
-      case 'Easy': return 'bg-green-100 text-green-800'
-      case 'Medium': return 'bg-yellow-100 text-yellow-800'
-      case 'Hard': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'Easy': return 'bg-status-success-bg text-status-success-text'
+      case 'Medium': return 'bg-status-warning-bg text-status-warning-text'
+      case 'Hard': return 'bg-status-error-bg text-status-error-text'
+      default: return 'bg-surface-tertiary text-text-secondary'
     }
   }
 
   const getProgressColor = (progress) => {
-    if (progress >= 80) return 'bg-accent-mint'
-    if (progress >= 50) return 'bg-yellow-500'
-    return 'bg-accent-peach'
+    if (progress >= 80) return 'bg-status-success'
+    if (progress >= 50) return 'bg-status-warning'
+    return 'bg-button-primary'
   }
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-peach mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-button-primary mx-auto"></div>
           <p className="mt-4 text-text-secondary">Loading your study plans...</p>
         </div>
       </div>
@@ -99,24 +99,24 @@ const StudyPlan = () => {
             Back to Study Plans
           </button>
 
-          <div className="bg-white rounded-xl p-8 border border-border-light shadow-md">
+          <div className="bg-surface-primary rounded-xl p-8 border border-border-default shadow-md">
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-3xl font-bold text-text-primary">{selectedPlan.subject}</h1>
-              <span className={`px-3 py-1 text-sm font-medium rounded-full ${getDifficultyColor(selectedPlan.difficulty)} border border-border-light`}>
+              <span className={`px-3 py-1 text-sm font-medium rounded-full ${getDifficultyColor(selectedPlan.difficulty)} border border-border-default`}>
                 {selectedPlan.difficulty}
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-accent-lavender/20 p-4 rounded-lg border border-border-light">
+              <div className="bg-accent-info-bg p-4 rounded-lg border border-border-default">
                 <h3 className="font-semibold text-text-secondary">Duration</h3>
                 <p className="text-xl font-bold text-text-primary">{selectedPlan.duration}</p>
               </div>
-              <div className="bg-accent-mint/20 p-4 rounded-lg border border-border-light">
+              <div className="bg-accent-success-bg p-4 rounded-lg border border-border-default">
                 <h3 className="font-semibold text-text-secondary">Progress</h3>
-                <p className="text-xl font-bold text-accent-mint">{selectedPlan.progress}%</p>
+                <p className="text-xl font-bold text-status-success">{selectedPlan.progress}%</p>
               </div>
-              <div className="bg-accent-peach/20 p-4 rounded-lg border border-border-light">
+              <div className="bg-accent-warning-bg p-4 rounded-lg border border-border-default">
                 <h3 className="font-semibold text-text-secondary">Est. Hours</h3>
                 <p className="text-xl font-bold text-text-primary">{selectedPlan.estimatedHours}h</p>
               </div>
@@ -137,8 +137,8 @@ const StudyPlan = () => {
               <h3 className="text-xl font-semibold text-text-primary mb-4">Course Topics</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {selectedPlan.topics.map((topic, index) => (
-                  <div key={index} className="flex items-center p-4 border border-border-light rounded-lg bg-accent-lavender/10">
-                    <div className={`w-4 h-4 rounded-full mr-3 ${index < Math.floor(selectedPlan.topics.length * selectedPlan.progress / 100) ? 'bg-accent-mint' : 'bg-border-light'}`}></div>
+                  <div key={index} className="flex items-center p-4 border border-border-default rounded-lg bg-accent-info-bg">
+                    <div className={`w-4 h-4 rounded-full mr-3 ${index < Math.floor(selectedPlan.topics.length * selectedPlan.progress / 100) ? 'bg-status-success' : 'bg-border-light'}`}></div>
                     <span className="text-text-primary">{topic}</span>
                   </div>
                 ))}
@@ -146,10 +146,10 @@ const StudyPlan = () => {
             </div>
 
             <div className="flex space-x-4 flex-wrap gap-2">
-              <button className="bg-accent-peach text-white px-6 py-3 rounded-lg hover:bg-accent-peach/80 transition duration-300">
+              <button className="bg-button-primary text-white px-6 py-3 rounded-lg hover:bg-button-primary-hover transition duration-300">
                 Continue Learning
               </button>
-              <button className="bg-white border border-border-light text-text-primary px-6 py-3 rounded-lg hover:bg-stone-50 transition duration-300">
+              <button className="bg-button-secondary border border-border-default text-text-primary px-6 py-3 rounded-lg hover:bg-surface-hover transition duration-300">
                 Practice Drills
               </button>
             </div>
@@ -171,11 +171,11 @@ const StudyPlan = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {studyPlans.map((plan) => (
-            <div key={plan.id} className="bg-white rounded-xl overflow-hidden hover:bg-stone-50 transition duration-300 border border-border-light shadow-sm">
+            <div key={plan.id} className="bg-surface-primary rounded-xl overflow-hidden hover:bg-surface-hover transition duration-300 border border-border-default shadow-sm">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-semibold text-text-primary">{plan.subject}</h3>
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${getDifficultyColor(plan.difficulty)} border border-border-light`}>
+                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${getDifficultyColor(plan.difficulty)} border border-border-default`}>
                     {plan.level}
                   </span>
                 </div>
@@ -208,7 +208,7 @@ const StudyPlan = () => {
 
                 <button
                   onClick={() => setSelectedPlan(plan)}
-                  className="w-full bg-accent-peach text-white py-2 px-4 rounded-lg hover:bg-accent-peach/80 transition duration-300"
+                  className="w-full bg-button-primary text-white py-2 px-4 rounded-lg hover:bg-button-primary-hover transition duration-300"
                 >
                   View Details
                 </button>
@@ -218,7 +218,7 @@ const StudyPlan = () => {
         </div>
 
         {studyPlans.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-xl border border-border-light shadow-sm">
+          <div className="text-center py-12 bg-surface-primary rounded-xl border border-border-default shadow-sm">
             <svg className="w-16 h-16 text-text-secondary mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
@@ -226,7 +226,7 @@ const StudyPlan = () => {
             <p className="text-text-secondary mb-4">Complete a diagnostic assessment to get personalized study plans.</p>
             <button
               onClick={() => window.location.href = '/diagnostics'}
-              className="bg-accent-peach text-white px-6 py-3 rounded-lg hover:bg-accent-peach/80 transition duration-300"
+              className="bg-button-primary text-white px-6 py-3 rounded-lg hover:bg-button-primary-hover transition duration-300"
             >
               Take Diagnostic
             </button>

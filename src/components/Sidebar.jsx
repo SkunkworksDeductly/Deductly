@@ -60,15 +60,15 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   return (
     <>
       {/* Sidebar */}
-      <div className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
+      <div className={`fixed top-0 left-0 h-full w-64 bg-surface-primary shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-lg font-semibold text-gray-800">Navigation</h2>
+        <div className="flex items-center justify-between p-4 border-b border-border-default">
+          <h2 className="text-lg font-semibold text-text-primary">Navigation</h2>
           <button
             onClick={toggleSidebar}
-            className="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+            className="p-2 rounded-md text-text-secondary hover:text-nav-text-hover hover:bg-nav-bg-hover"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -78,18 +78,18 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
         {/* User Info */}
         {currentUser && (
-          <div className="px-4 py-3 border-b">
+          <div className="px-4 py-3 border-b border-border-default">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-accent-peach to-primary rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-gradient-from to-gradient-to rounded-full flex items-center justify-center">
                 <span className="text-white text-sm font-medium">
                   {currentUser.email?.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
+                <p className="text-sm font-medium text-text-primary truncate">
                   {currentUser.displayName || 'User'}
                 </p>
-                <p className="text-sm text-gray-500 truncate">
+                <p className="text-sm text-text-tertiary truncate">
                   {currentUser.email}
                 </p>
               </div>
@@ -99,7 +99,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
         {/* Error message */}
         {error && (
-          <div className="mx-4 mt-2 p-3 bg-red-100 border border-red-400 text-red-700 text-sm rounded">
+          <div className="mx-4 mt-2 p-3 bg-status-error-bg border border-status-error-border text-status-error-text text-sm rounded">
             {error}
           </div>
         )}
@@ -114,8 +114,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   onClick={() => toggleSidebar()}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
                     location.pathname === item.path
-                      ? 'bg-primary/20 text-primary font-medium'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                      ? 'bg-nav-bg-active text-nav-text-active font-medium'
+                      : 'text-nav-text hover:bg-nav-bg-hover hover:text-nav-text-hover'
                   }`}
                 >
                   {item.icon}
@@ -128,7 +128,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <li>
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 text-gray-700 hover:bg-red-50 hover:text-red-700"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 text-nav-text hover:bg-status-error-bg hover:text-status-error-text"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -140,8 +140,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </nav>
 
         {/* Footer */}
-        <div className="absolute bottom-0 w-full p-4 border-t">
-          <div className="text-sm text-gray-500 text-center">
+        <div className="absolute bottom-0 w-full p-4 border-t border-border-default">
+          <div className="text-sm text-text-tertiary text-center">
             <p>&copy; 2025 Deductly</p>
             <p className="mt-1">Education Tech Platform</p>
           </div>

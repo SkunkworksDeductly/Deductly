@@ -169,7 +169,7 @@ const DrillSummary = () => {
           </button>
           <button
             type="button"
-            className="px-4 py-2 rounded-lg bg-accent-peach hover:bg-accent-peach/80 transition text-white shadow-sm"
+            className="px-4 py-2 rounded-lg bg-button-primary hover:bg-button-primary-hover transition text-white shadow-sm"
             onClick={() => navigate('/study-plan')}
           >
             View Study Plan

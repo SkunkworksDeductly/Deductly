@@ -23,7 +23,7 @@ const Landing = () => {
             </button>
           </Link>
           <Link to="/study-plan">
-            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-overlay-light hover:bg-surface-active text-white text-base font-bold leading-normal tracking-[0.015em] transition-colors">
+            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-button-secondary border-2 border-button-primary hover:bg-surface-hover text-text-primary text-base font-bold leading-normal tracking-[0.015em] transition-colors">
               <span className="truncate">Continue Last Lesson</span>
             </button>
           </Link>

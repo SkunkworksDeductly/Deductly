@@ -334,7 +334,7 @@ const DrillBuilder = () => {
                 )}
                 <button
                   type="button"
-                  className="w-full py-2.5 bg-accent-peach hover:bg-accent-peach/80 rounded-lg text-white font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
+                  className="w-full py-2.5 bg-button-primary hover:bg-button-primary-hover rounded-lg text-white font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
                   onClick={startDrillSession}
                   disabled={isLoading}
                 >

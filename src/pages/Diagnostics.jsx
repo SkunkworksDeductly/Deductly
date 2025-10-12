@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDrill } from '../contexts/DrillContext'
+import { useAuth } from '../contexts/AuthContext'
 
 const Diagnostics = () => {
   const navigate = useNavigate()
+  const { currentUser, getAuthHeaders } = useAuth()
   const {
     setDrillSession,
     setSelectedAnswers,
@@ -22,10 +24,14 @@ const Diagnostics = () => {
       setErrorMessage(null)
       setIsStarting(true)
 
+      const headers = await getAuthHeaders()
+
       const response = await fetch('/api/personalization/diagnostic', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+        headers,
+        body: JSON.stringify({
+          user_id: currentUser?.uid || 'anonymous'
+        })
       })
 
       if (!response.ok) {

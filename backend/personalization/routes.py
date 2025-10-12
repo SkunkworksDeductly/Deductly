@@ -49,5 +49,7 @@ def update_progress(plan_id):
 @personalization_bp.route('/diagnostic', methods=['POST'])
 def create_diagnostic():
     """Generate a 5-question LSAT diagnostic session."""
-    result = create_diagnostic_session()
+    data = request.get_json() or {}
+    user_id = data.get('user_id', 'anonymous')
+    result = create_diagnostic_session(user_id)
     return jsonify(result), 201

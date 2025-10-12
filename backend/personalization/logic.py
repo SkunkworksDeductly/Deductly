@@ -95,12 +95,14 @@ def get_recommendations(user_id):
     pass
 
 
-def create_diagnostic_session():
+def create_diagnostic_session(user_id='anonymous'):
     """Create a standardized diagnostic drill of 5 LSAT questions."""
     payload = {
+        'user_id': user_id,
         'question_count': 5,
         'difficulties': ['Easy', 'Medium', 'Hard', 'Challenging'],
         'skills': [],
-        'time_percentage': 'untimed'
+        'time_percentage': 'untimed',
+        'drill_type': 'diagnostic'
     }
     return create_drill_session(payload)

@@ -3,67 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useDrill } from '../contexts/DrillContext'
 import { useAuth } from '../contexts/AuthContext'
 
-const CountdownTimer = ({ totalSeconds, onTimeUp }) => {
-  const [secondsRemaining, setSecondsRemaining] = useState(totalSeconds)
-
-  useEffect(() => {
-    setSecondsRemaining(totalSeconds)
-  }, [totalSeconds])
-
-  useEffect(() => {
-    if (secondsRemaining <= 0) {
-      onTimeUp?.()
-      return
-    }
-
-    const interval = setInterval(() => {
-      setSecondsRemaining(prev => Math.max(0, prev - 1))
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [secondsRemaining, onTimeUp])
-
-  const minutes = Math.floor(secondsRemaining / 60)
-  const seconds = secondsRemaining % 60
-  const percentage = (secondsRemaining / totalSeconds) * 100
-
-  // Determine color based on time remaining
-  let bgColor = 'bg-status-success'
-  let textColor = 'text-status-success'
-  let borderColor = 'border-status-success'
-
-  if (percentage <= 25) {
-    bgColor = 'bg-status-error'
-    textColor = 'text-status-error'
-    borderColor = 'border-status-error'
-  } else if (percentage <= 50) {
-    bgColor = 'bg-button-primary'
-    textColor = 'text-button-primary'
-    borderColor = 'border-button-primary'
-  }
-
-  return (
-    <div className="flex items-center gap-3">
-      <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 ${borderColor} bg-white transition-colors`}>
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span className={`font-mono text-xl font-bold ${textColor}`}>
-          {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
-        </span>
-      </div>
-      <div className="flex-1 max-w-xs">
-        <div className="h-2 bg-border-light rounded-full overflow-hidden">
-          <div
-            className={`h-full ${bgColor} transition-all duration-1000 ease-linear`}
-            style={{ width: `${percentage}%` }}
-          />
-        </div>
-      </div>
-    </div>
-  )
-}
-
 const letterFromIndex = (index) => String.fromCharCode(65 + index)
 
 const indexFromLetter = (letter) => {
@@ -82,7 +21,7 @@ const stripChoicePrefix = (choice) => {
 const DrillSession = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { getAuthHeaders } = useAuth()
+  const { currentUser, getAuthHeaders } = useAuth()
   const {
     drillSession,
     selectedAnswers,
@@ -195,16 +134,7 @@ const DrillSession = () => {
       score
     }
 
-    if (isDiagnosticSession) {
-      navigate('/diagnostics/summary', {
-        state: {
-          summary
-        }
-      })
-      return
-    }
-
-    // Submit to backend
+    // Submit to backend (both practice and diagnostic drills)
     try {
       // Calculate time taken in seconds
       const timeTakenSeconds = startTimeRef.current
@@ -218,6 +148,7 @@ const DrillSession = () => {
         headers,
         body: JSON.stringify({
           drill_id: drillSession.drill_id || drillSession.session_id,
+          user_id: currentUser?.uid || 'anonymous',
           answers: answers,
           time_taken: timeTakenSeconds
         })
@@ -231,6 +162,16 @@ const DrillSession = () => {
       }
     } catch (error) {
       console.error('Error submitting drill:', error)
+    }
+
+    // Navigate to appropriate summary page
+    if (isDiagnosticSession) {
+      navigate('/diagnostics/summary', {
+        state: {
+          summary
+        }
+      })
+      return
     }
 
     const questionResults = questions.map((question, index) => {
@@ -258,18 +199,11 @@ const DrillSession = () => {
     })
   }
 
-  const handleTimeUp = () => {
-    // Auto-submit when time runs out
-    handleSubmit()
-  }
-
   const handleExit = () => {
     const exitPath = isDiagnosticSession ? '/diagnostics' : '/drill'
     resetSession()
     navigate(exitPath)
   }
-
-  const hasTimer = drillSession?.time_limit_seconds && drillSession.time_limit_seconds > 0
 
   return (
     <div className="py-10">
@@ -287,15 +221,6 @@ const DrillSession = () => {
                 Question {questions.length > 0 ? currentQuestionIndex + 1 : 0} of {questions.length}
               </div>
             </div>
-
-            {hasTimer && (
-              <div className="pt-2">
-                <CountdownTimer
-                  totalSeconds={drillSession.time_limit_seconds}
-                  onTimeUp={handleTimeUp}
-                />
-              </div>
-            )}
           </header>
 
           {currentQuestionData ? (

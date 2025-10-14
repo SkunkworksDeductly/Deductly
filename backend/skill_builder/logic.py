@@ -50,8 +50,8 @@ def create_drill_session(payload):
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
-        # Generate drill IDs
-        pk_id = generate_id('dr', conn)
+        # Generate drill IDs (random alphanumeric)
+        pk_id = generate_id('dr')  # e.g., dr-a3f2b9
         drill_id = str(uuid.uuid4())  # Keep drill_id as UUID for external references
 
         # Extract question IDs for storage
@@ -114,8 +114,8 @@ def submit_drill_answers(drill_id, user_id, answers, time_taken=None):
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
-        # Generate drill result ID
-        result_id = generate_id('dres', conn)
+        # Generate drill result ID (random alphanumeric)
+        result_id = generate_id('dres')  # e.g., dres-k4m2p1
 
         # Insert drill results
         cursor.execute("""

@@ -17,13 +17,12 @@ with open('backend/data/lsat_questions.json', 'r') as f:
     questions_data = json.load(f)
 
 # Insert questions and create question_skills associations
-question_counter = 1
 for q in questions_data:
     # Prepare answer choices as JSON string
     answer_choices = json.dumps(q['options'])
 
-    # Generate question ID
-    question_id = generate_id('q', conn)
+    # Generate question ID (random alphanumeric)
+    question_id = generate_id('q')  # e.g., q-a3f2b9
 
     # Insert question
     cursor.execute('''
@@ -63,8 +62,8 @@ for q in questions_data:
 
         if result:
             skill_id = result[0]
-            # Generate question_skill ID
-            qs_id = generate_id('qs', conn)
+            # Generate question_skill ID (random alphanumeric)
+            qs_id = generate_id('qs')  # e.g., qs-k4m2p1
             # Insert into question_skills junction table
             cursor.execute('''
                 INSERT OR IGNORE INTO question_skills (id, question_id, skill_id)
@@ -74,8 +73,6 @@ for q in questions_data:
             print(f"Warning: Skill ID '{skill_id_str}' not found for question type '{q['question_type']}'")
     else:
         print(f"Warning: No mapping found for question type '{q['question_type']}'")
-
-    question_counter += 1
 
 # Commit the transaction
 conn.commit()

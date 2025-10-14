@@ -330,8 +330,8 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
-        # Generate study plan ID
-        study_plan_id = generate_id('sp', conn)
+        # Generate study plan ID (random alphanumeric)
+        study_plan_id = generate_id('sp')  # e.g., sp-m8n3k1
 
         # Create study plan
         cursor.execute("""
@@ -350,8 +350,8 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
                     'drill_type': 'practice'
                 }
 
-                # Generate task ID
-                task_id = generate_id('spt', conn)
+                # Generate task ID (random alphanumeric)
+                task_id = generate_id('spt')  # e.g., spt-p7x2k9
 
                 cursor.execute("""
                     INSERT INTO study_plan_tasks (

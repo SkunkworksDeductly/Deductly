@@ -1,10 +1,60 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
 const Landing = () => {
   const { currentUser } = useAuth()
   const userName = currentUser?.displayName?.split(' ')[0] || 'Student'
+  const [recentActivity, setRecentActivity] = useState([])
+  const [isLoadingActivity, setIsLoadingActivity] = useState(true)
+
+  useEffect(() => {
+    const fetchRecentActivity = async () => {
+      try {
+        setIsLoadingActivity(true)
+        const token = await currentUser?.getIdToken()
+
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'}/skill-builder/drills/history?limit=5`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        )
+
+        if (response.ok) {
+          const data = await response.json()
+          setRecentActivity(data.drills || [])
+        }
+      } catch (error) {
+        console.error('Failed to fetch recent activity:', error)
+      } finally {
+        setIsLoadingActivity(false)
+      }
+    }
+
+    if (currentUser) {
+      fetchRecentActivity()
+    }
+  }, [currentUser])
+
+  const formatTimeAgo = (timestamp) => {
+    if (!timestamp) return 'Recently'
+
+    const date = new Date(timestamp)
+    const now = new Date()
+    const diffMs = now - date
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+
+    if (diffDays === 0) return 'Today'
+    if (diffDays === 1) return 'Yesterday'
+    if (diffDays < 7) return `${diffDays} days ago`
+    if (diffDays < 14) return '1 week ago'
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`
+    return `${Math.floor(diffDays / 30)} months ago`
+  }
 
   return (
     <div>
@@ -123,43 +173,51 @@ const Landing = () => {
           {/* Recent Activity */}
           <div className="rounded-xl p-6 bg-surface-primary border border-border-default shadow-sm">
             <h2 className="text-text-primary text-lg font-bold mb-4">Recent Activity</h2>
-            <ul className="space-y-4">
-              <li className="flex items-center gap-4">
-                <div className="bg-accent-warning-bg rounded-full p-2 flex-shrink-0">
-                  <svg className="w-5 h-5 text-button-primary" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-text-primary font-medium">Practice Test #5</p>
-                  <p className="text-text-secondary text-sm">Completed 2 days ago</p>
-                </div>
-                <p className="text-text-primary ml-auto font-bold">170</p>
-              </li>
-              <li className="flex items-center gap-4">
-                <div className="bg-accent-peach/20 rounded-full p-2 flex-shrink-0">
-                  <svg className="w-5 h-5 text-accent-peach" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-text-primary font-medium">Advanced Logic Games</p>
-                  <p className="text-text-secondary text-sm">Completed 4 days ago</p>
-                </div>
-              </li>
-              <li className="flex items-center gap-4">
-                <div className="bg-accent-warning-bg rounded-full p-2 flex-shrink-0">
-                  <svg className="w-5 h-5 text-button-primary" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-text-primary font-medium">Practice Test #4</p>
-                  <p className="text-text-secondary text-sm">Completed 1 week ago</p>
-                </div>
-                <p className="text-text-primary ml-auto font-bold">165</p>
-              </li>
-            </ul>
+
+            {isLoadingActivity ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-button-primary"></div>
+              </div>
+            ) : recentActivity.length > 0 ? (
+              <ul className="space-y-4">
+                {recentActivity.map((drill, index) => {
+                  const score = drill.score_percentage ? Math.round(drill.score_percentage) : null
+                  const drillType = drill.drill_type || 'Practice Drill'
+
+                  return (
+                    <li key={drill.drill_id || index} className="flex items-center gap-4">
+                      <div className="bg-accent-warning-bg rounded-full p-2 flex-shrink-0">
+                        <svg className="w-5 h-5 text-button-primary" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-text-primary font-medium">
+                          {drillType}
+                          {drill.question_count && ` (${drill.question_count} questions)`}
+                        </p>
+                        <p className="text-text-secondary text-sm">
+                          Completed {formatTimeAgo(drill.completed_at)}
+                        </p>
+                      </div>
+                      {score !== null && (
+                        <p className="text-text-primary ml-auto font-bold">{score}%</p>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : (
+              <div className="text-center py-8">
+                <svg className="w-12 h-12 text-text-tertiary mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p className="text-text-secondary text-sm">No completed drills yet</p>
+                <Link to="/drill" className="text-text-link text-sm hover:underline mt-2 inline-block">
+                  Start your first drill
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Study Plan */}

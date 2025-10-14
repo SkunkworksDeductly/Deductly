@@ -13,6 +13,10 @@ export default {
         "brand-secondary": "#FCA5A5",
         "brand-accent": "#DDD6FE",
 
+        // Shorthand aliases for common use
+        "primary": "#818CF8",
+        "accent-lavender": "#DDD6FE",
+
         // Button colors
         "button-primary": "#FCA5A5",
         "button-primary-hover": "#F87171",

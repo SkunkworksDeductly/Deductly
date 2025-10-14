@@ -1,5 +1,11 @@
 import sqlite3
 import json
+import sys
+import os
+
+# Add backend to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'backend'))
+from utils.id_generator import generate_sequential_id
 
 # Create database and tables
 conn = sqlite3.connect('deductly.db')
@@ -9,7 +15,7 @@ cursor = conn.cursor()
 cursor.executescript('''
 -- Skills table (generalized for multiple test types)
 CREATE TABLE IF NOT EXISTS skills (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id VARCHAR(50) PRIMARY KEY,
     skill_id VARCHAR(20) UNIQUE NOT NULL,
     skill_name VARCHAR(255) NOT NULL,
     domain VARCHAR(50) NOT NULL,
@@ -20,7 +26,7 @@ CREATE TABLE IF NOT EXISTS skills (
 );
 
 CREATE TABLE IF NOT EXISTS questions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id VARCHAR(50) PRIMARY KEY,
     question_text TEXT NOT NULL,
     answer_choices TEXT,
     correct_answer VARCHAR(10),
@@ -34,9 +40,9 @@ CREATE TABLE IF NOT EXISTS questions (
 );
 
 CREATE TABLE IF NOT EXISTS question_skills (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    question_id INTEGER NOT NULL,
-    skill_id INTEGER NOT NULL,
+    id VARCHAR(50) PRIMARY KEY,
+    question_id VARCHAR(50) NOT NULL,
+    skill_id VARCHAR(50) NOT NULL,
     FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE,
     FOREIGN KEY (skill_id) REFERENCES skills(id) ON DELETE CASCADE,
     UNIQUE(question_id, skill_id)
@@ -56,11 +62,14 @@ with open('lsat_skills_taxonomy.json', 'r') as f:
     taxonomy = json.load(f)
 
 # Insert Logical Reasoning skills
+skill_counter = 1
 for skill in taxonomy['logical_reasoning_skills']:
+    skill_pk_id = generate_sequential_id('sk', skill_counter)
     cursor.execute('''
-        INSERT INTO skills (skill_id, skill_name, domain, sub_domain, category, description)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO skills (id, skill_id, skill_name, domain, sub_domain, category, description)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     ''', (
+        skill_pk_id,
         skill['skill_id'],
         skill['skill_name'],
         'lsat',  # domain
@@ -68,13 +77,16 @@ for skill in taxonomy['logical_reasoning_skills']:
         skill['category'],
         skill['description']
     ))
+    skill_counter += 1
 
 # Insert Reading Comprehension skills
 for skill in taxonomy['reading_comprehension_skills']:
+    skill_pk_id = generate_sequential_id('sk', skill_counter)
     cursor.execute('''
-        INSERT INTO skills (skill_id, skill_name, domain, sub_domain, category, description)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO skills (id, skill_id, skill_name, domain, sub_domain, category, description)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     ''', (
+        skill_pk_id,
         skill['skill_id'],
         skill['skill_name'],
         'lsat',  # domain
@@ -82,6 +94,7 @@ for skill in taxonomy['reading_comprehension_skills']:
         skill['category'],
         skill['description']
     ))
+    skill_counter += 1
 
 conn.commit()
 

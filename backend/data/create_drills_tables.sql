@@ -1,6 +1,6 @@
 -- Table for storing drill configurations and metadata
 CREATE TABLE IF NOT EXISTS drills (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id VARCHAR(50) PRIMARY KEY,
     drill_id VARCHAR(50) UNIQUE NOT NULL,
     user_id VARCHAR(100) NOT NULL,
 
@@ -20,12 +20,16 @@ CREATE TABLE IF NOT EXISTS drills (
     -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     started_at TIMESTAMP,
-    completed_at TIMESTAMP
+    completed_at TIMESTAMP,
+
+    -- Progress tracking
+    current_question_index INTEGER DEFAULT 0,
+    user_answers TEXT
 );
 
 -- Table for storing drill performance results
 CREATE TABLE IF NOT EXISTS drill_results (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id VARCHAR(50) PRIMARY KEY,
     drill_id VARCHAR(50) NOT NULL,
     user_id VARCHAR(100) NOT NULL,
 

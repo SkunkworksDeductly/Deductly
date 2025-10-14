@@ -7,6 +7,7 @@ const Header = () => {
   const navigate = useNavigate()
   const { currentUser, logout } = useAuth()
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [imageError, setImageError] = useState(false)
   const dropdownRef = useRef(null)
 
   const navItems = [
@@ -43,6 +44,11 @@ const Header = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Reset image error state when user changes
+  useEffect(() => {
+    setImageError(false)
+  }, [currentUser])
+
   return (
     <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-default px-4 sm:px-10 py-3">
       <Link to="/" className="flex items-center gap-4">
@@ -78,13 +84,21 @@ const Header = () => {
               onClick={() => setDropdownOpen(!dropdownOpen)}
               className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer hover:ring-2 hover:ring-button-primary transition-all"
               style={{
-                backgroundImage: currentUser.photoURL
+                backgroundImage: (currentUser.photoURL && !imageError)
                   ? `url("${currentUser.photoURL}")`
                   : 'linear-gradient(135deg, #FCA5A5 0%, #818CF8 100%)'
               }}
             >
-              {!currentUser.photoURL && (
-                <div className="w-full h-full flex items-center justify-center text-white font-bold">
+              {currentUser.photoURL && !imageError && (
+                <img
+                  src={currentUser.photoURL}
+                  alt="Profile"
+                  className="hidden"
+                  onError={() => setImageError(true)}
+                />
+              )}
+              {(!currentUser.photoURL || imageError) && (
+                <div className="w-full h-full flex items-center justify-center text-white font-bold text-sm">
                   {currentUser.email?.charAt(0).toUpperCase() || 'U'}
                 </div>
               )}

@@ -156,7 +156,7 @@ def generate_plan():
         return jsonify({'error': 'Failed to generate study plan'}), 500
 
 
-@personalization_bp.route('/study-plan/task/<int:task_id>/link-drill', methods=['POST'])
+@personalization_bp.route('/study-plan/task/<task_id>/link-drill', methods=['POST'])
 def link_task_drill(task_id):
     """Link a drill to a task and mark it as in_progress."""
     # Extract user_id from Firebase auth token
@@ -183,7 +183,7 @@ def link_task_drill(task_id):
         return jsonify({'error': 'Failed to link drill'}), 500
 
 
-@personalization_bp.route('/study-plan/task/<int:task_id>/complete', methods=['POST'])
+@personalization_bp.route('/study-plan/task/<task_id>/complete', methods=['POST'])
 def complete_task(task_id):
     """Mark a task as completed."""
     # Extract user_id from Firebase auth token

@@ -4,7 +4,8 @@ Handles personalized study plans and adaptive learning recommendations
 """
 import sqlite3
 import os
-from datetime import datetime, timedelta
+import json
+from datetime import datetime, timedelta, date
 
 from skill_builder.logic import create_drill_session
 
@@ -95,12 +96,276 @@ def get_recommendations(user_id):
     pass
 
 
-def create_diagnostic_session():
+def create_diagnostic_session(user_id='anonymous'):
     """Create a standardized diagnostic drill of 5 LSAT questions."""
     payload = {
+        'user_id': user_id,
         'question_count': 5,
         'difficulties': ['Easy', 'Medium', 'Hard', 'Challenging'],
         'skills': [],
-        'time_percentage': 'untimed'
+        'time_percentage': 'untimed',
+        'drill_type': 'diagnostic'
     }
     return create_drill_session(payload)
+
+
+# ============================================================================
+# STUDY PLAN FUNCTIONS
+# ============================================================================
+
+def has_completed_diagnostic(user_id):
+    """Check if user has completed a diagnostic test."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        row = cursor.execute("""
+            SELECT COUNT(*) FROM drill_results dr
+            JOIN drills d ON dr.drill_id = d.drill_id
+            WHERE d.user_id = ? AND d.drill_type = 'diagnostic'
+        """, (user_id,)).fetchone()
+        return row[0] > 0
+
+
+def has_study_plan(user_id):
+    """Check if user already has a study plan."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        row = cursor.execute("""
+            SELECT COUNT(*) FROM study_plans WHERE user_id = ?
+        """, (user_id,)).fetchone()
+        return row[0] > 0
+
+
+def get_user_study_plan(user_id):
+    """Get user's study plan with all tasks grouped by week."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+
+        # Get study plan
+        plan_row = cursor.execute("""
+            SELECT * FROM study_plans WHERE user_id = ?
+        """, (user_id,)).fetchone()
+
+        if not plan_row:
+            return None
+
+        # Get all tasks
+        task_rows = cursor.execute("""
+            SELECT * FROM study_plan_tasks
+            WHERE study_plan_id = ?
+            ORDER BY week_number ASC, task_order ASC
+        """, (plan_row['id'],)).fetchall()
+
+        # Calculate progress
+        total_tasks = len(task_rows)
+        completed_tasks = sum(1 for t in task_rows if t['status'] == 'completed')
+
+        # Group tasks by week
+        weeks = {}
+        for task in task_rows:
+            week_num = task['week_number']
+            if week_num not in weeks:
+                weeks[week_num] = []
+
+            weeks[week_num].append({
+                'id': task['id'],
+                'task_type': task['task_type'],
+                'title': task['title'],
+                'estimated_minutes': task['estimated_minutes'],
+                'task_config': json.loads(task['task_config']) if task['task_config'] else {},
+                'status': task['status'],
+                'drill_id': task['drill_id'],
+                'completed_at': task['completed_at'],
+                'task_order': task['task_order']
+            })
+
+        # Format weeks with date ranges
+        weeks_list = []
+        start_date = datetime.strptime(plan_row['start_date'], '%Y-%m-%d').date()
+
+        for week_num in sorted(weeks.keys()):
+            week_start = start_date + timedelta(weeks=week_num - 1)
+            week_end = week_start + timedelta(days=6)
+
+            week_tasks = weeks[week_num]
+            completed_count = sum(1 for t in week_tasks if t['status'] == 'completed')
+
+            weeks_list.append({
+                'week_number': week_num,
+                'start_date': week_start.isoformat(),
+                'end_date': week_end.isoformat(),
+                'tasks': week_tasks,
+                'completed_tasks': completed_count,
+                'total_tasks': len(week_tasks)
+            })
+
+        return {
+            'study_plan': {
+                'id': plan_row['id'],
+                'user_id': plan_row['user_id'],
+                'title': plan_row['title'],
+                'total_weeks': plan_row['total_weeks'],
+                'start_date': plan_row['start_date'],
+                'total_tasks': total_tasks,
+                'completed_tasks': completed_tasks,
+                'created_at': plan_row['created_at']
+            },
+            'weeks': weeks_list
+        }
+
+
+def link_drill_to_task(task_id, drill_id):
+    """Link a drill_id to a task and mark it as in_progress."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE study_plan_tasks
+            SET drill_id = ?, status = 'in_progress'
+            WHERE id = ?
+        """, (drill_id, task_id))
+        conn.commit()
+        return cursor.rowcount > 0
+
+
+def mark_task_completed(task_id, drill_id):
+    """Mark a task as completed after drill submission."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE study_plan_tasks
+            SET status = 'completed', drill_id = ?, completed_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        """, (drill_id, task_id))
+        conn.commit()
+        return cursor.rowcount > 0
+
+
+def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
+    """Generate a 10-week study plan with 30 drill tasks based on diagnostic results."""
+
+    # Check if user already has a plan
+    if has_study_plan(user_id):
+        raise ValueError("User already has a study plan")
+
+    # Get diagnostic results to analyze weak skills
+    # For now, we'll create a standard 10-week plan
+    # TODO: Analyze diagnostic results and personalize tasks
+
+    total_weeks = 10
+    tasks_per_week = 3
+    start_date = date.today()
+
+    # Define task templates for each week
+    # Weeks 1-3: Focus on fundamentals with easier drills
+    # Weeks 4-7: Mixed practice with increasing difficulty
+    # Weeks 8-10: Advanced practice and comprehensive review
+
+    week_templates = [
+        # Week 1: Fundamentals
+        [
+            {'title': 'Assumption Identification', 'difficulties': ['Easy', 'Medium'], 'skills': ['Assumption'], 'questions': 5, 'time': 100, 'minutes': 15},
+            {'title': 'Strengthen Arguments', 'difficulties': ['Easy', 'Medium'], 'skills': ['Strengthen'], 'questions': 5, 'time': 100, 'minutes': 15},
+            {'title': 'Weaken Arguments', 'difficulties': ['Easy', 'Medium'], 'skills': ['Weaken'], 'questions': 5, 'time': 100, 'minutes': 15},
+        ],
+        # Week 2: Building Skills
+        [
+            {'title': 'Parallel Reasoning', 'difficulties': ['Medium'], 'skills': ['Parallel Reasoning'], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'title': 'Inference Questions', 'difficulties': ['Medium'], 'skills': ['Inference'], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'title': 'Flaw Detection', 'difficulties': ['Medium'], 'skills': ['Flaw'], 'questions': 5, 'time': 100, 'minutes': 18},
+        ],
+        # Week 3: Mixed Practice
+        [
+            {'title': 'Mixed Fundamentals', 'difficulties': ['Easy', 'Medium'], 'skills': ['Assumption', 'Strengthen', 'Weaken'], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'title': 'Reasoning Patterns', 'difficulties': ['Medium'], 'skills': ['Parallel Reasoning', 'Flaw'], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'title': 'Conditional Logic', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
+        ],
+        # Week 4: Increasing Difficulty
+        [
+            {'title': 'Advanced Assumptions', 'difficulties': ['Medium', 'Hard'], 'skills': ['Assumption'], 'questions': 5, 'time': 100, 'minutes': 20},
+            {'title': 'Complex Weakening', 'difficulties': ['Medium', 'Hard'], 'skills': ['Weaken'], 'questions': 5, 'time': 100, 'minutes': 20},
+            {'title': 'Challenging Inference', 'difficulties': ['Hard'], 'skills': ['Inference'], 'questions': 5, 'time': 130, 'minutes': 22},
+        ],
+        # Week 5: Advanced Practice
+        [
+            {'title': 'Evaluation Questions', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
+            {'title': 'Principle Questions', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
+            {'title': 'Method of Reasoning', 'difficulties': ['Hard'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
+        ],
+        # Week 6: Timed Practice
+        [
+            {'title': 'Mixed Review - Timed', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
+            {'title': 'Challenging Mixed Set', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
+            {'title': 'Advanced Reasoning', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
+        ],
+        # Week 7: Comprehensive Review
+        [
+            {'title': 'Full Skill Review 1', 'difficulties': ['Easy', 'Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'title': 'Full Skill Review 2', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'title': 'Challenge Set', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
+        ],
+        # Week 8: Test Prep
+        [
+            {'title': 'Test-Like Conditions 1', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
+            {'title': 'Test-Like Conditions 2', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
+            {'title': 'Advanced Mixed Practice', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
+        ],
+        # Week 9: Final Review
+        [
+            {'title': 'Comprehensive Review 1', 'difficulties': ['Easy', 'Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'title': 'Comprehensive Review 2', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'title': 'Peak Performance Set', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
+        ],
+        # Week 10: Final Prep
+        [
+            {'title': 'Final Timed Practice 1', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
+            {'title': 'Final Timed Practice 2', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
+            {'title': 'Confidence Builder', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
+        ],
+    ]
+
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+
+        # Create study plan
+        cursor.execute("""
+            INSERT INTO study_plans (user_id, diagnostic_drill_id, total_weeks, start_date)
+            VALUES (?, ?, ?, ?)
+        """, (user_id, diagnostic_drill_id, total_weeks, start_date.isoformat()))
+
+        study_plan_id = cursor.lastrowid
+
+        # Create tasks for each week
+        for week_num, week_tasks in enumerate(week_templates, start=1):
+            for task_order, task_template in enumerate(week_tasks, start=1):
+                task_config = {
+                    'question_count': task_template['questions'],
+                    'difficulties': task_template['difficulties'],
+                    'skills': task_template['skills'],
+                    'time_percentage': task_template['time'],
+                    'drill_type': 'practice'
+                }
+
+                cursor.execute("""
+                    INSERT INTO study_plan_tasks (
+                        study_plan_id, week_number, task_order,
+                        task_type, title, estimated_minutes, task_config
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    study_plan_id,
+                    week_num,
+                    task_order,
+                    'drill',
+                    task_template['title'],
+                    task_template['minutes'],
+                    json.dumps(task_config)
+                ))
+
+        conn.commit()
+
+        return {
+            'study_plan_id': study_plan_id,
+            'user_id': user_id,
+            'total_weeks': total_weeks,
+            'total_tasks': total_weeks * tasks_per_week,
+            'start_date': start_date.isoformat(),
+            'message': 'Study plan generated successfully'
+        }

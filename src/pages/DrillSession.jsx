@@ -3,67 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useDrill } from '../contexts/DrillContext'
 import { useAuth } from '../contexts/AuthContext'
 
-const CountdownTimer = ({ totalSeconds, onTimeUp }) => {
-  const [secondsRemaining, setSecondsRemaining] = useState(totalSeconds)
-
-  useEffect(() => {
-    setSecondsRemaining(totalSeconds)
-  }, [totalSeconds])
-
-  useEffect(() => {
-    if (secondsRemaining <= 0) {
-      onTimeUp?.()
-      return
-    }
-
-    const interval = setInterval(() => {
-      setSecondsRemaining(prev => Math.max(0, prev - 1))
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [secondsRemaining, onTimeUp])
-
-  const minutes = Math.floor(secondsRemaining / 60)
-  const seconds = secondsRemaining % 60
-  const percentage = (secondsRemaining / totalSeconds) * 100
-
-  // Determine color based on time remaining
-  let bgColor = 'bg-status-success'
-  let textColor = 'text-status-success'
-  let borderColor = 'border-status-success'
-
-  if (percentage <= 25) {
-    bgColor = 'bg-status-error'
-    textColor = 'text-status-error'
-    borderColor = 'border-status-error'
-  } else if (percentage <= 50) {
-    bgColor = 'bg-button-primary'
-    textColor = 'text-button-primary'
-    borderColor = 'border-button-primary'
-  }
-
-  return (
-    <div className="flex items-center gap-3">
-      <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 ${borderColor} bg-white transition-colors`}>
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span className={`font-mono text-xl font-bold ${textColor}`}>
-          {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
-        </span>
-      </div>
-      <div className="flex-1 max-w-xs">
-        <div className="h-2 bg-border-light rounded-full overflow-hidden">
-          <div
-            className={`h-full ${bgColor} transition-all duration-1000 ease-linear`}
-            style={{ width: `${percentage}%` }}
-          />
-        </div>
-      </div>
-    </div>
-  )
-}
-
 const letterFromIndex = (index) => String.fromCharCode(65 + index)
 
 const indexFromLetter = (letter) => {
@@ -82,7 +21,7 @@ const stripChoicePrefix = (choice) => {
 const DrillSession = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { getAuthHeaders } = useAuth()
+  const { currentUser, getAuthHeaders } = useAuth()
   const {
     drillSession,
     selectedAnswers,
@@ -96,6 +35,7 @@ const DrillSession = () => {
   const questions = Array.isArray(drillSession?.questions) ? drillSession.questions : []
   const fallbackPath = location.pathname.startsWith('/diagnostics') ? '/diagnostics' : '/drill'
   const isDiagnosticSession = drillSession?.origin === 'diagnostic'
+  const task_id = location.state?.task_id // Task ID if this drill is from a study plan
 
   useEffect(() => {
     if (!drillSession) {
@@ -108,8 +48,23 @@ const DrillSession = () => {
       startTimeRef.current = Date.now()
     }
 
-    setCurrentQuestionIndex(0)
-  }, [drillSession, navigate, setCurrentQuestionIndex, fallbackPath])
+    // Restore saved progress if available
+    if (drillSession.current_question_index !== undefined && drillSession.current_question_index > 0) {
+      setCurrentQuestionIndex(drillSession.current_question_index)
+    } else {
+      setCurrentQuestionIndex(0)
+    }
+
+    // Restore saved answers if available
+    if (drillSession.user_answers && Object.keys(drillSession.user_answers).length > 0) {
+      // Convert string keys to numbers for selectedAnswers state
+      const restoredAnswers = {}
+      Object.keys(drillSession.user_answers).forEach(key => {
+        restoredAnswers[parseInt(key)] = drillSession.user_answers[key]
+      })
+      setSelectedAnswers(restoredAnswers)
+    }
+  }, [drillSession, navigate, setCurrentQuestionIndex, setSelectedAnswers, fallbackPath])
 
   const currentQuestionData = useMemo(() => {
     if (questions.length === 0) return null
@@ -195,16 +150,7 @@ const DrillSession = () => {
       score
     }
 
-    if (isDiagnosticSession) {
-      navigate('/diagnostics/summary', {
-        state: {
-          summary
-        }
-      })
-      return
-    }
-
-    // Submit to backend
+    // Submit to backend (both practice and diagnostic drills)
     try {
       // Calculate time taken in seconds
       const timeTakenSeconds = startTimeRef.current
@@ -218,6 +164,7 @@ const DrillSession = () => {
         headers,
         body: JSON.stringify({
           drill_id: drillSession.drill_id || drillSession.session_id,
+          user_id: currentUser?.uid || 'anonymous',
           answers: answers,
           time_taken: timeTakenSeconds
         })
@@ -228,9 +175,41 @@ const DrillSession = () => {
       } else {
         const result = await response.json()
         console.log('Drill submitted successfully:', result)
+
+        // If this drill is from a study plan task, mark task as completed
+        if (task_id) {
+          try {
+            const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
+            const taskResponse = await fetch(`${apiBaseUrl}/personalization/study-plan/task/${task_id}/complete`, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify({
+                drill_id: drillSession.drill_id || drillSession.session_id
+              })
+            })
+
+            if (taskResponse.ok) {
+              console.log('Task marked as completed')
+            } else {
+              console.error('Failed to mark task as completed')
+            }
+          } catch (taskError) {
+            console.error('Error marking task as completed:', taskError)
+          }
+        }
       }
     } catch (error) {
       console.error('Error submitting drill:', error)
+    }
+
+    // Navigate to appropriate summary page
+    if (isDiagnosticSession) {
+      navigate('/diagnostics/summary', {
+        state: {
+          summary
+        }
+      })
+      return
     }
 
     const questionResults = questions.map((question, index) => {
@@ -258,18 +237,38 @@ const DrillSession = () => {
     })
   }
 
-  const handleTimeUp = () => {
-    // Auto-submit when time runs out
-    handleSubmit()
-  }
+  const handleExit = async () => {
+    // Save progress before exiting (unless it's a diagnostic)
+    if (!isDiagnosticSession && drillSession) {
+      try {
+        const headers = await getAuthHeaders()
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'
 
-  const handleExit = () => {
+        // Convert selectedAnswers object to match backend format (string keys)
+        const answersForBackend = {}
+        Object.keys(selectedAnswers).forEach(key => {
+          answersForBackend[key] = selectedAnswers[key]
+        })
+
+        await fetch(`${apiBaseUrl}/skill-builder/drills/${drillSession.drill_id}/progress`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            current_question_index: currentQuestionIndex,
+            user_answers: answersForBackend
+          })
+        })
+
+        console.log('Progress saved on exit')
+      } catch (error) {
+        console.error('Error saving progress on exit:', error)
+      }
+    }
+
     const exitPath = isDiagnosticSession ? '/diagnostics' : '/drill'
     resetSession()
     navigate(exitPath)
   }
-
-  const hasTimer = drillSession?.time_limit_seconds && drillSession.time_limit_seconds > 0
 
   return (
     <div className="py-10">
@@ -287,15 +286,6 @@ const DrillSession = () => {
                 Question {questions.length > 0 ? currentQuestionIndex + 1 : 0} of {questions.length}
               </div>
             </div>
-
-            {hasTimer && (
-              <div className="pt-2">
-                <CountdownTimer
-                  totalSeconds={drillSession.time_limit_seconds}
-                  onTimeUp={handleTimeUp}
-                />
-              </div>
-            )}
           </header>
 
           {currentQuestionData ? (

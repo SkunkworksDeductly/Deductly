@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
 from .logic import (
     create_drill_session, submit_drill_answers, start_drill,
-    get_user_drill_history, get_drill_by_id, get_drill_result
+    get_user_drill_history, get_drill_by_id, get_drill_result,
+    save_drill_progress
 )
 import firebase_admin
 from firebase_admin import auth as firebase_auth
@@ -100,7 +101,8 @@ def drill_history():
 @skill_builder_bp.route('/drills/<drill_id>', methods=['GET'])
 def get_drill(drill_id):
     """Get a specific drill by ID."""
-    drill = get_drill_by_id(drill_id)
+    include_questions = request.args.get('include_questions', 'false').lower() == 'true'
+    drill = get_drill_by_id(drill_id, include_questions=include_questions)
 
     if not drill:
         return jsonify({'error': 'Drill not found'}), 404
@@ -121,3 +123,27 @@ def drill_results(drill_id):
         return jsonify({'error': 'Drill results not found'}), 404
 
     return jsonify(result)
+
+@skill_builder_bp.route('/drills/<drill_id>/progress', methods=['POST'])
+def save_progress(drill_id):
+    """Save partial progress for a drill."""
+    # Extract user_id from Firebase auth token or fallback to payload
+    user_id = get_user_id_from_token()
+    data = request.get_json() or {}
+
+    if not user_id:
+        user_id = data.get('user_id', 'anonymous')
+
+    current_question_index = data.get('current_question_index', 0)
+    user_answers = data.get('user_answers', {})
+
+    success = save_drill_progress(drill_id, user_id, current_question_index, user_answers)
+
+    if not success:
+        return jsonify({'error': 'Failed to save progress'}), 404
+
+    return jsonify({
+        'message': 'Progress saved successfully',
+        'drill_id': drill_id,
+        'current_question_index': current_question_index
+    })

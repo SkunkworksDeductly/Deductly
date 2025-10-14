@@ -185,7 +185,7 @@ const MultiSelectDropdown = ({
 
 const DrillBuilder = () => {
   const navigate = useNavigate()
-  const { getAuthHeaders } = useAuth()
+  const { currentUser, getAuthHeaders } = useAuth()
   const {
     drillConfig,
     setDrillConfig,
@@ -203,6 +203,7 @@ const DrillBuilder = () => {
       setIsLoading(true)
 
       const payload = {
+        user_id: currentUser?.uid || 'anonymous',
         question_count: drillConfig.questionCount,
         difficulties: drillConfig.difficulties,
         skills: drillConfig.skills,

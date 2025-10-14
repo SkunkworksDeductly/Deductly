@@ -289,13 +289,14 @@ def get_user_drill_history(user_id, limit=50):
         return drills
 
 
-def get_drill_by_id(drill_id):
-    """Retrieve a specific drill by ID."""
+def get_drill_by_id(drill_id, include_questions=False):
+    """Retrieve a specific drill by ID, optionally with full question data."""
     with get_db_connection() as conn:
         cursor = conn.cursor()
         row = cursor.execute("""
             SELECT drill_id, user_id, question_count, timing, difficulty,
-                   skills, drill_type, question_ids, status, created_at, completed_at
+                   skills, drill_type, question_ids, status, created_at, completed_at,
+                   current_question_index, user_answers
             FROM drills
             WHERE drill_id = ?
         """, (drill_id,)).fetchone()
@@ -303,7 +304,7 @@ def get_drill_by_id(drill_id):
         if not row:
             return None
 
-        return {
+        drill_data = {
             'drill_id': row['drill_id'],
             'user_id': row['user_id'],
             'question_count': row['question_count'],
@@ -315,7 +316,27 @@ def get_drill_by_id(drill_id):
             'status': row['status'],
             'created_at': row['created_at'],
             'completed_at': row['completed_at'],
+            'current_question_index': row['current_question_index'] or 0,
+            'user_answers': json.loads(row['user_answers']) if row['user_answers'] else {},
         }
+
+        # Include full question data if requested
+        if include_questions and drill_data['question_ids']:
+            question_ids = drill_data['question_ids']
+            placeholders = ','.join('?' * len(question_ids))
+            fields = ', '.join(QUESTION_SELECT_FIELDS)
+
+            question_rows = cursor.execute(f"""
+                SELECT {fields}
+                FROM questions
+                WHERE id IN ({placeholders})
+            """, question_ids).fetchall()
+
+            # Maintain original order
+            questions_by_id = {row['id']: _transform_question_row(row) for row in question_rows}
+            drill_data['questions'] = [questions_by_id[qid] for qid in question_ids if qid in questions_by_id]
+
+        return drill_data
 
 
 def get_drill_result(drill_id, user_id):
@@ -359,6 +380,32 @@ def get_skill_progression(user_id, subject):
     # TODO: Implement skill tracking logic
     # This would analyze drill performance over time
     pass
+
+
+def save_drill_progress(drill_id, user_id, current_question_index, user_answers):
+    """Save partial progress for a drill (for resuming later)."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+
+        # Update drill with current progress
+        cursor.execute("""
+            UPDATE drills
+            SET current_question_index = ?,
+                user_answers = ?,
+                status = CASE
+                    WHEN status = 'generated' THEN 'in_progress'
+                    ELSE status
+                END
+            WHERE drill_id = ? AND user_id = ?
+        """, (
+            current_question_index,
+            json.dumps(user_answers),
+            drill_id,
+            user_id
+        ))
+
+        conn.commit()
+        return cursor.rowcount > 0
 
 
 def get_weak_areas(user_id):

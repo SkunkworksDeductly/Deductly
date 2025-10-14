@@ -1,238 +1,565 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
+import { useDrill } from '../contexts/DrillContext'
 
 const StudyPlan = () => {
-  const [studyPlans, setStudyPlans] = useState([])
-  const [selectedPlan, setSelectedPlan] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [state, setState] = useState('loading') // 'loading', 'no_diagnostic', 'no_plan', 'has_plan'
+  const [studyPlanData, setStudyPlanData] = useState(null)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [currentWeek, setCurrentWeek] = useState(null)
+  const navigate = useNavigate()
+  const { currentUser, getAuthHeaders } = useAuth()
+  const { setDrillSession } = useDrill()
 
   useEffect(() => {
-    fetchStudyPlans()
+    fetchStudyPlan()
   }, [])
 
-  const fetchStudyPlans = async () => {
+  useEffect(() => {
+    // Calculate current week based on today's date
+    if (studyPlanData?.weeks) {
+      const today = new Date()
+      const currentWeekData = studyPlanData.weeks.find(week => {
+        const startDate = new Date(week.start_date)
+        const endDate = new Date(week.end_date)
+        return today >= startDate && today <= endDate
+      })
+      setCurrentWeek(currentWeekData?.week_number || 1)
+    }
+  }, [studyPlanData])
+
+  const fetchStudyPlan = async () => {
     try {
-      setIsLoading(true)
-      // Mock data - will connect to backend later
-      const mockPlans = [
-        {
-          id: 1,
-          subject: 'Mathematics',
-          level: 'Beginner',
-          topics: ['Basic Arithmetic', 'Simple Algebra', 'Geometry Basics'],
-          duration: '4 weeks',
-          progress: 25,
-          description: 'Master fundamental mathematical concepts with step-by-step guidance.',
-          estimatedHours: 20,
-          difficulty: 'Easy'
-        },
-        {
-          id: 2,
-          subject: 'Science',
-          level: 'Intermediate',
-          topics: ['Physics Fundamentals', 'Chemistry Basics', 'Biology Introduction'],
-          duration: '6 weeks',
-          progress: 60,
-          description: 'Explore the fascinating world of science across multiple disciplines.',
-          estimatedHours: 35,
-          difficulty: 'Medium'
-        },
-        {
-          id: 3,
-          subject: 'English',
-          level: 'Advanced',
-          topics: ['Advanced Grammar', 'Literature Analysis', 'Writing Techniques'],
-          duration: '8 weeks',
-          progress: 10,
-          description: 'Enhance your English language skills and literary understanding.',
-          estimatedHours: 40,
-          difficulty: 'Hard'
-        }
-      ]
+      setState('loading')
+      const headers = await getAuthHeaders()
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
+      const response = await fetch(`${apiBaseUrl}/personalization/study-plan`, {
+        method: 'GET',
+        headers
+      })
 
-      setTimeout(() => {
-        setStudyPlans(mockPlans)
-        setIsLoading(false)
-      }, 1000)
+      const data = await response.json()
+
+      if (!data.has_diagnostic) {
+        setState('no_diagnostic')
+      } else if (!data.has_study_plan) {
+        setState('no_plan')
+      } else {
+        setState('has_plan')
+        setStudyPlanData(data)
+      }
     } catch (error) {
-      console.error('Error fetching study plans:', error)
-      setIsLoading(false)
+      console.error('Error fetching study plan:', error)
+      setState('no_diagnostic')
     }
   }
 
-  const getDifficultyColor = (difficulty) => {
-    switch (difficulty) {
-      case 'Easy': return 'bg-status-success-bg text-status-success-text'
-      case 'Medium': return 'bg-status-warning-bg text-status-warning-text'
-      case 'Hard': return 'bg-status-error-bg text-status-error-text'
-      default: return 'bg-surface-tertiary text-text-secondary'
+  const handleGeneratePlan = async () => {
+    try {
+      setIsGenerating(true)
+      const headers = await getAuthHeaders()
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
+      const response = await fetch(`${apiBaseUrl}/personalization/study-plan/generate`, {
+        method: 'POST',
+        headers
+      })
+
+      if (response.ok) {
+        // Refresh to fetch the newly created plan
+        await fetchStudyPlan()
+      } else {
+        const error = await response.json()
+        console.error('Error generating study plan:', error)
+        alert(error.error || 'Failed to generate study plan')
+      }
+    } catch (error) {
+      console.error('Error generating study plan:', error)
+      alert('Failed to generate study plan')
+    } finally {
+      setIsGenerating(false)
     }
   }
 
-  const getProgressColor = (progress) => {
-    if (progress >= 80) return 'bg-status-success'
-    if (progress >= 50) return 'bg-status-warning'
-    return 'bg-button-primary'
+  const handleStartTask = async (task) => {
+    try {
+      const headers = await getAuthHeaders()
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
+
+      // Check if task has an existing incomplete drill
+      if (task.drill_id && task.status !== 'completed') {
+        // Resume existing drill
+        const drillResponse = await fetch(`${apiBaseUrl}/skill-builder/drills/${task.drill_id}?include_questions=true`, {
+          method: 'GET',
+          headers
+        })
+
+        if (drillResponse.ok) {
+          const drillData = await drillResponse.json()
+
+          // Only resume if drill is incomplete
+          if (drillData.status !== 'completed') {
+            // Set drill session in context with saved progress
+            setDrillSession(drillData)
+
+            // Navigate to drill session with task_id in state
+            navigate('/drill/session', {
+              state: {
+                task_id: task.id
+              }
+            })
+            return
+          }
+        }
+      }
+
+      // Create new drill session from task config
+      const taskConfig = task.task_config
+      const payload = {
+        user_id: currentUser?.uid || 'anonymous',
+        ...taskConfig
+      }
+
+      const response = await fetch(`${apiBaseUrl}/skill-builder/drill`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload)
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Error creating drill:', errorData)
+        throw new Error('Failed to create drill session')
+      }
+
+      const drillData = await response.json()
+
+      // Link drill_id to task immediately
+      try {
+        await fetch(`${apiBaseUrl}/personalization/study-plan/task/${task.id}/link-drill`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            drill_id: drillData.drill_id
+          })
+        })
+      } catch (linkError) {
+        console.error('Error linking drill to task:', linkError)
+        // Continue anyway - we'll still track completion
+      }
+
+      // Set drill session in context
+      setDrillSession(drillData)
+
+      // Navigate to drill session with task_id in state
+      navigate('/drill/session', {
+        state: {
+          task_id: task.id // Pass task_id so we can mark it complete on submission
+        }
+      })
+    } catch (error) {
+      console.error('Error creating drill from task:', error)
+      alert('Failed to start drill. Please try again.')
+    }
   }
 
-  if (isLoading) {
+  // Loading state
+  if (state === 'loading') {
     return (
       <div className="flex items-center justify-center py-16">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-button-primary mx-auto"></div>
-          <p className="mt-4 text-text-secondary">Loading your study plans...</p>
+          <p className="mt-4 text-text-secondary">Loading your study plan...</p>
         </div>
       </div>
     )
   }
 
-  if (selectedPlan) {
+  // No diagnostic state
+  if (state === 'no_diagnostic') {
     return (
       <div className="py-8">
         <div className="max-w-4xl mx-auto px-4">
-          <button
-            onClick={() => setSelectedPlan(null)}
-            className="mb-6 flex items-center text-text-secondary hover:text-text-primary transition duration-300"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <div className="text-center py-12 bg-surface-primary rounded-xl border border-border-default shadow-sm">
+            <svg className="w-16 h-16 text-text-secondary mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
-            Back to Study Plans
-          </button>
-
-          <div className="bg-surface-primary rounded-xl p-8 border border-border-default shadow-md">
-            <div className="flex items-center justify-between mb-6">
-              <h1 className="text-3xl font-bold text-text-primary">{selectedPlan.subject}</h1>
-              <span className={`px-3 py-1 text-sm font-medium rounded-full ${getDifficultyColor(selectedPlan.difficulty)} border border-border-default`}>
-                {selectedPlan.difficulty}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-accent-info-bg p-4 rounded-lg border border-border-default">
-                <h3 className="font-semibold text-text-secondary">Duration</h3>
-                <p className="text-xl font-bold text-text-primary">{selectedPlan.duration}</p>
-              </div>
-              <div className="bg-accent-success-bg p-4 rounded-lg border border-border-default">
-                <h3 className="font-semibold text-text-secondary">Progress</h3>
-                <p className="text-xl font-bold text-status-success">{selectedPlan.progress}%</p>
-              </div>
-              <div className="bg-accent-warning-bg p-4 rounded-lg border border-border-default">
-                <h3 className="font-semibold text-text-secondary">Est. Hours</h3>
-                <p className="text-xl font-bold text-text-primary">{selectedPlan.estimatedHours}h</p>
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <h3 className="text-xl font-semibold text-text-primary mb-4">Progress Overview</h3>
-              <div className="w-full bg-border-light rounded-full h-4">
-                <div
-                  className={`h-4 rounded-full transition-all duration-300 ${getProgressColor(selectedPlan.progress)}`}
-                  style={{ width: `${selectedPlan.progress}%` }}
-                ></div>
-              </div>
-              <p className="text-sm text-text-secondary mt-2">{selectedPlan.progress}% complete</p>
-            </div>
-
-            <div className="mb-8">
-              <h3 className="text-xl font-semibold text-text-primary mb-4">Course Topics</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {selectedPlan.topics.map((topic, index) => (
-                  <div key={index} className="flex items-center p-4 border border-border-default rounded-lg bg-accent-info-bg">
-                    <div className={`w-4 h-4 rounded-full mr-3 ${index < Math.floor(selectedPlan.topics.length * selectedPlan.progress / 100) ? 'bg-status-success' : 'bg-border-light'}`}></div>
-                    <span className="text-text-primary">{topic}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex space-x-4 flex-wrap gap-2">
-              <button className="bg-button-primary text-white px-6 py-3 rounded-lg hover:bg-button-primary-hover transition duration-300">
-                Continue Learning
-              </button>
-              <button className="bg-button-secondary border border-border-default text-text-primary px-6 py-3 rounded-lg hover:bg-surface-hover transition duration-300">
-                Practice Drills
-              </button>
-            </div>
+            <h3 className="text-2xl font-bold text-text-primary mb-2">Complete a Diagnostic Test</h3>
+            <p className="text-text-secondary mb-6 max-w-md mx-auto">
+              Before we can create your personalized study plan, you need to complete a diagnostic test.
+              This helps us understand your current skill level and create a plan tailored to your needs.
+            </p>
+            <button
+              onClick={() => navigate('/diagnostics')}
+              className="bg-button-primary text-white px-6 py-3 rounded-lg hover:bg-button-primary-hover transition duration-300"
+            >
+              Take Diagnostic Test
+            </button>
           </div>
         </div>
       </div>
     )
   }
+
+  // Has diagnostic but no plan state
+  if (state === 'no_plan') {
+    return (
+      <div className="py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center py-12 bg-surface-primary rounded-xl border border-border-default shadow-sm">
+            <svg className="w-16 h-16 text-status-success mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 className="text-2xl font-bold text-text-primary mb-2">Ready to Generate Your Study Plan</h3>
+            <p className="text-text-secondary mb-6 max-w-md mx-auto">
+              Great! You've completed the diagnostic test. Now we can create a personalized 10-week study plan
+              with 30 targeted drill sessions based on your diagnostic results.
+            </p>
+            <button
+              onClick={handleGeneratePlan}
+              disabled={isGenerating}
+              className="bg-button-primary text-white px-6 py-3 rounded-lg hover:bg-button-primary-hover transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isGenerating ? 'Generating Plan...' : 'Generate Study Plan'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Has plan state - render full study plan UI
+  const { study_plan, weeks } = studyPlanData
+  const overallProgress = study_plan.total_tasks > 0
+    ? Math.round((study_plan.completed_tasks / study_plan.total_tasks) * 100)
+    : 0
+
+  // Calculate week-based stats
+  const weeksCompleted = weeks.filter(w => w.completed_tasks === w.total_tasks).length
+  const weeksRemaining = study_plan.total_weeks - weeksCompleted
 
   return (
     <div className="py-8">
       <div className="max-w-6xl mx-auto px-4">
+        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text-primary mb-4">Your Study Plans</h1>
-          <p className="text-lg text-text-secondary">
-            Personalized learning paths designed to help you achieve your educational goals.
+          <h1 className="text-3xl font-bold text-text-primary mb-2">{study_plan.title}</h1>
+          <p className="text-text-secondary">
+            Track your progress through your personalized 10-week study plan
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {studyPlans.map((plan) => (
-            <div key={plan.id} className="bg-surface-primary rounded-xl overflow-hidden hover:bg-surface-hover transition duration-300 border border-border-default shadow-sm">
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-semibold text-text-primary">{plan.subject}</h3>
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${getDifficultyColor(plan.difficulty)} border border-border-default`}>
-                    {plan.level}
-                  </span>
+        {/* Overall Progress Card */}
+        <div className="bg-surface-primary rounded-xl border border-border-default shadow-sm p-6 mb-8">
+          <h2 className="text-xl font-semibold text-text-primary mb-6">Overall Progress</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            {/* Circular progress */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-32 h-32">
+                <svg className="w-full h-full transform -rotate-90">
+                  <circle
+                    cx="64"
+                    cy="64"
+                    r="56"
+                    stroke="currentColor"
+                    strokeWidth="8"
+                    fill="none"
+                    className="text-border-light"
+                  />
+                  <circle
+                    cx="64"
+                    cy="64"
+                    r="56"
+                    stroke="currentColor"
+                    strokeWidth="8"
+                    fill="none"
+                    strokeDasharray={`${2 * Math.PI * 56}`}
+                    strokeDashoffset={`${2 * Math.PI * 56 * (1 - overallProgress / 100)}`}
+                    className="text-button-primary transition-all duration-500"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-3xl font-bold text-text-primary">{overallProgress}%</span>
                 </div>
-
-                <p className="text-text-secondary mb-4">{plan.description}</p>
-
-                <div className="mb-4">
-                  <div className="flex justify-between text-sm text-text-secondary mb-1">
-                    <span>Progress</span>
-                    <span>{plan.progress}%</span>
-                  </div>
-                  <div className="w-full bg-border-light rounded-full h-2">
-                    <div
-                      className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(plan.progress)}`}
-                      style={{ width: `${plan.progress}%` }}
-                    ></div>
-                  </div>
-                </div>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-text-secondary">Duration:</span>
-                    <span className="font-medium text-text-primary">{plan.duration}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-text-secondary">Topics:</span>
-                    <span className="font-medium text-text-primary">{plan.topics.length} modules</span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setSelectedPlan(plan)}
-                  className="w-full bg-button-primary text-white py-2 px-4 rounded-lg hover:bg-button-primary-hover transition duration-300"
-                >
-                  View Details
-                </button>
               </div>
             </div>
-          ))}
+
+            {/* Stats cards */}
+            <div className="space-y-4 md:col-span-2">
+              <div className="flex items-center justify-between p-4 bg-accent-info-bg rounded-lg border border-border-default">
+                <div className="flex items-center">
+                  <svg className="w-6 h-6 text-button-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-text-secondary">Tasks Completed</span>
+                </div>
+                <span className="text-xl font-bold text-text-primary">{study_plan.completed_tasks}</span>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-accent-success-bg rounded-lg border border-border-default">
+                <div className="flex items-center">
+                  <svg className="w-6 h-6 text-status-success mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-text-secondary">Weeks Remaining</span>
+                </div>
+                <span className="text-xl font-bold text-text-primary">{weeksRemaining}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div>
+            <div className="flex justify-between text-sm text-text-secondary mb-2">
+              <span>Progress</span>
+              <span className="text-status-success">{study_plan.completed_tasks}/{study_plan.total_tasks} tasks completed</span>
+            </div>
+            <div className="w-full bg-border-light rounded-full h-3">
+              <div
+                className="h-3 rounded-full bg-button-primary transition-all duration-500"
+                style={{ width: `${overallProgress}%` }}
+              ></div>
+            </div>
+          </div>
         </div>
 
-        {studyPlans.length === 0 && (
-          <div className="text-center py-12 bg-surface-primary rounded-xl border border-border-default shadow-sm">
-            <svg className="w-16 h-16 text-text-secondary mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-            <h3 className="text-lg font-medium text-text-primary mb-2">No Study Plans Available</h3>
-            <p className="text-text-secondary mb-4">Complete a diagnostic assessment to get personalized study plans.</p>
-            <button
-              onClick={() => window.location.href = '/diagnostics'}
-              className="bg-button-primary text-white px-6 py-3 rounded-lg hover:bg-button-primary-hover transition duration-300"
-            >
-              Take Diagnostic
-            </button>
+        {/* Weekly Breakdown */}
+        <div className="bg-surface-primary rounded-xl border border-border-default shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-text-primary mb-2">Weekly Breakdown</h2>
+          <p className="text-text-secondary mb-6">Click on the weeks to view detailed schedule</p>
+
+          <div className="space-y-4">
+            {weeks.map((week) => {
+              const isCurrentWeek = week.week_number === currentWeek
+              const isCompleted = week.completed_tasks === week.total_tasks
+              const weekProgress = week.total_tasks > 0
+                ? Math.round((week.completed_tasks / week.total_tasks) * 100)
+                : 0
+
+              return (
+                <WeekCard
+                  key={week.week_number}
+                  week={week}
+                  isCurrentWeek={isCurrentWeek}
+                  isCompleted={isCompleted}
+                  weekProgress={weekProgress}
+                  onStartTask={handleStartTask}
+                />
+              )
+            })}
           </div>
-        )}
+        </div>
       </div>
+    </div>
+  )
+}
+
+// WeekCard Component
+const WeekCard = ({ week, isCurrentWeek, isCompleted, weekProgress, onStartTask }) => {
+  const [isExpanded, setIsExpanded] = useState(isCurrentWeek)
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }
+
+  const totalMinutes = week.tasks.reduce((sum, task) => sum + task.estimated_minutes, 0)
+
+  return (
+    <div className={`border rounded-xl transition-all duration-300 ${
+      isCurrentWeek
+        ? 'border-button-primary bg-surface-primary shadow-md'
+        : 'border-border-default bg-surface-primary'
+    }`}>
+      {/* Week Header */}
+      <div
+        className="p-4 cursor-pointer hover:bg-surface-hover transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            {/* Week number badge */}
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
+              isCompleted
+                ? 'bg-status-success text-white'
+                : isCurrentWeek
+                ? 'bg-button-primary text-white'
+                : 'bg-surface-tertiary text-text-secondary'
+            }`}>
+              {isCompleted ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                week.week_number
+              )}
+            </div>
+
+            {/* Week info */}
+            <div>
+              <div className="flex items-center space-x-2">
+                <h3 className="text-lg font-semibold text-text-primary">Week {week.week_number}</h3>
+                {isCurrentWeek && (
+                  <span className="px-2 py-1 text-xs font-medium rounded-full bg-button-primary text-white">
+                    Current
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-text-secondary">
+                {formatDate(week.start_date)} - {formatDate(week.end_date)}
+              </p>
+            </div>
+          </div>
+
+          {/* Week stats */}
+          <div className="flex items-center space-x-6">
+            <div className="text-right hidden md:block">
+              <div className="flex items-center text-text-secondary text-sm">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+                <span>{week.total_tasks} tasks</span>
+              </div>
+              <div className="flex items-center text-text-secondary text-sm mt-1">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{totalMinutes} min</span>
+              </div>
+            </div>
+
+            {/* Progress indicator */}
+            <div className="text-right">
+              <div className="text-sm font-medium text-status-success mb-1">
+                {week.completed_tasks}/{week.total_tasks} completed
+              </div>
+              <div className="text-xs text-text-secondary">Progress</div>
+            </div>
+
+            {/* Expand/collapse icon */}
+            <svg
+              className={`w-5 h-5 text-text-secondary transform transition-transform ${
+                isExpanded ? 'rotate-180' : ''
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="mt-4">
+          <div className="w-full bg-border-light rounded-full h-2">
+            <div
+              className={`h-2 rounded-full transition-all duration-500 ${
+                isCompleted ? 'bg-status-success' : 'bg-button-primary'
+              }`}
+              style={{ width: `${weekProgress}%` }}
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Expandable task list */}
+      {isExpanded && (
+        <div className="border-t border-border-default p-4 bg-surface-secondary">
+          <div className="space-y-3">
+            {week.tasks.map((task) => (
+              <TaskCard key={task.id} task={task} onStartTask={onStartTask} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// TaskCard Component
+const TaskCard = ({ task, onStartTask }) => {
+  const isCompleted = task.status === 'completed'
+  const isInProgress = task.status === 'in_progress' || (task.drill_id && task.status !== 'completed')
+
+  return (
+    <div className={`flex items-center justify-between p-4 rounded-lg border transition-all ${
+      isCompleted
+        ? 'bg-accent-success-bg border-status-success'
+        : isInProgress
+        ? 'bg-accent-info-bg border-button-primary'
+        : 'bg-surface-primary border-border-default hover:border-button-primary'
+    }`}>
+      <div className="flex items-center space-x-4 flex-1">
+        {/* Task status icon */}
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+          isCompleted ? 'bg-status-success' : isInProgress ? 'bg-button-primary' : 'bg-surface-tertiary'
+        }`}>
+          {isCompleted ? (
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          ) : isInProgress ? (
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          ) : (
+            <svg className="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          )}
+        </div>
+
+        {/* Task info */}
+        <div className="flex-1 min-w-0">
+          <h4 className={`font-medium ${isCompleted ? 'text-text-secondary line-through' : 'text-text-primary'}`}>
+            {task.title}
+          </h4>
+          <div className="flex items-center space-x-3 mt-1">
+            <span className="text-xs text-text-secondary flex items-center">
+              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {task.estimated_minutes} min
+            </span>
+            <span className="text-xs text-text-secondary">
+              {task.task_config.question_count} questions
+            </span>
+            {isCompleted && task.completed_at && (
+              <span className="text-xs text-status-success">
+                ✓ Completed
+              </span>
+            )}
+            {isInProgress && !isCompleted && (
+              <span className="text-xs text-button-primary font-medium">
+                In Progress
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Action button */}
+      {!isCompleted && (
+        <button
+          onClick={() => onStartTask(task)}
+          className="ml-4 px-4 py-2 bg-button-primary text-white text-sm font-medium rounded-lg hover:bg-button-primary-hover transition duration-300 whitespace-nowrap"
+        >
+          {isInProgress ? 'Continue Drill' : 'Start Drill'}
+        </button>
+      )}
+      {isCompleted && task.drill_id && (
+        <button
+          onClick={() => window.location.href = `/drill-review/${task.drill_id}`}
+          className="ml-4 px-4 py-2 bg-button-secondary border border-border-default text-text-primary text-sm font-medium rounded-lg hover:bg-surface-hover transition duration-300 whitespace-nowrap"
+        >
+          Review
+        </button>
+      )}
     </div>
   )
 }

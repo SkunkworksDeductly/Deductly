@@ -80,7 +80,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {currentUser && (
           <div className="px-4 py-3 border-b border-border-default">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-gradient-from to-gradient-to rounded-full flex items-center justify-center">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{
+                  backgroundImage: 'linear-gradient(135deg, #FCA5A5 0%, #818CF8 100%)'
+                }}
+              >
                 <span className="text-white text-sm font-medium">
                   {currentUser.email?.charAt(0).toUpperCase()}
                 </span>

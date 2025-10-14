@@ -80,9 +80,7 @@ const Header = () => {
               style={{
                 backgroundImage: currentUser.photoURL
                   ? `url("${currentUser.photoURL}")`
-                  : 'linear-gradient(135deg, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%)',
-                '--tw-gradient-from': '#FCA5A5',
-                '--tw-gradient-to': '#818CF8'
+                  : 'linear-gradient(135deg, #FCA5A5 0%, #818CF8 100%)'
               }}
             >
               {!currentUser.photoURL && (

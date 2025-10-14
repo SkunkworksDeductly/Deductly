@@ -72,17 +72,21 @@ def get_user_id_from_token():
     auth_header = request.headers.get('Authorization', '')
 
     if not auth_header.startswith('Bearer '):
+        print(f"[AUTH DEBUG] No Bearer token found. Header: {auth_header[:50] if auth_header else 'empty'}")
         return None
 
     token = auth_header.split('Bearer ')[1]
 
     try:
         if not firebase_admin._apps:
+            print("[AUTH DEBUG] Firebase not initialized")
             return None
 
         decoded_token = firebase_auth.verify_id_token(token)
+        print(f"[AUTH DEBUG] Token verified successfully for uid: {decoded_token['uid']}")
         return decoded_token['uid']
-    except Exception:
+    except Exception as e:
+        print(f"[AUTH DEBUG] Token verification failed: {type(e).__name__}: {str(e)}")
         return None
 
 
@@ -93,7 +97,13 @@ def get_study_plan():
     user_id = get_user_id_from_token()
 
     if not user_id:
-        return jsonify({'error': 'Authentication required'}), 401
+        auth_header = request.headers.get('Authorization', '')
+        return jsonify({
+            'error': 'Authentication required',
+            'message': 'Valid Firebase authentication token required',
+            'has_auth_header': bool(auth_header),
+            'is_bearer_token': auth_header.startswith('Bearer ') if auth_header else False
+        }), 401
 
     # Check if user has completed diagnostic
     if not has_completed_diagnostic(user_id):

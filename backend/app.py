@@ -28,11 +28,16 @@ if not firebase_admin._apps:
         print(f"Warning: Firebase Admin SDK initialization failed: {e}")
 
 app = Flask(__name__)
-CORS(app, origins=[
-    'http://localhost:5173',  # Local development
-    'http://localhost:5174',  # Local development (alternate port)
-    'https://nikhilanand1998.github.io'  # GitHub Pages production
-])
+CORS(app,
+    origins=[
+        'http://localhost:5173',  # Local development
+        'http://localhost:5174',  # Local development (alternate port)
+        'https://nikhilanand1998.github.io'  # GitHub Pages production
+    ],
+    allow_headers=['Content-Type', 'Authorization'],  # Explicitly allow Authorization header
+    expose_headers=['Content-Type', 'Authorization'],
+    supports_credentials=True
+)
 
 # Register blueprints for each layer
 app.register_blueprint(insights_bp)

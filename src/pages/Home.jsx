@@ -135,11 +135,11 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="flex flex-wrap gap-6 justify-center">
           {tiers.map((tier) => (
             <div
               key={tier.name}
-              className={`flex flex-col gap-5 rounded-3xl border bg-surface-primary p-6 text-left shadow-md ${
+              className={`flex flex-col gap-5 rounded-3xl border bg-surface-primary p-6 text-left shadow-md w-full md:w-80 ${
                 tier.highlight ? 'ring-2 ring-button-primary border-button-primary' : 'border-border-default'
               }`}
             >

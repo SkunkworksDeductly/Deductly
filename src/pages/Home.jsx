@@ -7,37 +7,43 @@ const Home = () => {
       name: 'Free',
       price: '$0',
       description: 'Kick off your LSAT prep with curated practice and guidance.',
-      cta: 'Start Practicing',
+      cta: 'Get Started',
       url: '/signup',
       features: [
         'Daily question warmups',
         'Baseline diagnostic quiz',
-        'Progress dashboard snapshot'
+        'Progress dashboard snapshot',
+        'Basic practice drills',
+        'Community support'
       ]
     },
     {
       name: 'All-Access',
-      price: '$39 / mo',
+      price: '$20 / mo',
       highlight: 'Most Popular',
-      description: 'Unlock guided study plans and drill builders tailored to you.',
-      cta: 'Unlock All-Access',
+      description: 'Full platform access with personalized study tools.',
+      cta: 'Get Started',
       url: '/signup',
       features: [
+        'Full website access',
         'Personalized study roadmap',
         'Adaptive drill builder',
-        'Full analytics suite'
+        'Full analytics suite',
+        'Priority support'
       ]
     },
     {
       name: 'Premium',
-      price: '$89 / mo',
-      description: 'Everything in All-Access plus live coaching and priority support.',
-      cta: 'Upgrade to Premium',
+      price: 'Custom',
+      description: 'Personalized 1:1 tutoring tailored to your learning needs.',
+      cta: 'Contact Us',
       url: '/signup',
       features: [
-        'Weekly strategy sessions',
-        'Unlimited proctored exams',
-        '1:1 insights from tutors'
+        '1:1 tutoring sessions',
+        'Customized lesson plans',
+        'Flexible scheduling',
+        'Expert LSAT instructors',
+        'Performance tracking'
       ]
     }
   ]
@@ -145,19 +151,21 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="flex flex-wrap gap-6 justify-center">
           {tiers.map((tier) => (
             <div
               key={tier.name}
-              className={`flex flex-col gap-5 rounded-3xl border bg-surface-primary p-6 text-left shadow-md ${
+              className={`flex flex-col gap-5 rounded-3xl border bg-surface-primary p-6 text-left shadow-md w-full md:w-80 ${
                 tier.highlight ? 'ring-2 ring-button-primary border-button-primary' : 'border-border-default'
               }`}
             >
-              {tier.highlight && (
-                <span className="inline-flex w-fit items-center rounded-full bg-button-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                  {tier.highlight}
-                </span>
-              )}
+              <div className="h-6">
+                {tier.highlight && (
+                  <span className="inline-flex w-fit items-center rounded-full bg-button-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                    {tier.highlight}
+                  </span>
+                )}
+              </div>
               <div>
                 <p className="text-lg font-semibold text-text-primary">{tier.name}</p>
                 <p className="mt-2 text-2xl font-bold text-text-primary">{tier.price}</p>

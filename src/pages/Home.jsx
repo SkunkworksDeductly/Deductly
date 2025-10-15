@@ -7,12 +7,14 @@ const Home = () => {
       name: 'Free',
       price: '$0',
       description: 'Kick off your LSAT prep with curated practice and guidance.',
-      cta: 'Start Practicing',
+      cta: 'Get Started',
       url: '/signup',
       features: [
         'Daily question warmups',
         'Baseline diagnostic quiz',
-        'Progress dashboard snapshot'
+        'Progress dashboard snapshot',
+        'Basic practice drills',
+        'Community support'
       ]
     },
     {

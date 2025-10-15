@@ -17,27 +17,17 @@ const Home = () => {
     },
     {
       name: 'All-Access',
-      price: '$39 / mo',
+      price: '$20 / mo',
       highlight: 'Most Popular',
-      description: 'Unlock guided study plans and drill builders tailored to you.',
-      cta: 'Unlock All-Access',
+      description: 'Combine personalized 1:1 tutoring with full platform access.',
+      cta: 'Get Started',
       url: '/signup',
       features: [
+        '1:1 tutoring sessions',
+        'Full website access',
         'Personalized study roadmap',
         'Adaptive drill builder',
         'Full analytics suite'
-      ]
-    },
-    {
-      name: 'Premium',
-      price: '$89 / mo',
-      description: 'Everything in All-Access plus live coaching and priority support.',
-      cta: 'Upgrade to Premium',
-      url: '/signup',
-      features: [
-        'Weekly strategy sessions',
-        'Unlimited proctored exams',
-        '1:1 insights from tutors'
       ]
     }
   ]

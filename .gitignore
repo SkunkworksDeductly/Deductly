@@ -251,3 +251,4 @@ Thumbs.db
 *sqlite-journal
 *sqlite3-journal
 backend/data/deductly.db
+backend/data/backups/

@@ -1,7 +1,12 @@
 import sqlite3
 import json
+import sys
+import os
 
+# Add backend to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'backend'))
 from backend.skill_builder.skills import QUESTION_TYPE_TO_SKILL_MAP
+from utils.id_generator import generate_id
 
 # Connect to database
 conn = sqlite3.connect('backend/data/deductly.db')
@@ -16,9 +21,13 @@ for q in questions_data:
     # Prepare answer choices as JSON string
     answer_choices = json.dumps(q['options'])
 
+    # Generate question ID (random alphanumeric)
+    question_id = generate_id('q')  # e.g., q-a3f2b9
+
     # Insert question
     cursor.execute('''
         INSERT INTO questions (
+            id,
             question_text,
             answer_choices,
             correct_answer,
@@ -29,8 +38,9 @@ for q in questions_data:
             source_url,
             passage_text
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
+        question_id,
         q['question_text'],
         answer_choices,
         q['correct_answer'],
@@ -42,9 +52,6 @@ for q in questions_data:
         q.get('passage', '')  # Some questions may not have passages
     ))
 
-    # Get the question ID that was just inserted
-    question_id = cursor.lastrowid
-
     # Get the skill_id for this question type
     skill_id_str = QUESTION_TYPE_TO_SKILL_MAP.get(q['question_type'])
 
@@ -55,11 +62,13 @@ for q in questions_data:
 
         if result:
             skill_id = result[0]
+            # Generate question_skill ID (random alphanumeric)
+            qs_id = generate_id('qs')  # e.g., qs-k4m2p1
             # Insert into question_skills junction table
             cursor.execute('''
-                INSERT OR IGNORE INTO question_skills (question_id, skill_id)
-                VALUES (?, ?)
-            ''', (question_id, skill_id))
+                INSERT OR IGNORE INTO question_skills (id, question_id, skill_id)
+                VALUES (?, ?, ?)
+            ''', (qs_id, question_id, skill_id))
         else:
             print(f"Warning: Skill ID '{skill_id_str}' not found for question type '{q['question_type']}'")
     else:

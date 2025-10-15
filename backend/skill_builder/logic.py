@@ -8,6 +8,11 @@ import sqlite3
 import uuid
 from datetime import datetime, timezone
 
+# Import ID generator
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.id_generator import generate_id
+
 # Path to data files
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
@@ -40,20 +45,25 @@ def create_drill_session(payload):
 
     questions = _fetch_questions(difficulties, skills, question_count)
     time_limit_seconds = _compute_time_limit(question_count, time_percentage)
-    drill_id = str(uuid.uuid4())
-
-    # Extract question IDs for storage
-    question_ids = [q['id'] for q in questions]
 
     # Save drill to database
     with get_db_connection() as conn:
         cursor = conn.cursor()
+
+        # Generate drill IDs (random alphanumeric)
+        pk_id = generate_id('dr')  # e.g., dr-a3f2b9
+        drill_id = str(uuid.uuid4())  # Keep drill_id as UUID for external references
+
+        # Extract question IDs for storage
+        question_ids = [q['id'] for q in questions]
+
         cursor.execute("""
             INSERT INTO drills (
-                drill_id, user_id, question_count, timing,
+                id, drill_id, user_id, question_count, timing,
                 difficulty, skills, drill_type, question_ids, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
+            pk_id,
             drill_id,
             user_id,
             question_count,
@@ -104,14 +114,18 @@ def submit_drill_answers(drill_id, user_id, answers, time_taken=None):
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
+        # Generate drill result ID (random alphanumeric)
+        result_id = generate_id('dres')  # e.g., dres-k4m2p1
+
         # Insert drill results
         cursor.execute("""
             INSERT INTO drill_results (
-                drill_id, user_id, total_questions, correct_answers,
+                id, drill_id, user_id, total_questions, correct_answers,
                 incorrect_answers, skipped_questions, score_percentage,
                 time_taken, question_results, skill_performance
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
+            result_id,
             drill_id,
             user_id,
             total_questions,

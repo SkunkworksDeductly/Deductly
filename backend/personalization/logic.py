@@ -9,6 +9,11 @@ from datetime import datetime, timedelta, date
 
 from skill_builder.logic import create_drill_session
 
+# Import ID generator
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.id_generator import generate_id
+
 # Path to data files
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
@@ -325,13 +330,14 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
+        # Generate study plan ID (random alphanumeric)
+        study_plan_id = generate_id('sp')  # e.g., sp-m8n3k1
+
         # Create study plan
         cursor.execute("""
-            INSERT INTO study_plans (user_id, diagnostic_drill_id, total_weeks, start_date)
-            VALUES (?, ?, ?, ?)
-        """, (user_id, diagnostic_drill_id, total_weeks, start_date.isoformat()))
-
-        study_plan_id = cursor.lastrowid
+            INSERT INTO study_plans (id, user_id, diagnostic_drill_id, total_weeks, start_date)
+            VALUES (?, ?, ?, ?, ?)
+        """, (study_plan_id, user_id, diagnostic_drill_id, total_weeks, start_date.isoformat()))
 
         # Create tasks for each week
         for week_num, week_tasks in enumerate(week_templates, start=1):
@@ -344,12 +350,16 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
                     'drill_type': 'practice'
                 }
 
+                # Generate task ID (random alphanumeric)
+                task_id = generate_id('spt')  # e.g., spt-p7x2k9
+
                 cursor.execute("""
                     INSERT INTO study_plan_tasks (
-                        study_plan_id, week_number, task_order,
+                        id, study_plan_id, week_number, task_order,
                         task_type, title, estimated_minutes, task_config
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
+                    task_id,
                     study_plan_id,
                     week_num,
                     task_order,

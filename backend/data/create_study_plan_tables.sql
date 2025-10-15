@@ -2,7 +2,7 @@
 
 -- Main study plan table (one per user)
 CREATE TABLE IF NOT EXISTS study_plans (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id VARCHAR(50) PRIMARY KEY,
     user_id VARCHAR(100) UNIQUE NOT NULL,
     diagnostic_drill_id VARCHAR(50),
 
@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS study_plans (
 
 -- Individual tasks within study plan
 CREATE TABLE IF NOT EXISTS study_plan_tasks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    study_plan_id INTEGER NOT NULL,
+    id VARCHAR(50) PRIMARY KEY,
+    study_plan_id VARCHAR(50) NOT NULL,
 
     -- Organization
     week_number INTEGER NOT NULL,

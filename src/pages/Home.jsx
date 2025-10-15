@@ -159,11 +159,13 @@ const Home = () => {
                 tier.highlight ? 'ring-2 ring-button-primary border-button-primary' : 'border-border-default'
               }`}
             >
-              {tier.highlight && (
-                <span className="inline-flex w-fit items-center rounded-full bg-button-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                  {tier.highlight}
-                </span>
-              )}
+              <div className="h-6">
+                {tier.highlight && (
+                  <span className="inline-flex w-fit items-center rounded-full bg-button-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                    {tier.highlight}
+                  </span>
+                )}
+              </div>
               <div>
                 <p className="text-lg font-semibold text-text-primary">{tier.name}</p>
                 <p className="mt-2 text-2xl font-bold text-text-primary">{tier.price}</p>

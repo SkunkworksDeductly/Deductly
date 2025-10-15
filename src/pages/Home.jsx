@@ -21,15 +21,29 @@ const Home = () => {
       name: 'All-Access',
       price: '$20 / mo',
       highlight: 'Most Popular',
-      description: 'Combine personalized 1:1 tutoring with full platform access.',
+      description: 'Full platform access with personalized study tools.',
       cta: 'Get Started',
       url: '/signup',
       features: [
-        '1:1 tutoring sessions',
         'Full website access',
         'Personalized study roadmap',
         'Adaptive drill builder',
-        'Full analytics suite'
+        'Full analytics suite',
+        'Priority support'
+      ]
+    },
+    {
+      name: 'Premium',
+      price: 'Custom',
+      description: 'Personalized 1:1 tutoring tailored to your learning needs.',
+      cta: 'Contact Us',
+      url: '/signup',
+      features: [
+        '1:1 tutoring sessions',
+        'Customized lesson plans',
+        'Flexible scheduling',
+        'Expert LSAT instructors',
+        'Performance tracking'
       ]
     }
   ]

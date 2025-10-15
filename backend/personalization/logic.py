@@ -8,6 +8,7 @@ import json
 from datetime import datetime, timedelta, date
 
 from skill_builder.logic import create_drill_session
+from config.study_plan_templates import WEEK_TEMPLATES, STUDY_PLAN_WEEKS, TASKS_PER_WEEK
 
 # Import ID generator
 import sys
@@ -18,87 +19,11 @@ from utils.id_generator import generate_id
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
 
-# Sample data (will be replaced with database queries)
-sample_study_plans = [
-    {
-        'id': 1,
-        'subject': 'Mathematics',
-        'level': 'Beginner',
-        'topics': ['Basic Arithmetic', 'Simple Algebra', 'Geometry Basics'],
-        'duration': '4 weeks',
-        'progress': 25
-    },
-    {
-        'id': 2,
-        'subject': 'Science',
-        'level': 'Intermediate',
-        'topics': ['Physics Fundamentals', 'Chemistry Basics', 'Biology Introduction'],
-        'duration': '6 weeks',
-        'progress': 60
-    }
-]
-
 def get_db_connection():
     """Create a database connection"""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
-
-def get_all_study_plans():
-    """Retrieve all study plans"""
-    # TODO: Replace with database query
-    return sample_study_plans
-
-def get_study_plan_by_id(plan_id):
-    """Retrieve a specific study plan by ID"""
-    # TODO: Replace with database query
-    return next((p for p in sample_study_plans if p['id'] == plan_id), None)
-
-def create_personalized_plan(user_id, subject, level, goals):
-    """Create a personalized study plan based on user profile"""
-    # TODO: Implement AI-driven personalization logic
-    # For now, return a sample plan
-
-    # Determine duration based on level
-    duration_map = {
-        'Beginner': '4 weeks',
-        'Intermediate': '6 weeks',
-        'Advanced': '8 weeks'
-    }
-
-    new_plan = {
-        'id': len(sample_study_plans) + 1,
-        'user_id': user_id,
-        'subject': subject,
-        'level': level,
-        'topics': goals if goals else [f'{subject} Fundamentals'],
-        'duration': duration_map.get(level, '6 weeks'),
-        'progress': 0,
-        'created_at': datetime.now().isoformat(),
-        'estimated_completion': (datetime.now() + timedelta(weeks=6)).isoformat()
-    }
-
-    sample_study_plans.append(new_plan)
-    return new_plan
-
-def update_plan_progress(plan_id, progress):
-    """Update the progress of a study plan"""
-    plan = get_study_plan_by_id(plan_id)
-
-    if not plan:
-        return None
-
-    # Update progress
-    plan['progress'] = min(max(progress, 0), 100)
-    plan['updated_at'] = datetime.now().isoformat()
-
-    return plan
-
-def get_recommendations(user_id):
-    """Get personalized recommendations for a user"""
-    # TODO: Implement recommendation algorithm
-    # This would analyze user performance and suggest topics/resources
-    pass
 
 
 def create_diagnostic_session(user_id='anonymous'):
@@ -255,77 +180,7 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
     # For now, we'll create a standard 10-week plan
     # TODO: Analyze diagnostic results and personalize tasks
 
-    total_weeks = 10
-    tasks_per_week = 3
     start_date = date.today()
-
-    # Define task templates for each week
-    # Weeks 1-3: Focus on fundamentals with easier drills
-    # Weeks 4-7: Mixed practice with increasing difficulty
-    # Weeks 8-10: Advanced practice and comprehensive review
-
-    week_templates = [
-        # Week 1: Fundamentals
-        [
-            {'title': 'Assumption Identification', 'difficulties': ['Easy', 'Medium'], 'skills': ['Assumption'], 'questions': 5, 'time': 100, 'minutes': 15},
-            {'title': 'Strengthen Arguments', 'difficulties': ['Easy', 'Medium'], 'skills': ['Strengthen'], 'questions': 5, 'time': 100, 'minutes': 15},
-            {'title': 'Weaken Arguments', 'difficulties': ['Easy', 'Medium'], 'skills': ['Weaken'], 'questions': 5, 'time': 100, 'minutes': 15},
-        ],
-        # Week 2: Building Skills
-        [
-            {'title': 'Parallel Reasoning', 'difficulties': ['Medium'], 'skills': ['Parallel Reasoning'], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Inference Questions', 'difficulties': ['Medium'], 'skills': ['Inference'], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Flaw Detection', 'difficulties': ['Medium'], 'skills': ['Flaw'], 'questions': 5, 'time': 100, 'minutes': 18},
-        ],
-        # Week 3: Mixed Practice
-        [
-            {'title': 'Mixed Fundamentals', 'difficulties': ['Easy', 'Medium'], 'skills': ['Assumption', 'Strengthen', 'Weaken'], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Reasoning Patterns', 'difficulties': ['Medium'], 'skills': ['Parallel Reasoning', 'Flaw'], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Conditional Logic', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
-        ],
-        # Week 4: Increasing Difficulty
-        [
-            {'title': 'Advanced Assumptions', 'difficulties': ['Medium', 'Hard'], 'skills': ['Assumption'], 'questions': 5, 'time': 100, 'minutes': 20},
-            {'title': 'Complex Weakening', 'difficulties': ['Medium', 'Hard'], 'skills': ['Weaken'], 'questions': 5, 'time': 100, 'minutes': 20},
-            {'title': 'Challenging Inference', 'difficulties': ['Hard'], 'skills': ['Inference'], 'questions': 5, 'time': 130, 'minutes': 22},
-        ],
-        # Week 5: Advanced Practice
-        [
-            {'title': 'Evaluation Questions', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
-            {'title': 'Principle Questions', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
-            {'title': 'Method of Reasoning', 'difficulties': ['Hard'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
-        ],
-        # Week 6: Timed Practice
-        [
-            {'title': 'Mixed Review - Timed', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
-            {'title': 'Challenging Mixed Set', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
-            {'title': 'Advanced Reasoning', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
-        ],
-        # Week 7: Comprehensive Review
-        [
-            {'title': 'Full Skill Review 1', 'difficulties': ['Easy', 'Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Full Skill Review 2', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Challenge Set', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
-        ],
-        # Week 8: Test Prep
-        [
-            {'title': 'Test-Like Conditions 1', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
-            {'title': 'Test-Like Conditions 2', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
-            {'title': 'Advanced Mixed Practice', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
-        ],
-        # Week 9: Final Review
-        [
-            {'title': 'Comprehensive Review 1', 'difficulties': ['Easy', 'Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Comprehensive Review 2', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Peak Performance Set', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
-        ],
-        # Week 10: Final Prep
-        [
-            {'title': 'Final Timed Practice 1', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
-            {'title': 'Final Timed Practice 2', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
-            {'title': 'Confidence Builder', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
-        ],
-    ]
 
     with get_db_connection() as conn:
         cursor = conn.cursor()
@@ -337,10 +192,10 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
         cursor.execute("""
             INSERT INTO study_plans (id, user_id, diagnostic_drill_id, total_weeks, start_date)
             VALUES (?, ?, ?, ?, ?)
-        """, (study_plan_id, user_id, diagnostic_drill_id, total_weeks, start_date.isoformat()))
+        """, (study_plan_id, user_id, diagnostic_drill_id, STUDY_PLAN_WEEKS, start_date.isoformat()))
 
         # Create tasks for each week
-        for week_num, week_tasks in enumerate(week_templates, start=1):
+        for week_num, week_tasks in enumerate(WEEK_TEMPLATES, start=1):
             for task_order, task_template in enumerate(week_tasks, start=1):
                 task_config = {
                     'question_count': task_template['questions'],
@@ -374,8 +229,8 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
         return {
             'study_plan_id': study_plan_id,
             'user_id': user_id,
-            'total_weeks': total_weeks,
-            'total_tasks': total_weeks * tasks_per_week,
+            'total_weeks': STUDY_PLAN_WEEKS,
+            'total_tasks': STUDY_PLAN_WEEKS * TASKS_PER_WEEK,
             'start_date': start_date.isoformat(),
             'message': 'Study plan generated successfully'
         }

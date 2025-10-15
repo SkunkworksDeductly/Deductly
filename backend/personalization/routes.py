@@ -1,9 +1,5 @@
 from flask import Blueprint, jsonify, request
 from .logic import (
-    get_all_study_plans,
-    get_study_plan_by_id,
-    create_personalized_plan,
-    update_plan_progress,
     create_diagnostic_session,
     has_completed_diagnostic,
     has_study_plan,
@@ -12,47 +8,9 @@ from .logic import (
     mark_task_completed,
     link_drill_to_task
 )
-import firebase_admin
-from firebase_admin import auth as firebase_auth
+from middleware.auth import get_user_id_from_token
 
 personalization_bp = Blueprint('personalization', __name__, url_prefix='/api/personalization')
-
-@personalization_bp.route('/study-plans', methods=['GET'])
-def study_plans():
-    """Get all study plans"""
-    return jsonify(get_all_study_plans())
-
-@personalization_bp.route('/study-plans/<int:plan_id>', methods=['GET'])
-def study_plan(plan_id):
-    """Get specific study plan by ID"""
-    result = get_study_plan_by_id(plan_id)
-    if result:
-        return jsonify(result)
-    return jsonify({'error': 'Study plan not found'}), 404
-
-@personalization_bp.route('/study-plans', methods=['POST'])
-def create_plan():
-    """Create a personalized study plan"""
-    data = request.get_json() or {}
-    user_id = data.get('user_id')
-    subject = data.get('subject')
-    level = data.get('level')
-    goals = data.get('goals', [])
-
-    result = create_personalized_plan(user_id, subject, level, goals)
-    return jsonify(result), 201
-
-@personalization_bp.route('/study-plans/<int:plan_id>/progress', methods=['PUT'])
-def update_progress(plan_id):
-    """Update progress for a study plan"""
-    data = request.get_json() or {}
-    progress = data.get('progress')
-
-    result = update_plan_progress(plan_id, progress)
-    if result is None:
-        return jsonify({'error': 'Study plan not found'}), 404
-
-    return jsonify(result)
 
 @personalization_bp.route('/diagnostic', methods=['POST'])
 def create_diagnostic():
@@ -66,29 +24,6 @@ def create_diagnostic():
 # ============================================================================
 # STUDY PLAN ROUTES
 # ============================================================================
-
-def get_user_id_from_token():
-    """Extract user_id from Firebase auth token in request headers."""
-    auth_header = request.headers.get('Authorization', '')
-
-    if not auth_header.startswith('Bearer '):
-        print(f"[AUTH DEBUG] No Bearer token found. Header: {auth_header[:50] if auth_header else 'empty'}")
-        return None
-
-    token = auth_header.split('Bearer ')[1]
-
-    try:
-        if not firebase_admin._apps:
-            print("[AUTH DEBUG] Firebase not initialized")
-            return None
-
-        decoded_token = firebase_auth.verify_id_token(token)
-        print(f"[AUTH DEBUG] Token verified successfully for uid: {decoded_token['uid']}")
-        return decoded_token['uid']
-    except Exception as e:
-        print(f"[AUTH DEBUG] Token verification failed: {type(e).__name__}: {str(e)}")
-        return None
-
 
 @personalization_bp.route('/study-plan', methods=['GET'])
 def get_study_plan():

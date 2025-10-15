@@ -4,28 +4,9 @@ from .logic import (
     get_user_drill_history, get_drill_by_id, get_drill_result,
     save_drill_progress
 )
-import firebase_admin
-from firebase_admin import auth as firebase_auth
+from middleware.auth import get_user_id_from_token
 
 skill_builder_bp = Blueprint('skill_builder', __name__, url_prefix='/api/skill-builder')
-
-def get_user_id_from_token():
-    """Extract user_id from Firebase auth token in request headers."""
-    auth_header = request.headers.get('Authorization', '')
-
-    if not auth_header.startswith('Bearer '):
-        return None
-
-    token = auth_header.split('Bearer ')[1]
-
-    try:
-        if not firebase_admin._apps:
-            return None
-
-        decoded_token = firebase_auth.verify_id_token(token)
-        return decoded_token['uid']
-    except Exception:
-        return None
 
 @skill_builder_bp.route('/drill', methods=['POST'])
 def drill():

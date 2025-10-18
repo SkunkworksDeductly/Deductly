@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDrill } from '../contexts/DrillContext'
 import { useAuth } from '../contexts/AuthContext'
+import { renderTextWithHighlights } from '../utils/highlightRenderer'
 
 const letterFromIndex = (index) => String.fromCharCode(65 + index)
 
@@ -96,6 +97,12 @@ const DrillSession = () => {
 
   const normalizedOptions = Array.isArray(currentQuestionData?.answer_choices)
     ? currentQuestionData.answer_choices
+    : []
+
+  // Get highlights for current question
+  const userHighlights = drillSession?.user_highlights || {}
+  const currentQuestionHighlights = currentQuestionData?.id
+    ? (userHighlights[currentQuestionData.id] || [])
     : []
 
   const handleAnswerSelect = (optionIndex) => {
@@ -217,6 +224,7 @@ const DrillSession = () => {
       const userAnswerIndex = typeof selectedAnswers[index] === 'number' ? selectedAnswers[index] : null
       const correctIndex = indexFromLetter(question.correct_answer)
       return {
+        questionId: question?.id,
         questionNumber: index + 1,
         questionText: question?.question_text ?? '',
         passageText: question?.passage_text,
@@ -232,7 +240,8 @@ const DrillSession = () => {
     navigate('/drill/summary', {
       state: {
         summary,
-        questionResults
+        questionResults,
+        userHighlights: drillSession?.user_highlights || {}
       }
     })
   }
@@ -300,11 +309,11 @@ const DrillSession = () => {
                   </span>
                 </div>
                 <p className="text-text-primary text-lg leading-relaxed">
-                  {currentQuestionData.question_text}
+                  {renderTextWithHighlights(currentQuestionData.question_text, currentQuestionHighlights)}
                 </p>
                 {currentQuestionData.passage_text && (
                   <div className="bg-accent-info-bg rounded-xl border border-border-default p-4 text-sm text-text-secondary leading-relaxed">
-                    {currentQuestionData.passage_text}
+                    {renderTextWithHighlights(currentQuestionData.passage_text, currentQuestionHighlights)}
                   </div>
                 )}
               </div>

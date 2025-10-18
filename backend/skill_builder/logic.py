@@ -355,11 +355,11 @@ def get_drill_by_id(drill_id, include_questions=False):
 
 
 def get_drill_result(drill_id, user_id):
-    """Retrieve results for a specific drill."""
+    """Retrieve results for a specific drill with full question details."""
     with get_db_connection() as conn:
         cursor = conn.cursor()
         row = cursor.execute("""
-            SELECT dr.*, d.question_count, d.timing, d.difficulty, d.skills, d.drill_type
+            SELECT dr.*, d.question_count, d.timing, d.difficulty, d.skills, d.drill_type, d.user_highlights
             FROM drill_results dr
             JOIN drills d ON dr.drill_id = d.drill_id
             WHERE dr.drill_id = ? AND dr.user_id = ?
@@ -367,6 +367,38 @@ def get_drill_result(drill_id, user_id):
 
         if not row:
             return None
+
+        # Parse question results
+        question_results = json.loads(row['question_results']) if row['question_results'] else []
+
+        # Fetch full question data for each question_id
+        if question_results:
+            question_ids = [q['question_id'] for q in question_results]
+            placeholders = ','.join('?' * len(question_ids))
+            fields = ', '.join(QUESTION_SELECT_FIELDS)
+
+            question_rows = cursor.execute(f"""
+                SELECT {fields}
+                FROM questions
+                WHERE id IN ({placeholders})
+            """, question_ids).fetchall()
+
+            # Create lookup map
+            questions_map = {row['id']: _transform_question_row(row) for row in question_rows}
+
+            # Enrich question_results with full question data
+            enriched_results = []
+            for result in question_results:
+                q_id = result['question_id']
+                if q_id in questions_map:
+                    enriched_results.append({
+                        **result,
+                        'question_details': questions_map[q_id]
+                    })
+                else:
+                    enriched_results.append(result)
+        else:
+            enriched_results = []
 
         return {
             'drill_id': row['drill_id'],
@@ -377,9 +409,10 @@ def get_drill_result(drill_id, user_id):
             'skipped_questions': row['skipped_questions'],
             'score_percentage': row['score_percentage'],
             'time_taken': row['time_taken'],
-            'question_results': json.loads(row['question_results']) if row['question_results'] else [],
+            'question_results': enriched_results,
             'skill_performance': json.loads(row['skill_performance']) if row['skill_performance'] else {},
             'completed_at': row['completed_at'],
+            'user_highlights': json.loads(row['user_highlights']) if row['user_highlights'] else {},
             'drill_config': {
                 'question_count': row['question_count'],
                 'timing': row['timing'],

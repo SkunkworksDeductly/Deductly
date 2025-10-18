@@ -183,9 +183,10 @@ const Landing = () => {
                 {recentActivity.map((drill, index) => {
                   const score = drill.score_percentage ? Math.round(drill.score_percentage) : null
                   const drillType = drill.drill_type || 'Practice Drill'
+                  const isCompleted = drill.status === 'completed' && score !== null
 
-                  return (
-                    <li key={drill.drill_id || index} className="flex items-center gap-4">
+                  const activityContent = (
+                    <div className="flex items-center gap-4">
                       <div className="bg-accent-warning-bg rounded-full p-2 flex-shrink-0">
                         <svg className="w-5 h-5 text-button-primary" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -202,6 +203,23 @@ const Landing = () => {
                       </div>
                       {score !== null && (
                         <p className="text-text-primary ml-auto font-bold">{score}%</p>
+                      )}
+                    </div>
+                  )
+
+                  return (
+                    <li key={drill.drill_id || index}>
+                      {isCompleted ? (
+                        <Link
+                          to={`/drill/results/${drill.drill_id}`}
+                          className="block p-2 -m-2 rounded-lg transition-colors hover:bg-surface-hover cursor-pointer"
+                        >
+                          {activityContent}
+                        </Link>
+                      ) : (
+                        <div className="p-2 -m-2">
+                          {activityContent}
+                        </div>
                       )}
                     </li>
                   )

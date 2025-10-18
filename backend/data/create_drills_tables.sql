@@ -24,7 +24,10 @@ CREATE TABLE IF NOT EXISTS drills (
 
     -- Progress tracking
     current_question_index INTEGER DEFAULT 0,
-    user_answers TEXT
+    user_answers TEXT,
+
+    -- User highlights (JSON: {question_id: [[start, end], ...]})
+    user_highlights TEXT
 );
 
 -- Table for storing drill performance results

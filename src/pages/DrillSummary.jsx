@@ -1,6 +1,7 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDrill } from '../contexts/DrillContext'
+import { renderTextWithHighlights } from '../utils/highlightRenderer'
 
 const letterFromIndex = (index) => String.fromCharCode(65 + index)
 
@@ -17,6 +18,7 @@ const DrillSummary = () => {
 
   const summaryState = location.state?.summary || null
   const questionResults = location.state?.questionResults || []
+  const userHighlights = location.state?.userHighlights || {}
 
   const formattedSummary = {
     totalQuestions: summaryState?.totalQuestions ?? 0,
@@ -68,6 +70,11 @@ const DrillSummary = () => {
                 ? letterFromIndex(question.correctIndex)
                 : null
 
+              // Get highlights for this question
+              const questionHighlights = question.questionId
+                ? (userHighlights[question.questionId] || [])
+                : []
+
               return (
                 <div
                   key={question.questionNumber}
@@ -100,11 +107,13 @@ const DrillSummary = () => {
                     </span>
                   </div>
 
-                  <p className="text-sm text-text-primary">{question.questionText}</p>
+                  <p className="text-sm text-text-primary">
+                    {renderTextWithHighlights(question.questionText, questionHighlights)}
+                  </p>
 
                   {question.passageText && (
                     <div className="bg-white rounded-lg border border-border-light p-4 text-xs text-text-secondary whitespace-pre-wrap">
-                      {question.passageText}
+                      {renderTextWithHighlights(question.passageText, questionHighlights)}
                     </div>
                   )}
 

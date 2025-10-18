@@ -310,7 +310,7 @@ def get_drill_by_id(drill_id, include_questions=False):
         row = cursor.execute("""
             SELECT drill_id, user_id, question_count, timing, difficulty,
                    skills, drill_type, question_ids, status, created_at, completed_at,
-                   current_question_index, user_answers
+                   current_question_index, user_answers, user_highlights
             FROM drills
             WHERE drill_id = ?
         """, (drill_id,)).fetchone()
@@ -332,6 +332,7 @@ def get_drill_by_id(drill_id, include_questions=False):
             'completed_at': row['completed_at'],
             'current_question_index': row['current_question_index'] or 0,
             'user_answers': json.loads(row['user_answers']) if row['user_answers'] else {},
+            'user_highlights': json.loads(row['user_highlights']) if row['user_highlights'] else {},
         }
 
         # Include full question data if requested
@@ -396,7 +397,7 @@ def get_skill_progression(user_id, subject):
     pass
 
 
-def save_drill_progress(drill_id, user_id, current_question_index, user_answers):
+def save_drill_progress(drill_id, user_id, current_question_index, user_answers, user_highlights=None):
     """Save partial progress for a drill (for resuming later)."""
     with get_db_connection() as conn:
         cursor = conn.cursor()
@@ -406,6 +407,7 @@ def save_drill_progress(drill_id, user_id, current_question_index, user_answers)
             UPDATE drills
             SET current_question_index = ?,
                 user_answers = ?,
+                user_highlights = ?,
                 status = CASE
                     WHEN status = 'generated' THEN 'in_progress'
                     ELSE status
@@ -414,6 +416,7 @@ def save_drill_progress(drill_id, user_id, current_question_index, user_answers)
         """, (
             current_question_index,
             json.dumps(user_answers),
+            json.dumps(user_highlights) if user_highlights else None,
             drill_id,
             user_id
         ))

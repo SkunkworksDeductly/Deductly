@@ -136,8 +136,9 @@ def save_progress(drill_id):
 
     current_question_index = data.get('current_question_index', 0)
     user_answers = data.get('user_answers', {})
+    user_highlights = data.get('user_highlights', None)
 
-    success = save_drill_progress(drill_id, user_id, current_question_index, user_answers)
+    success = save_drill_progress(drill_id, user_id, current_question_index, user_answers, user_highlights)
 
     if not success:
         return jsonify({'error': 'Failed to save progress'}), 404

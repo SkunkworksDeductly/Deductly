@@ -14,7 +14,8 @@ const Header = () => {
     { name: 'Dashboard', path: '/dashboard' },
     { name: 'Diagnostic', path: '/diagnostics' },
     { name: 'Study Plan', path: '/study-plan' },
-    { name: 'Practice', path: '/drill' }
+    { name: 'Practice', path: '/drill' },
+    { name: 'Curriculum', path: '/curriculum' }
   ]
 
   const isActive = (path) => {

@@ -82,6 +82,13 @@ const StudyPlan = () => {
   }
 
   const handleStartTask = async (task) => {
+    // Handle video tasks
+    if (task.task_type === 'video' && task.video_id) {
+      navigate(`/curriculum/${task.video_id}`)
+      return
+    }
+
+    // Handle drill tasks
     try {
       const headers = await getAuthHeaders()
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
@@ -483,6 +490,7 @@ const WeekCard = ({ week, isCurrentWeek, isCompleted, weekProgress, onStartTask 
 const TaskCard = ({ task, onStartTask }) => {
   const isCompleted = task.status === 'completed'
   const isInProgress = task.status === 'in_progress' || (task.drill_id && task.status !== 'completed')
+  const isVideo = task.task_type === 'video'
 
   return (
     <div className={`flex items-center justify-between p-4 rounded-lg border transition-all ${
@@ -501,13 +509,8 @@ const TaskCard = ({ task, onStartTask }) => {
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
-          ) : isInProgress ? (
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
           ) : (
-            <svg className="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -526,15 +529,22 @@ const TaskCard = ({ task, onStartTask }) => {
               </svg>
               {task.estimated_minutes} min
             </span>
-            <span className="text-xs text-text-secondary">
-              {task.task_config.question_count} questions
-            </span>
+            {!isVideo && task.task_config.question_count && (
+              <span className="text-xs text-text-secondary">
+                {task.task_config.question_count} questions
+              </span>
+            )}
+            {isVideo && (
+              <span className="text-xs px-2 py-0.5 rounded bg-purple-100 text-purple-700 font-medium">
+                Video Lesson
+              </span>
+            )}
             {isCompleted && task.completed_at && (
               <span className="text-xs text-status-success">
                 ✓ Completed
               </span>
             )}
-            {isInProgress && !isCompleted && (
+            {isInProgress && !isCompleted && !isVideo && (
               <span className="text-xs text-button-primary font-medium">
                 In Progress
               </span>
@@ -549,7 +559,15 @@ const TaskCard = ({ task, onStartTask }) => {
           onClick={() => onStartTask(task)}
           className="ml-4 px-4 py-2 bg-button-primary text-white text-sm font-medium rounded-lg hover:bg-button-primary-hover transition duration-300 whitespace-nowrap"
         >
-          {isInProgress ? 'Continue Drill' : 'Start Drill'}
+          {isVideo ? 'Watch Video' : isInProgress ? 'Continue Drill' : 'Start Drill'}
+        </button>
+      )}
+      {isCompleted && task.video_id && (
+        <button
+          onClick={() => onStartTask(task)}
+          className="ml-4 px-4 py-2 bg-button-secondary border border-border-default text-text-primary text-sm font-medium rounded-lg hover:bg-surface-hover transition duration-300 whitespace-nowrap"
+        >
+          Watch Again
         </button>
       )}
       {isCompleted && task.drill_id && (

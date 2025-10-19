@@ -4,6 +4,9 @@ from .logic import (
     get_user_drill_history, get_drill_by_id, get_drill_result,
     save_drill_progress
 )
+from .curriculum_logic import (
+    get_all_videos, get_video_by_id, get_related_videos, mark_video_complete, mark_video_incomplete
+)
 import firebase_admin
 from firebase_admin import auth as firebase_auth
 
@@ -147,4 +150,69 @@ def save_progress(drill_id):
         'message': 'Progress saved successfully',
         'drill_id': drill_id,
         'current_question_index': current_question_index
+    })
+
+# Curriculum / Video Routes
+
+@skill_builder_bp.route('/curriculum/videos', methods=['GET'])
+def get_videos():
+    """Get all videos in the curriculum."""
+    videos = get_all_videos()
+    return jsonify({
+        'videos': videos,
+        'count': len(videos)
+    })
+
+@skill_builder_bp.route('/curriculum/videos/<video_id>', methods=['GET'])
+def get_video(video_id):
+    """Get a specific video by ID with user completion status."""
+    user_id = get_user_id_from_token()
+
+    video = get_video_by_id(video_id, user_id)
+
+    if not video:
+        return jsonify({'error': 'Video not found'}), 404
+
+    # Get related videos
+    related_videos = get_related_videos(video_id, limit=5)
+
+    return jsonify({
+        'video': video,
+        'related_videos': related_videos
+    })
+
+@skill_builder_bp.route('/curriculum/videos/<video_id>/complete', methods=['POST'])
+def complete_video(video_id):
+    """Mark a video as complete for the current user."""
+    user_id = get_user_id_from_token()
+
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+
+    success = mark_video_complete(video_id, user_id)
+
+    if not success:
+        return jsonify({'error': 'Failed to mark video as complete. Make sure this video is in your study plan.'}), 400
+
+    return jsonify({
+        'message': 'Video marked as complete',
+        'video_id': video_id
+    })
+
+@skill_builder_bp.route('/curriculum/videos/<video_id>/incomplete', methods=['POST'])
+def incomplete_video(video_id):
+    """Mark a video as incomplete for the current user."""
+    user_id = get_user_id_from_token()
+
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+
+    success = mark_video_incomplete(video_id, user_id)
+
+    if not success:
+        return jsonify({'error': 'Failed to mark video as incomplete. Make sure this video is in your study plan.'}), 400
+
+    return jsonify({
+        'message': 'Video marked as incomplete',
+        'video_id': video_id
     })

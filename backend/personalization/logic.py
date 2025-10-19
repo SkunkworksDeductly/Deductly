@@ -179,6 +179,7 @@ def get_user_study_plan(user_id):
                 'task_config': json.loads(task['task_config']) if task['task_config'] else {},
                 'status': task['status'],
                 'drill_id': task['drill_id'],
+                'video_id': task['video_id'] if 'video_id' in task.keys() else None,
                 'completed_at': task['completed_at'],
                 'task_order': task['task_order']
             })
@@ -245,7 +246,7 @@ def mark_task_completed(task_id, drill_id):
 
 
 def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
-    """Generate a 10-week study plan with 30 drill tasks based on diagnostic results."""
+    """Generate a 10-week study plan with drill tasks and video lessons based on diagnostic results."""
 
     # Check if user already has a plan
     if has_study_plan(user_id):
@@ -256,10 +257,17 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
     # TODO: Analyze diagnostic results and personalize tasks
 
     total_weeks = 10
-    tasks_per_week = 3
     start_date = date.today()
 
-    # Define task templates for each week
+    # Get available videos from database
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    video_rows = cursor.execute("SELECT id, title FROM videos ORDER BY category, difficulty").fetchall()
+    videos = {row['id']: row['title'] for row in video_rows}
+    video_ids = list(videos.keys())
+    conn.close()
+
+    # Define task templates for each week (mix of drills and videos)
     # Weeks 1-3: Focus on fundamentals with easier drills
     # Weeks 4-7: Mixed practice with increasing difficulty
     # Weeks 8-10: Advanced practice and comprehensive review
@@ -267,63 +275,63 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
     week_templates = [
         # Week 1: Fundamentals
         [
-            {'title': 'Assumption Identification', 'difficulties': ['Easy', 'Medium'], 'skills': ['Assumption'], 'questions': 5, 'time': 100, 'minutes': 15},
-            {'title': 'Strengthen Arguments', 'difficulties': ['Easy', 'Medium'], 'skills': ['Strengthen'], 'questions': 5, 'time': 100, 'minutes': 15},
-            {'title': 'Weaken Arguments', 'difficulties': ['Easy', 'Medium'], 'skills': ['Weaken'], 'questions': 5, 'time': 100, 'minutes': 15},
+            {'type': 'video', 'video_id': video_ids[0] if len(video_ids) > 0 else None, 'minutes': 25},
+            {'type': 'drill', 'title': 'Assumption Identification', 'difficulties': ['Easy', 'Medium'], 'skills': ['Assumption'], 'questions': 5, 'time': 100, 'minutes': 15},
+            {'type': 'drill', 'title': 'Strengthen Arguments', 'difficulties': ['Easy', 'Medium'], 'skills': ['Strengthen'], 'questions': 5, 'time': 100, 'minutes': 15},
         ],
         # Week 2: Building Skills
         [
-            {'title': 'Parallel Reasoning', 'difficulties': ['Medium'], 'skills': ['Parallel Reasoning'], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Inference Questions', 'difficulties': ['Medium'], 'skills': ['Inference'], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Flaw Detection', 'difficulties': ['Medium'], 'skills': ['Flaw'], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'type': 'drill', 'title': 'Weaken Arguments', 'difficulties': ['Easy', 'Medium'], 'skills': ['Weaken'], 'questions': 5, 'time': 100, 'minutes': 15},
+            {'type': 'video', 'video_id': video_ids[1] if len(video_ids) > 1 else None, 'minutes': 32},
+            {'type': 'drill', 'title': 'Parallel Reasoning', 'difficulties': ['Medium'], 'skills': ['Parallel Reasoning'], 'questions': 5, 'time': 100, 'minutes': 18},
         ],
         # Week 3: Mixed Practice
         [
-            {'title': 'Mixed Fundamentals', 'difficulties': ['Easy', 'Medium'], 'skills': ['Assumption', 'Strengthen', 'Weaken'], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Reasoning Patterns', 'difficulties': ['Medium'], 'skills': ['Parallel Reasoning', 'Flaw'], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Conditional Logic', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
+            {'type': 'drill', 'title': 'Inference Questions', 'difficulties': ['Medium'], 'skills': ['Inference'], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'type': 'drill', 'title': 'Flaw Detection', 'difficulties': ['Medium'], 'skills': ['Flaw'], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'type': 'video', 'video_id': video_ids[2] if len(video_ids) > 2 else None, 'minutes': 30},
         ],
         # Week 4: Increasing Difficulty
         [
-            {'title': 'Advanced Assumptions', 'difficulties': ['Medium', 'Hard'], 'skills': ['Assumption'], 'questions': 5, 'time': 100, 'minutes': 20},
-            {'title': 'Complex Weakening', 'difficulties': ['Medium', 'Hard'], 'skills': ['Weaken'], 'questions': 5, 'time': 100, 'minutes': 20},
-            {'title': 'Challenging Inference', 'difficulties': ['Hard'], 'skills': ['Inference'], 'questions': 5, 'time': 130, 'minutes': 22},
+            {'type': 'drill', 'title': 'Mixed Fundamentals', 'difficulties': ['Easy', 'Medium'], 'skills': ['Assumption', 'Strengthen', 'Weaken'], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'type': 'video', 'video_id': video_ids[3] if len(video_ids) > 3 else None, 'minutes': 34},
+            {'type': 'drill', 'title': 'Advanced Assumptions', 'difficulties': ['Medium', 'Hard'], 'skills': ['Assumption'], 'questions': 5, 'time': 100, 'minutes': 20},
         ],
         # Week 5: Advanced Practice
         [
-            {'title': 'Evaluation Questions', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
-            {'title': 'Principle Questions', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
-            {'title': 'Method of Reasoning', 'difficulties': ['Hard'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
+            {'type': 'drill', 'title': 'Complex Weakening', 'difficulties': ['Medium', 'Hard'], 'skills': ['Weaken'], 'questions': 5, 'time': 100, 'minutes': 20},
+            {'type': 'drill', 'title': 'Challenging Inference', 'difficulties': ['Hard'], 'skills': ['Inference'], 'questions': 5, 'time': 130, 'minutes': 22},
+            {'type': 'video', 'video_id': video_ids[4] if len(video_ids) > 4 else None, 'minutes': 41},
         ],
         # Week 6: Timed Practice
         [
-            {'title': 'Mixed Review - Timed', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
-            {'title': 'Challenging Mixed Set', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
-            {'title': 'Advanced Reasoning', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
+            {'type': 'video', 'video_id': video_ids[5] if len(video_ids) > 5 else None, 'minutes': 37},
+            {'type': 'drill', 'title': 'Evaluation Questions', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
+            {'type': 'drill', 'title': 'Principle Questions', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
         ],
         # Week 7: Comprehensive Review
         [
-            {'title': 'Full Skill Review 1', 'difficulties': ['Easy', 'Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Full Skill Review 2', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Challenge Set', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
+            {'type': 'drill', 'title': 'Method of Reasoning', 'difficulties': ['Hard'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
+            {'type': 'video', 'video_id': video_ids[6] if len(video_ids) > 6 else None, 'minutes': 30},
+            {'type': 'drill', 'title': 'Mixed Review - Timed', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
         ],
         # Week 8: Test Prep
         [
-            {'title': 'Test-Like Conditions 1', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
-            {'title': 'Test-Like Conditions 2', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
-            {'title': 'Advanced Mixed Practice', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
+            {'type': 'drill', 'title': 'Challenging Mixed Set', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
+            {'type': 'drill', 'title': 'Advanced Reasoning', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
+            {'type': 'video', 'video_id': video_ids[7] if len(video_ids) > 7 else None, 'minutes': 28},
         ],
         # Week 9: Final Review
         [
-            {'title': 'Comprehensive Review 1', 'difficulties': ['Easy', 'Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Comprehensive Review 2', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
-            {'title': 'Peak Performance Set', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
+            {'type': 'drill', 'title': 'Full Skill Review 1', 'difficulties': ['Easy', 'Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'type': 'drill', 'title': 'Full Skill Review 2', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 18},
+            {'type': 'drill', 'title': 'Challenge Set', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 130, 'minutes': 22},
         ],
         # Week 10: Final Prep
         [
-            {'title': 'Final Timed Practice 1', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
-            {'title': 'Final Timed Practice 2', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
-            {'title': 'Confidence Builder', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
+            {'type': 'drill', 'title': 'Test-Like Conditions 1', 'difficulties': ['Medium', 'Hard'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
+            {'type': 'drill', 'title': 'Test-Like Conditions 2', 'difficulties': ['Medium', 'Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 70, 'minutes': 12},
+            {'type': 'drill', 'title': 'Confidence Builder', 'difficulties': ['Hard', 'Challenging'], 'skills': [], 'questions': 5, 'time': 100, 'minutes': 20},
         ],
     ]
 
@@ -340,34 +348,60 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
         """, (study_plan_id, user_id, diagnostic_drill_id, total_weeks, start_date.isoformat()))
 
         # Create tasks for each week
+        total_tasks = 0
         for week_num, week_tasks in enumerate(week_templates, start=1):
             for task_order, task_template in enumerate(week_tasks, start=1):
-                task_config = {
-                    'question_count': task_template['questions'],
-                    'difficulties': task_template['difficulties'],
-                    'skills': task_template['skills'],
-                    'time_percentage': task_template['time'],
-                    'drill_type': 'practice'
-                }
-
-                # Generate task ID (random alphanumeric)
+                task_type = task_template.get('type', 'drill')
                 task_id = generate_id('spt')  # e.g., spt-p7x2k9
 
-                cursor.execute("""
-                    INSERT INTO study_plan_tasks (
-                        id, study_plan_id, week_number, task_order,
-                        task_type, title, estimated_minutes, task_config
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    task_id,
-                    study_plan_id,
-                    week_num,
-                    task_order,
-                    'drill',
-                    task_template['title'],
-                    task_template['minutes'],
-                    json.dumps(task_config)
-                ))
+                if task_type == 'video':
+                    # Video task
+                    video_id = task_template.get('video_id')
+                    if video_id:  # Only create task if video exists
+                        video_title = videos.get(video_id, 'Video Lesson')
+                        cursor.execute("""
+                            INSERT INTO study_plan_tasks (
+                                id, study_plan_id, week_number, task_order,
+                                task_type, title, estimated_minutes, task_config, video_id
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        """, (
+                            task_id,
+                            study_plan_id,
+                            week_num,
+                            task_order,
+                            'video',
+                            video_title,
+                            task_template['minutes'],
+                            json.dumps({}),  # Empty config for videos
+                            video_id
+                        ))
+                        total_tasks += 1
+                else:
+                    # Drill task
+                    task_config = {
+                        'question_count': task_template['questions'],
+                        'difficulties': task_template['difficulties'],
+                        'skills': task_template['skills'],
+                        'time_percentage': task_template['time'],
+                        'drill_type': 'practice'
+                    }
+
+                    cursor.execute("""
+                        INSERT INTO study_plan_tasks (
+                            id, study_plan_id, week_number, task_order,
+                            task_type, title, estimated_minutes, task_config
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        task_id,
+                        study_plan_id,
+                        week_num,
+                        task_order,
+                        'drill',
+                        task_template['title'],
+                        task_template['minutes'],
+                        json.dumps(task_config)
+                    ))
+                    total_tasks += 1
 
         conn.commit()
 
@@ -375,7 +409,7 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
             'study_plan_id': study_plan_id,
             'user_id': user_id,
             'total_weeks': total_weeks,
-            'total_tasks': total_weeks * tasks_per_week,
+            'total_tasks': total_tasks,
             'start_date': start_date.isoformat(),
             'message': 'Study plan generated successfully'
         }

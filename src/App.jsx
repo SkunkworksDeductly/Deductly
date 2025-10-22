@@ -28,7 +28,7 @@ function App() {
         <Router basename={routerBaseName}>
           <Routes>
             {/* Public routes */}
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 
             {/* Protected routes */}
@@ -42,7 +42,6 @@ function App() {
 
                       <main className="flex-1">
                         <Routes>
-                          <Route index element={<Home />} />
                           <Route path="dashboard" element={<Landing />} />
                           <Route path="diagnostics" element={<Diagnostics />} />
                           <Route path="diagnostics/session" element={<DrillSession />} />

@@ -6,12 +6,8 @@ import json
 import os
 import sqlite3
 import uuid
+from utils import generate_id, generate_sequential_id
 from datetime import datetime, timezone
-
-# Import ID generator
-import sys
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.id_generator import generate_id
 
 # Path to data files
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

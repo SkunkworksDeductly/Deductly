@@ -4,6 +4,22 @@ These helpers back the ability estimation (IRT) and skill mastery (CDM) routes.
 """
 from datetime import datetime, timedelta
 from typing import Any, Dict, List
+from utils import generate_id, generate_sequential_id
+import os
+import json
+import sqlite3
+
+
+# Path to data files
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
+
+
+def get_db_connection():
+    """Create a database connection."""
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 def prepare_ability_estimation(payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -25,11 +41,12 @@ def prepare_ability_estimation(payload: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def fetch_current_ability(user_id: str) -> Dict[str, Any]:
+def fetch_current_ability(model_name: str, user_id: str) -> Dict[str, Any]:
     """Placeholder for retrieving the latest overall ability score."""
+    theta = 0
     return {
         'user_id': user_id,
-        'model': 'irt-placeholder',
+        'model': model_name,
         'ability_theta': 0.58,
         'standard_error': 0.21,
         'last_updated': datetime.utcnow().isoformat() + 'Z',

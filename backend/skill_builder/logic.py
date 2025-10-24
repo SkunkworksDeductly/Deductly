@@ -359,7 +359,13 @@ def get_drill_result(drill_id, user_id):
     with get_db_connection() as conn:
         cursor = conn.cursor()
         row = cursor.execute("""
-            SELECT dr.*, d.question_count, d.timing, d.difficulty, d.skills, d.drill_type, d.user_highlights
+            SELECT
+                dr.id, dr.drill_id, dr.user_id, dr.total_questions,
+                dr.correct_answers, dr.incorrect_answers, dr.skipped_questions,
+                dr.score_percentage, dr.time_taken, dr.question_results,
+                dr.skill_performance, dr.completed_at,
+                d.question_count, d.timing, d.difficulty, d.skills, d.drill_type,
+                d.user_highlights
             FROM drill_results dr
             JOIN drills d ON dr.drill_id = d.drill_id
             WHERE dr.drill_id = ? AND dr.user_id = ?

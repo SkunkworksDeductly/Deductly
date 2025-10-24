@@ -16,12 +16,28 @@ export const useDrill = () => useContext(DrillContext)
 
 export function DrillProvider({ children }) {
   const [drillConfig, setDrillConfig] = useState(createDefaultConfig)
-  const [drillSession, setDrillSession] = useState(null)
+  const [drillSession, setDrillSessionInternal] = useState(null)
   const [selectedAnswers, setSelectedAnswers] = useState({})
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
 
+  // Wrap setDrillSession to ensure user_highlights is always present
+  const setDrillSession = useCallback((sessionOrUpdater) => {
+    setDrillSessionInternal(prev => {
+      const newSession = typeof sessionOrUpdater === 'function'
+        ? sessionOrUpdater(prev)
+        : sessionOrUpdater
+
+      // Ensure user_highlights exists
+      if (newSession && !newSession.user_highlights) {
+        return { ...newSession, user_highlights: {} }
+      }
+
+      return newSession
+    })
+  }, [])
+
   const resetSession = useCallback(() => {
-    setDrillSession(null)
+    setDrillSessionInternal(null)
     setSelectedAnswers({})
     setCurrentQuestionIndex(0)
   }, [])

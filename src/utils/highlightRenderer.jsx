@@ -71,7 +71,11 @@ export const renderTextWithHighlights = (text, highlights) => {
 
     // Add highlighted text
     result.push(
-      <mark key={`highlight-${start}-${end}`} className="bg-yellow-200 text-inherit">
+      <mark
+        key={`highlight-${start}-${end}`}
+        className="bg-yellow-200 text-inherit cursor-pointer hover:bg-yellow-300 transition-colors"
+        title="Click to remove highlight"
+      >
         {text.substring(start, end)}
       </mark>
     )

@@ -169,9 +169,6 @@ export default function PublicLanding() {
               <a href="#features" className="text-sm text-text-secondary hover:text-button-primary transition-colors">
                 Features
               </a>
-              <a href="#testimonials" className="text-sm text-text-secondary hover:text-button-primary transition-colors">
-                Testimonials
-              </a>
               <a href="#pricing" className="text-sm text-text-secondary hover:text-button-primary transition-colors">
                 Pricing
               </a>
@@ -213,9 +210,6 @@ export default function PublicLanding() {
               <div className="flex flex-col gap-4">
                 <a href="#features" className="text-sm text-text-secondary hover:text-button-primary transition-colors">
                   Features
-                </a>
-                <a href="#testimonials" className="text-sm text-text-secondary hover:text-button-primary transition-colors">
-                  Testimonials
                 </a>
                 <a href="#pricing" className="text-sm text-text-secondary hover:text-button-primary transition-colors">
                   Pricing
@@ -285,29 +279,6 @@ export default function PublicLanding() {
                 </svg>
                 Watch Demo
               </button>
-            </div>
-
-            {/* Stats */}
-            <div className="flex flex-wrap items-center justify-center gap-8 pt-8">
-              <div className="flex items-center gap-3">
-                <div className="flex -space-x-2">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 border-2 border-white shadow-sm" />
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 border-2 border-white shadow-sm" />
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-pink-400 border-2 border-white shadow-sm" />
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-300 to-purple-300 border-2 border-white shadow-sm" />
-                </div>
-                <span className="text-sm font-medium text-text-secondary">6,000+ students studying</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex gap-0.5">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <span className="text-sm font-medium text-text-secondary">Average 12-point score improvement</span>
-              </div>
             </div>
           </div>
 
@@ -682,97 +653,6 @@ export default function PublicLanding() {
               <h3 className="text-xl font-semibold mb-3 text-text-primary">Score Prediction</h3>
               <p className="text-text-secondary leading-relaxed">See your projected LSAT score based on your performance.</p>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Section */}
-      <div className="py-24 bg-gradient-to-br from-button-primary to-brand-primary text-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
-              Results that speak for themselves
-            </h2>
-            <p className="text-xl text-pink-100 max-w-2xl mx-auto">
-              Join thousands of students who've improved their LSAT scores
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { value: '5,000+', label: 'LSAT Students' },
-              { value: '+12 pts', label: 'Average Score Increase' },
-              { value: '10,000+', label: 'Practice Questions' },
-              { value: '90%', label: 'Would Recommend' }
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-4xl md:text-5xl font-bold mb-2">{stat.value}</div>
-                <div className="text-pink-100">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Testimonials Section */}
-      <div className="py-24 bg-gray-50" id="testimonials">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-text-primary">
-              Real students. Real score improvements.
-            </h2>
-            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              See how Deductly helped these students reach their target scores
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: 'Sarah Johnson',
-                role: 'Scored 172 • UCLA Law',
-                content: 'Deductly helped me jump from 158 to 172. The adaptive practice focused exactly on my weak spots without wasting time.',
-                initials: 'SJ',
-                gradient: 'from-pink-400 to-purple-400'
-              },
-              {
-                name: 'Michael Chen',
-                role: 'Scored 168 • NYU Law',
-                content: 'I couldn\'t afford the $2k courses. Deductly gave me the same quality for less than $200. Best investment I made.',
-                initials: 'MC',
-                gradient: 'from-purple-400 to-blue-400'
-              },
-              {
-                name: 'Emma Rodriguez',
-                role: 'Scored 170 • Columbia Law',
-                content: 'The analytics showed me exactly where to focus. Went from 162 to 170 in 3 months. Game changer.',
-                initials: 'ER',
-                gradient: 'from-blue-400 to-pink-400'
-              }
-            ].map((testimonial) => (
-              <div
-                key={testimonial.name}
-                className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-xl transition-all duration-300"
-              >
-                <div className="flex gap-1 mb-6">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-text-secondary mb-8 leading-relaxed">{testimonial.content}</p>
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${testimonial.gradient} flex items-center justify-center text-white font-semibold`}>
-                    {testimonial.initials}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-text-primary">{testimonial.name}</p>
-                    <p className="text-sm text-text-secondary">{testimonial.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

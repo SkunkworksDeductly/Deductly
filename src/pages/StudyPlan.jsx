@@ -8,6 +8,8 @@ const StudyPlan = () => {
   const [studyPlanData, setStudyPlanData] = useState(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [currentWeek, setCurrentWeek] = useState(null)
+  const [adaptingWeek, setAdaptingWeek] = useState(null) // Track which week is being adapted
+  const [adaptationMessage, setAdaptationMessage] = useState(null) // Success/error message
   const navigate = useNavigate()
   const { currentUser, getAuthHeaders } = useAuth()
   const { setDrillSession } = useDrill()
@@ -60,9 +62,15 @@ const StudyPlan = () => {
       setIsGenerating(true)
       const headers = await getAuthHeaders()
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
+
+      // Use adaptive plan generation with default parameters
       const response = await fetch(`${apiBaseUrl}/personalization/study-plan/generate`, {
         method: 'POST',
-        headers
+        headers,
+        body: JSON.stringify({
+          total_weeks: 10,  // Default to 10 weeks
+          // target_test_date can be added later
+        })
       })
 
       if (response.ok) {
@@ -78,6 +86,59 @@ const StudyPlan = () => {
       alert('Failed to generate study plan')
     } finally {
       setIsGenerating(false)
+    }
+  }
+
+  const handleWeekComplete = async (weekNumber) => {
+    try {
+      setAdaptingWeek(weekNumber)
+      setAdaptationMessage(null)
+
+      const headers = await getAuthHeaders()
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
+
+      const response = await fetch(`${apiBaseUrl}/personalization/study-plan/adapt`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          completed_week: weekNumber
+        })
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        console.log('Adaptation result:', result)
+
+        // Show success message
+        setAdaptationMessage({
+          type: 'success',
+          text: `Week ${weekNumber} completed! Your plan has been updated based on your performance.
+                 Avg reward: ${(result.avg_reward * 100).toFixed(1)}%`
+        })
+
+        // Reload study plan to see updated weeks
+        await fetchStudyPlan()
+
+        // Clear message after 5 seconds
+        setTimeout(() => setAdaptationMessage(null), 5000)
+      } else {
+        const error = await response.json()
+        console.error('Error adapting plan:', error)
+        setAdaptationMessage({
+          type: 'error',
+          text: error.error || 'Failed to adapt plan'
+        })
+        setTimeout(() => setAdaptationMessage(null), 5000)
+      }
+    } catch (error) {
+      console.error('Error adapting plan:', error)
+      setAdaptationMessage({
+        type: 'error',
+        text: 'Failed to adapt plan. Please try again.'
+      })
+      setTimeout(() => setAdaptationMessage(null), 5000)
+    } finally {
+      setAdaptingWeek(null)
     }
   }
 
@@ -256,6 +317,53 @@ const StudyPlan = () => {
           </p>
         </div>
 
+        {/* Adaptive Plan Indicator */}
+        {studyPlanData.adaptive && (
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-xl p-5 mb-6 shadow-sm">
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0">
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-purple-900 mb-1">AI-Powered Adaptive Study Plan</h3>
+                <p className="text-sm text-purple-700 mb-2">
+                  Your plan adapts weekly based on your performance using advanced machine learning algorithms.
+                  Complete your weekly tasks to trigger automatic plan optimization.
+                </p>
+                {studyPlanData.algorithm && (
+                  <p className="text-xs text-purple-600 font-mono bg-purple-100 inline-block px-2 py-1 rounded">
+                    Algorithm: {studyPlanData.algorithm}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Adaptation Message */}
+        {adaptationMessage && (
+          <div className={`rounded-xl p-4 mb-6 border ${
+            adaptationMessage.type === 'success'
+              ? 'bg-green-50 border-green-200 text-green-800'
+              : 'bg-red-50 border-red-200 text-red-800'
+          }`}>
+            <div className="flex items-center">
+              {adaptationMessage.type === 'success' ? (
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              )}
+              <span className="text-sm font-medium">{adaptationMessage.text}</span>
+            </div>
+          </div>
+        )}
+
         {/* Overall Progress Card */}
         <div className="bg-surface-primary rounded-xl border border-border-default shadow-sm p-6 mb-8">
           <h2 className="text-xl font-semibold text-text-primary mb-6">Overall Progress</h2>
@@ -353,6 +461,9 @@ const StudyPlan = () => {
                   isCompleted={isCompleted}
                   weekProgress={weekProgress}
                   onStartTask={handleStartTask}
+                  onWeekComplete={handleWeekComplete}
+                  isAdaptingWeek={adaptingWeek === week.week_number}
+                  isAdaptivePlan={studyPlanData.adaptive}
                 />
               )
             })}
@@ -364,7 +475,7 @@ const StudyPlan = () => {
 }
 
 // WeekCard Component
-const WeekCard = ({ week, isCurrentWeek, isCompleted, weekProgress, onStartTask }) => {
+const WeekCard = ({ week, isCurrentWeek, isCompleted, weekProgress, onStartTask, onWeekComplete, isAdaptingWeek, isAdaptivePlan }) => {
   const [isExpanded, setIsExpanded] = useState(isCurrentWeek)
 
   const formatDate = (dateString) => {
@@ -444,6 +555,35 @@ const WeekCard = ({ week, isCurrentWeek, isCompleted, weekProgress, onStartTask 
               </div>
               <div className="text-xs text-text-secondary">Progress</div>
             </div>
+
+            {/* Adaptive Optimization Button - Only show for completed weeks with adaptive plans */}
+            {isCompleted && isAdaptivePlan && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation() // Prevent week expansion when clicking button
+                  onWeekComplete(week.week_number)
+                }}
+                disabled={isAdaptingWeek}
+                className="px-3 py-2 text-sm font-medium rounded-lg bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+              >
+                {isAdaptingWeek ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Optimizing...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span>Optimize Plan</span>
+                  </>
+                )}
+              </button>
+            )}
 
             {/* Expand/collapse icon */}
             <svg

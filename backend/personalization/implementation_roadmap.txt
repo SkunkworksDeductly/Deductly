@@ -1,0 +1,20 @@
+Steps to get an Adaptive Study Plan Online
+-------------------------------------------
+
+
+
+
+1. Design Skill taxonomy
+Hierarchy of Skills (LR, RC), and Subskills (flaw, causal reasoning, main point)
+
+
+
+2. Define the Atomic Unit of curricula ("module")
+A module is a bundle of some combination of videos + drills.
+This method is superior to individual tasks, since we can model the implicit reward 
+of a video through the general reward of a bundle, instead of defining a specific
+reward function for a video (i.e. through engagement) as this would be too noisy.
+This also reduces the sample space of actions from which to choose from. 
+
+
+

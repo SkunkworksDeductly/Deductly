@@ -7,7 +7,8 @@ from firebase_admin import credentials
 
 # Import blueprints from each layer
 from insights.routes import insights_bp
-from personalization.routes import personalization_bp
+# Use adaptive routes (includes all legacy routes + adaptive features)
+from personalization.routes_adaptive import personalization_bp
 from skill_builder.routes import skill_builder_bp
 
 # Load .env from parent directory (root of project)

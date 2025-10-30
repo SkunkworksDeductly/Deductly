@@ -1,0 +1,717 @@
+---
+  Major Problems I've Identified
+
+  Problem 1: Scattered Database Setup Scripts
+
+  /home/aniru/dev/Deductly/
+  ├── setup_database.py          # Creates skills, questions, question_skills
+  ├── add_curriculum_tables.py   # Creates videos table
+  ├── insert_lsat_questions.py   # Inserts question data
+  ├── insert_sample_videos.py    # Inserts video data
+  ├── migrate_ids_to_strings.py  # Migration script
+  ├── backend/data/
+      ├── create_drills_tables.sql        # SQL for drills tables
+      ├── create_study_plan_tables.sql    # SQL for study plan tables
+      └── create_users.sql                # Empty file (!)
+
+  Issues:
+  - Inconsistent approach: Some use Python scripts, some use raw SQL
+  - No clear execution order: Which do you run first?
+  - No single source of truth: Schema is split across 5+ files
+  - Manual execution required: You have to remember to run each script
+  - No tracking: How do you know what's been run?
+
+  ---
+  Problem 2: Duplicated get_db_connection() in Every Module
+
+  Found in 4 different files:
+  - backend/insights/logic.py:18
+  - backend/personalization/logic.py:37
+  - backend/skill_builder/logic.py:26
+  - backend/skill_builder/curriculum_logic.py:12
+
+  All identical:
+  def get_db_connection():
+      """Create a database connection."""
+      conn = sqlite3.connect(DB_PATH)
+      conn.row_factory = sqlite3.Row
+      return conn
+
+  Issues:
+  - DRY violation: Don't Repeat Yourself
+  - Maintenance nightmare: Need to update 4 places to change connection logic
+  - No connection pooling: Opening new connections everywhere
+  - No error handling: What if DB is locked or missing?
+
+  ---
+  Problem 3: Hardcoded DB Path Everywhere
+
+  # In insights/logic.py
+  BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+  DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
+
+  # In personalization/logic.py
+  BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+  DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
+
+  # In skill_builder/logic.py
+  BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+  DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
+
+  Issues:
+  - Repeated 3+ times
+  - Not environment-aware: Can't easily use different DB for testing
+  - Hard to configure: Can't switch to PostgreSQL later without massive refactor
+
+  ---
+  Problem 4: No Migration System
+
+  You have:
+  - backend/data/migrations/add_user_highlights_to_drills.sql (manually run)
+  - migrate_ids_to_strings.py (one-off script)
+
+  Issues:
+  - No version tracking: Which migrations have been applied?
+  - No rollback capability: Can't undo changes
+  - Manual execution: Easy to forget or apply out of order
+  - Production risk: How do you deploy schema changes safely?
+
+  ---
+  Problem 5: Tables Created Inconsistently
+
+  - skills, questions, question_skills: Created by setup_database.py (Python)
+  - drills, drill_results: Created by create_drills_tables.sql (SQL, manual)
+  - study_plans, study_plan_tasks: Created by create_study_plan_tables.sql (SQL, manual)
+  - videos: Defined in add_curriculum_tables.py but never created!
+
+  No one knows the full schema without reading 5+ files.
+
+  ---
+  Recommended Solution: Proper Database Management Structure
+
+  Here's how to reorganize everything properly:
+
+  New Directory Structure
+
+  backend/
+  ├── db/                          # NEW: Centralized database module
+  │   ├── __init__.py             # Export db utilities
+  │   ├── connection.py           # Single DB connection manager
+  │   ├── schema.py               # Full schema definition
+  │   ├── migrations/             # Versioned migrations
+  │   │   ├── __init__.py
+  │   │   ├── 001_initial_schema.sql
+  │   │   ├── 002_add_drills_tables.sql
+  │   │   ├── 003_add_study_plans.sql
+  │   │   ├── 004_add_videos.sql
+  │   │   ├── 005_add_user_highlights.sql
+  │   │   └── migrate.py          # Migration runner
+  │   ├── seeds/                  # Data seeding scripts
+  │   │   ├── __init__.py
+  │   │   ├── skills.py           # Seed skills taxonomy
+  │   │   ├── questions.py        # Seed LSAT questions
+  │   │   └── videos.py           # Seed sample videos
+  │   └── README.md               # Database documentation
+  ├── data/
+  │   ├── deductly.db
+  │   ├── lsat_skills_taxonomy.json
+  │   └── lsat_questions.json
+  ├── insights/
+  ├── personalization/
+  ├── skill_builder/
+  └── utils/
+
+  ---
+  Implementation: Step-by-Step
+
+  1. Create backend/db/connection.py (Centralized DB Connection)
+
+  """
+  Database connection management for Deductly
+  Provides centralized database access with proper error handling
+  """
+  import sqlite3
+  import os
+  from typing import Optional
+  from contextlib import contextmanager
+
+  # Configuration
+  BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+  DEFAULT_DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
+
+  # Allow override via environment variable (useful for testing)
+  DB_PATH = os.getenv('DEDUCTLY_DB_PATH', DEFAULT_DB_PATH)
+
+
+  class DatabaseConnection:
+      """Singleton database connection manager"""
+
+      _instance = None
+      _connection = None
+
+      def __new__(cls):
+          if cls._instance is None:
+              cls._instance = super().__new__(cls)
+          return cls._instance
+
+      def get_connection(self) -> sqlite3.Connection:
+          """Get or create database connection"""
+          if self._connection is None:
+              self._connection = sqlite3.connect(DB_PATH, check_same_thread=False)
+              self._connection.row_factory = sqlite3.Row
+              # Enable foreign keys
+              self._connection.execute("PRAGMA foreign_keys = ON")
+          return self._connection
+
+      def close(self):
+          """Close database connection"""
+          if self._connection:
+              self._connection.close()
+              self._connection = None
+
+
+  # Global instance
+  _db = DatabaseConnection()
+
+
+  def get_db_connection() -> sqlite3.Connection:
+      """
+      Get database connection.
+      
+      Returns:
+          sqlite3.Connection: Database connection with Row factory
+          
+      Example:
+          >>> conn = get_db_connection()
+          >>> cursor = conn.cursor()
+          >>> cursor.execute("SELECT * FROM skills")
+      """
+      return _db.get_connection()
+
+
+  @contextmanager
+  def get_db_cursor():
+      """
+      Context manager for database operations.
+      Automatically commits on success, rolls back on error.
+      
+      Example:
+          >>> with get_db_cursor() as cursor:
+          ...     cursor.execute("INSERT INTO skills ...")
+          ...     # Automatically committed
+      """
+      conn = get_db_connection()
+      cursor = conn.cursor()
+      try:
+          yield cursor
+          conn.commit()
+      except Exception:
+          conn.rollback()
+          raise
+      finally:
+          cursor.close()
+
+
+  def execute_query(query: str, params: tuple = None) -> list:
+      """
+      Execute a SELECT query and return results.
+      
+      Args:
+          query: SQL query string
+          params: Query parameters (optional)
+          
+      Returns:
+          List of Row objects
+      """
+      with get_db_cursor() as cursor:
+          if params:
+              cursor.execute(query, params)
+          else:
+              cursor.execute(query)
+          return cursor.fetchall()
+
+
+  def execute_update(query: str, params: tuple = None) -> int:
+      """
+      Execute an INSERT/UPDATE/DELETE query.
+      
+      Args:
+          query: SQL query string
+          params: Query parameters (optional)
+          
+      Returns:
+          Number of affected rows
+      """
+      with get_db_cursor() as cursor:
+          if params:
+              cursor.execute(query, params)
+          else:
+              cursor.execute(query)
+          return cursor.rowcount
+
+  ---
+  2. Create backend/db/__init__.py (Clean API)
+
+  """
+  Database module for Deductly
+  Centralized database access and management
+  """
+
+  from .connection import (
+      get_db_connection,
+      get_db_cursor,
+      execute_query,
+      execute_update,
+      DB_PATH
+  )
+
+  __all__ = [
+      'get_db_connection',
+      'get_db_cursor',
+      'execute_query',
+      'execute_update',
+      'DB_PATH'
+  ]
+
+  ---
+  3. Create backend/db/schema.py (Single Source of Truth)
+
+  """
+  Complete database schema for Deductly
+  This is the single source of truth for all table definitions
+  """
+
+  # Full schema as one coherent file
+  SCHEMA = """
+  -- ============================================================================
+  -- Skills Table
+  -- ============================================================================
+  CREATE TABLE IF NOT EXISTS skills (
+      id VARCHAR(50) PRIMARY KEY,
+      skill_id VARCHAR(20) UNIQUE NOT NULL,
+      skill_name VARCHAR(255) NOT NULL,
+      domain VARCHAR(50) NOT NULL,
+      sub_domain VARCHAR(50) NOT NULL,
+      category VARCHAR(100),
+      description TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_skills_domain ON skills(domain);
+  CREATE INDEX IF NOT EXISTS idx_skills_sub_domain ON skills(sub_domain);
+  CREATE INDEX IF NOT EXISTS idx_skills_domain_sub_domain ON skills(domain, sub_domain);
+
+
+  -- ============================================================================
+  -- Questions Table
+  -- ============================================================================
+  CREATE TABLE IF NOT EXISTS questions (
+      id VARCHAR(50) PRIMARY KEY,
+      question_text TEXT NOT NULL,
+      answer_choices TEXT,
+      correct_answer VARCHAR(10),
+      difficulty_level VARCHAR(20),
+      question_type VARCHAR(100),
+      domain VARCHAR(50) NOT NULL,
+      sub_domain VARCHAR(50) NOT NULL,
+      source_url TEXT,
+      passage_text TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_questions_domain ON questions(domain);
+  CREATE INDEX IF NOT EXISTS idx_questions_sub_domain ON questions(sub_domain);
+
+
+  -- ============================================================================
+  -- Question-Skills Junction Table
+  -- ============================================================================
+  CREATE TABLE IF NOT EXISTS question_skills (
+      id VARCHAR(50) PRIMARY KEY,
+      question_id VARCHAR(50) NOT NULL,
+      skill_id VARCHAR(50) NOT NULL,
+      FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE,
+      FOREIGN KEY (skill_id) REFERENCES skills(id) ON DELETE CASCADE,
+      UNIQUE(question_id, skill_id)
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_question_skills_question_id ON question_skills(question_id);
+  CREATE INDEX IF NOT EXISTS idx_question_skills_skill_id ON question_skills(skill_id);
+
+
+  -- ============================================================================
+  -- Drills Table
+  -- ============================================================================
+  CREATE TABLE IF NOT EXISTS drills (
+      id VARCHAR(50) PRIMARY KEY,
+      drill_id VARCHAR(50) UNIQUE NOT NULL,
+      user_id VARCHAR(100) NOT NULL,
+      question_count INTEGER NOT NULL,
+      timing INTEGER,
+      difficulty VARCHAR(20),
+      skills TEXT,
+      drill_type VARCHAR(50),
+      question_ids TEXT NOT NULL,
+      status VARCHAR(20) DEFAULT 'generated',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      started_at TIMESTAMP,
+      completed_at TIMESTAMP,
+      current_question_index INTEGER DEFAULT 0,
+      user_answers TEXT,
+      user_highlights TEXT
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_drills_user_id ON drills(user_id);
+  CREATE INDEX IF NOT EXISTS idx_drills_status ON drills(status);
+  CREATE INDEX IF NOT EXISTS idx_drills_created_at ON drills(created_at);
+  CREATE INDEX IF NOT EXISTS idx_drills_user_status ON drills(user_id, status);
+
+
+  -- ============================================================================
+  -- Drill Results Table
+  -- ============================================================================
+  CREATE TABLE IF NOT EXISTS drill_results (
+      id VARCHAR(50) PRIMARY KEY,
+      drill_id VARCHAR(50) NOT NULL,
+      user_id VARCHAR(100) NOT NULL,
+      total_questions INTEGER NOT NULL,
+      correct_answers INTEGER NOT NULL DEFAULT 0,
+      incorrect_answers INTEGER NOT NULL DEFAULT 0,
+      skipped_questions INTEGER NOT NULL DEFAULT 0,
+      score_percentage DECIMAL(5,2),
+      time_taken INTEGER,
+      question_results TEXT,
+      skill_performance TEXT,
+      completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (drill_id) REFERENCES drills(drill_id) ON DELETE CASCADE
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_drill_results_drill_id ON drill_results(drill_id);
+  CREATE INDEX IF NOT EXISTS idx_drill_results_user_id ON drill_results(user_id);
+  CREATE INDEX IF NOT EXISTS idx_drill_results_completed_at ON drill_results(completed_at);
+  CREATE INDEX IF NOT EXISTS idx_drill_results_user_drill ON drill_results(user_id, drill_id);
+
+
+  -- ============================================================================
+  -- Study Plans Table
+  -- ============================================================================
+  CREATE TABLE IF NOT EXISTS study_plans (
+      id VARCHAR(50) PRIMARY KEY,
+      user_id VARCHAR(100) UNIQUE NOT NULL,
+      diagnostic_drill_id VARCHAR(50),
+      title VARCHAR(255) DEFAULT 'LSAT Study Plan',
+      total_weeks INTEGER NOT NULL,
+      start_date DATE NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (diagnostic_drill_id) REFERENCES drills(drill_id)
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_study_plans_user ON study_plans(user_id);
+
+
+  -- ============================================================================
+  -- Study Plan Tasks Table
+  -- ============================================================================
+  CREATE TABLE IF NOT EXISTS study_plan_tasks (
+      id VARCHAR(50) PRIMARY KEY,
+      study_plan_id VARCHAR(50) NOT NULL,
+      week_number INTEGER NOT NULL,
+      task_order INTEGER NOT NULL,
+      task_type VARCHAR(20) NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      estimated_minutes INTEGER,
+      task_config TEXT NOT NULL,
+      status VARCHAR(20) DEFAULT 'pending',
+      drill_id VARCHAR(50),
+      video_id VARCHAR(50),
+      completed_at TIMESTAMP,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (study_plan_id) REFERENCES study_plans(id) ON DELETE CASCADE,
+      FOREIGN KEY (drill_id) REFERENCES drills(drill_id),
+      FOREIGN KEY (video_id) REFERENCES videos(id)
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_study_plan_tasks_plan ON study_plan_tasks(study_plan_id);
+  CREATE INDEX IF NOT EXISTS idx_study_plan_tasks_week ON study_plan_tasks(study_plan_id, week_number);
+  CREATE INDEX IF NOT EXISTS idx_study_plan_tasks_status ON study_plan_tasks(status);
+
+
+  -- ============================================================================
+  -- Videos Table
+  -- ============================================================================
+  CREATE TABLE IF NOT EXISTS videos (
+      id VARCHAR(50) PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      description TEXT,
+      instructor VARCHAR(255) NOT NULL,
+      category VARCHAR(100) NOT NULL,
+      difficulty VARCHAR(20),
+      duration_seconds INTEGER NOT NULL,
+      video_url TEXT,
+      thumbnail_url TEXT,
+      skill_ids TEXT,
+      key_topics TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_videos_category ON videos(category);
+  CREATE INDEX IF NOT EXISTS idx_videos_difficulty ON videos(difficulty);
+  """
+
+
+  def create_all_tables(conn):
+      """
+      Create all tables in the database.
+      
+      Args:
+          conn: SQLite database connection
+      """
+      conn.executescript(SCHEMA)
+      conn.commit()
+      print("✓ All tables created successfully")
+
+
+  def drop_all_tables(conn):
+      """
+      Drop all tables (use with caution!)
+      
+      Args:
+          conn: SQLite database connection
+      """
+      tables = [
+          'videos',
+          'study_plan_tasks',
+          'study_plans',
+          'drill_results',
+          'drills',
+          'question_skills',
+          'questions',
+          'skills'
+      ]
+
+      for table in tables:
+          conn.execute(f"DROP TABLE IF EXISTS {table}")
+
+      conn.commit()
+      print("✓ All tables dropped")
+
+  ---
+  4. Create backend/db/migrations/migrate.py (Migration Runner)
+
+  """
+  Database migration runner
+  Tracks and applies schema changes in order
+  """
+  import sqlite3
+  import os
+  from pathlib import Path
+
+  MIGRATIONS_DIR = Path(__file__).parent
+
+
+  def create_migrations_table(conn):
+      """Create table to track applied migrations"""
+      conn.execute("""
+          CREATE TABLE IF NOT EXISTS schema_migrations (
+              version INTEGER PRIMARY KEY,
+              name TEXT NOT NULL,
+              applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          )
+      """)
+      conn.commit()
+
+
+  def get_applied_migrations(conn):
+      """Get list of already-applied migration versions"""
+      cursor = conn.cursor()
+      cursor.execute("SELECT version FROM schema_migrations ORDER BY version")
+      return {row[0] for row in cursor.fetchall()}
+
+
+  def apply_migration(conn, version, name, sql_file):
+      """Apply a single migration"""
+      print(f"Applying migration {version}: {name}...")
+
+      with open(sql_file, 'r') as f:
+          sql = f.read()
+
+      conn.executescript(sql)
+      conn.execute(
+          "INSERT INTO schema_migrations (version, name) VALUES (?, ?)",
+          (version, name)
+      )
+      conn.commit()
+      print(f"  ✓ Migration {version} applied")
+
+
+  def run_migrations(db_path):
+      """Run all pending migrations"""
+      conn = sqlite3.connect(db_path)
+
+      # Create migrations tracking table
+      create_migrations_table(conn)
+
+      # Get applied migrations
+      applied = get_applied_migrations(conn)
+
+      # Find all .sql files in migrations directory
+      migrations = []
+      for sql_file in sorted(MIGRATIONS_DIR.glob('*.sql')):
+          # Extract version from filename (e.g., "001_initial_schema.sql" -> 1)
+          filename = sql_file.stem
+          if filename[0].isdigit():
+              version = int(filename.split('_')[0])
+              name = '_'.join(filename.split('_')[1:])
+              migrations.append((version, name, sql_file))
+
+      # Apply pending migrations
+      for version, name, sql_file in sorted(migrations):
+          if version not in applied:
+              apply_migration(conn, version, name, sql_file)
+
+      conn.close()
+      print("\n✓ All migrations up to date")
+
+
+  if __name__ == '__main__':
+      from db.connection import DB_PATH
+      run_migrations(DB_PATH)
+
+  ---
+  5. Update All Logic Files to Use Centralized Connection
+
+  Before (backend/insights/logic.py):
+  import sqlite3
+  import os
+
+  BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+  DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
+
+  def get_db_connection():
+      conn = sqlite3.connect(DB_PATH)
+      conn.row_factory = sqlite3.Row
+      return conn
+
+  After (backend/insights/logic.py):
+  from db import get_db_connection, get_db_cursor, execute_query
+
+  # That's it! No more DB setup code needed
+
+  Same for:
+  - backend/personalization/logic.py
+  - backend/skill_builder/logic.py
+  - backend/skill_builder/curriculum_logic.py
+
+  ---
+  6. Create Setup Script (backend/db/setup.py)
+
+  """
+  Database setup script
+  Run this to initialize a fresh database
+  """
+  from db.connection import get_db_connection, DB_PATH
+  from db.schema import create_all_tables
+  from db.seeds import skills, questions, videos
+  import os
+
+
+  def setup_database(fresh=False):
+      """
+      Set up the database with schema and seed data
+      
+      Args:
+          fresh: If True, drop all tables first (WARNING: destroys data)
+      """
+      print(f"Setting up database at: {DB_PATH}")
+
+      if fresh:
+          print("\n⚠️  WARNING: Fresh install - dropping all tables!")
+          from db.schema import drop_all_tables
+          conn = get_db_connection()
+          drop_all_tables(conn)
+
+      # Create tables
+      print("\n1. Creating tables...")
+      conn = get_db_connection()
+      create_all_tables(conn)
+
+      # Seed data
+      print("\n2. Seeding skills taxonomy...")
+      skills.seed_skills()
+
+      print("\n3. Seeding LSAT questions...")
+      questions.seed_questions()
+
+      print("\n4. Seeding sample videos...")
+      videos.seed_videos()
+
+      print("\n✓ Database setup complete!")
+      print(f"   Location: {DB_PATH}")
+
+
+  if __name__ == '__main__':
+      import sys
+      fresh = '--fresh' in sys.argv
+      setup_database(fresh=fresh)
+
+  ---
+  Benefits of This Approach
+
+  1. Single Source of Truth
+
+  - backend/db/schema.py contains all table definitions
+  - No hunting through 5+ files to understand schema
+  - Easy to see relationships between tables
+
+  2. DRY Principle
+
+  - One get_db_connection() function in backend/db/connection.py
+  - All modules import from db
+  - Update once, affect everywhere
+
+  3. Environment-Aware
+
+  # Easy to test with different database
+  DEDUCTLY_DB_PATH=/tmp/test.db pytest
+
+  4. Migration System
+
+  - Versioned migrations in backend/db/migrations/
+  - Track what's been applied
+  - Safe deployment to production
+  - Can add rollback capability
+
+  5. Clear Setup Process
+
+  # Fresh install
+  python backend/db/setup.py --fresh
+
+  # Or just run pending migrations
+  python backend/db/migrations/migrate.py
+
+  6. Better Imports
+
+  # Old way (scattered)
+  import sqlite3
+  import os
+  BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+  DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
+  conn = sqlite3.connect(DB_PATH)
+  conn.row_factory = sqlite3.Row
+
+  # New way (clean)
+  from db import get_db_connection
+  conn = get_db_connection()
+
+  ---
+  Summary of Constructive Criticisms
+
+  1. Database setup is scattered → Centralize in backend/db/
+  2. Duplicated connection code → Single connection.py module
+  3. No migration tracking → Add versioned migrations
+  4. Inconsistent table creation → One schema.py file
+  5. Hard to test → Environment-aware DB path
+  6. No documentation → Clear README in db/ folder
+
+ 

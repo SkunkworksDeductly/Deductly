@@ -220,7 +220,8 @@ const DrillBuilder = () => {
         question_count: drillConfig.questionCount,
         difficulties: drillConfig.difficulties,
         skills: drillConfig.skills,
-        time_percentage: drillConfig.timePercentage
+        time_percentage: drillConfig.timePercentage,
+        drill_type: 'practice'
       }
 
       const headers = await getAuthHeaders()

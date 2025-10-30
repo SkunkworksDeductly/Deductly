@@ -18,6 +18,7 @@ import DrillSummary from './pages/DrillSummary'
 import DrillResults from './pages/DrillResults'
 import Curriculum from './pages/Curriculum'
 import VideoDetail from './pages/VideoDetail'
+import Analytics from './pages/Analytics'
 
 const routerBaseName = import.meta.env.BASE_URL.replace(/\/+$/, '')
 
@@ -54,6 +55,7 @@ function App() {
                           <Route path="drill/session" element={<DrillSession />} />
                           <Route path="drill/summary" element={<DrillSummary />} />
                           <Route path="drill/results/:drillId" element={<DrillResults />} />
+                          <Route path="analytics" element={<Analytics />} />
                         </Routes>
                       </main>
 

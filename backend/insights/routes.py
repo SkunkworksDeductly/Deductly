@@ -5,36 +5,33 @@ from .logic import (
     fetch_ability_history,
     prepare_skill_mastery_estimation,
     fetch_skill_mastery,
-    fetch_skill_mastery_history
+    fetch_skill_mastery_history,
+    irt_online_update,
+    glmm_online_update
 )
 
 insights_bp = Blueprint('insights', __name__, url_prefix='/api/insights')
 
 
 
-@insights_bp.route('/irt/<int:user_id>', methods=['GET'])
-def get_ability_estimate(model_name, user_id):
-    """Stub: fetch ability estimate for a specific user from a specific model."""
+@insights_bp.route('/irt/<user_id>', methods=['GET'])
+def get_ability_estimate(user_id):
+    """Fetch ability estimate for a specific user using the IRT model."""
+    model_name = "irt"
     ability = fetch_current_ability(model_name, user_id)
     return jsonify({
         "model_name": model_name,
         "user_id": user_id,
-        "ability_estimate": ability  # Placeholder value
+        "ability_estimate": ability
     })
 
 
 
-@insights_bp.route('/glmm/<int:user_id>', methods=['GET'])
-def get_mastery_estimate(model_name, user_id):
-    """Stub: fetch subskill mastery estimate for a specific user from a specific model."""
-    return jsonify({
-        "model_name": model_name,
-        "user_id": user_id,
-        "mastery_estimate": {
-            "skill_1": 0.8,
-            "skill_2": 0.6
-        }  # Placeholder values
-    })
+@insights_bp.route('/glmm/<user_id>', methods=['GET'])
+def get_mastery_estimate(user_id):
+    """Fetch subskill mastery estimate for a specific user using the GLMM model."""
+    mastery = fetch_skill_mastery(user_id)
+    return jsonify(mastery)
 
 
 @insights_bp.route('/models/<string:model_name>/recalibrate', methods=['POST'])
@@ -47,10 +44,13 @@ def recalibrate_model(model_name):
     })
 
 
-@insights_bp.route('online/irt/update/<int:user_id>', methods=['POST'])
+@insights_bp.route('/online/irt/update/<user_id>', methods=['POST'])
 def update_user_estimates(user_id):
     """Stub: perform online update of user estimates given new evidence."""
     payload = request.get_json() or {}
+
+    irt_online_update(user_id, payload.get('new_evidence', []))
+
     return jsonify({
         "model_name": "irt",
         "user_id": user_id,
@@ -58,10 +58,11 @@ def update_user_estimates(user_id):
     })
 
 
-@insights_bp.route('online/glmm/update/<int:user_id>', methods=['POST'])
+@insights_bp.route('/online/glmm/update/<user_id>', methods=['POST'])
 def update_user_mastery(user_id):
     """Stub: perform online update of user mastery given new evidence."""
     payload = request.get_json() or {}
+    glmm_online_update(user_id, payload.get('new_evidence', []))
     return jsonify({
         "model_name": "glmm",
         "user_id": user_id,

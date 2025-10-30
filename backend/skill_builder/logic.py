@@ -7,11 +7,9 @@ import os
 import sqlite3
 import uuid
 from utils import generate_id, generate_sequential_id
+from db import get_db_connection, get_db_cursor, execute_query
 from datetime import datetime, timezone
 
-# Path to data files
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
 
 # Drill configuration defaults
 SECONDS_PER_QUESTION = 90
@@ -23,11 +21,6 @@ QUESTION_SELECT_FIELDS = [
     'difficulty_level', 'question_type', 'passage_text'
 ]
 
-def get_db_connection():
-    """Create a database connection."""
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
 
 
 def create_drill_session(payload):
@@ -52,7 +45,7 @@ def create_drill_session(payload):
 
         # Extract question IDs for storage
         question_ids = [q['id'] for q in questions]
-
+        print([pk_id, drill_id, user_id, question_count, time_limit_seconds, json.dumps(difficulties), json.dumps(skills), drill_type, json.dumps(question_ids), 'generated'])
         cursor.execute("""
             INSERT INTO drills (
                 id, drill_id, user_id, question_count, timing,

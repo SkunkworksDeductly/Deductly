@@ -2,6 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Workflow Requirements
+- Update CLAUDE.md before every git commit
+
 ## Project Overview
 
 Deductly is an education tech platform focused on LSAT preparation, featuring diagnostic assessments, personalized study plans, and practice drills. Built with React frontend (Vite + Tailwind) and Flask/Python backend with SQLite database.

@@ -1,0 +1,1491 @@
+================================================================================
+ADAPTIVE STUDY PLAN DESIGN: CONTEXTUAL BANDIT + HIERARCHICAL PLANNING
+================================================================================
+
+Author: Design for Deductly Adaptive Learning System
+Date: 2025-10-30
+Version: 1.0
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+
+This document specifies an adaptive study plan system that uses:
+1. CONTEXTUAL BANDITS to select optimal learning modules based on user mastery
+2. HIERARCHICAL PLANNING (Phase → Week → Module → Task) for long-term structure
+3. WEEKLY ADAPTATION that responds to mastery improvements
+
+Key Design Decisions:
+- Bandit Arms: Learning "modules" (atomic units of instruction + practice)
+- Context: User's 35-dimensional mastery vector from GLMM
+- Reward: Change in mastery (Δ mastery_vector) after module completion
+- Algorithm: Thompson Sampling with Bayesian Linear Regression
+- Planning Horizon: 10-12 weeks with weekly re-planning
+- Adaptation Frequency: Weekly (current week fixed, future weeks replanned)
+
+================================================================================
+1. SYSTEM ARCHITECTURE OVERVIEW
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         ADAPTIVE STUDY PLANNER                          │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  INPUT: mastery_vector (35-dim), diagnostic_results, target_test_date  │
+│                                                                         │
+│  ┌────────────────────────────────────────────────────────────────┐   │
+│  │  PHASE 1: HIERARCHICAL LONG-TERM PLANNING                      │   │
+│  │  ────────────────────────────────────────────                  │   │
+│  │  • Determine study phases (Foundation, Practice, Mastery)      │   │
+│  │  • Allocate weeks to phases based on current skill level       │   │
+│  │  • Set phase-level learning objectives                         │   │
+│  └────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│  ┌────────────────────────────────────────────────────────────────┐   │
+│  │  PHASE 2: WEEKLY MODULE SELECTION (CONTEXTUAL BANDIT)          │   │
+│  │  ──────────────────────────────────────────────                │   │
+│  │  FOR each week in study plan:                                  │   │
+│  │    • Context: current mastery_vector + phase constraints       │   │
+│  │    • Action: select K modules from module library              │   │
+│  │    • Use Thompson Sampling to balance exploration/exploitation │   │
+│  │    • Respect phase curriculum (foundational → advanced)        │   │
+│  └────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│  ┌────────────────────────────────────────────────────────────────┐   │
+│  │  PHASE 3: TASK GENERATION FROM MODULES                         │   │
+│  │  ──────────────────────────────────────────────────────────    │   │
+│  │  FOR each selected module:                                     │   │
+│  │    • Expand into concrete tasks (videos, drills)               │   │
+│  │    • Configure drill parameters (skills, difficulty, count)    │   │
+│  │    • Insert into study_plan_tasks table                        │   │
+│  └────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│  ┌────────────────────────────────────────────────────────────────┐   │
+│  │  PHASE 4: WEEKLY ADAPTATION                                    │   │
+│  │  ───────────────────────────                                   │   │
+│  │  AT END of each week:                                          │   │
+│  │    • Calculate reward: Δ mastery per module                    │   │
+│  │    • Update bandit parameters (Bayesian posterior)             │   │
+│  │    • Re-plan future weeks (keep current week fixed)            │   │
+│  │    • Adjust phase progression if needed                        │   │
+│  └────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│  OUTPUT: Personalized study_plan with adaptive weekly tasks            │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+DATA FLOW:
+──────────
+1. User completes diagnostic → Initial mastery_vector (35-dim) calculated
+2. Hierarchical planner creates phase structure (e.g., 3 weeks Foundation,
+   4 weeks Practice, 3 weeks Mastery)
+3. Contextual bandit selects modules for Week 1
+4. Modules expanded into tasks (video + drills) in study_plan_tasks
+5. User completes Week 1 tasks → mastery_vector updated via GLMM
+6. Reward calculated: Δ mastery per module
+7. Bandit updates beliefs about module effectiveness
+8. Weeks 2-10 replanned with updated context
+9. Repeat steps 3-8 for each week
+
+================================================================================
+2. MODULE LIBRARY DESIGN
+================================================================================
+
+A MODULE is an atomic unit of the study plan consisting of:
+- Instructional content (videos/readings)
+- Practice exercises (drills)
+- Targeted skills (1-5 skills from the 35-skill taxonomy)
+- Difficulty level
+- Estimated time commitment
+
+MODULE TYPES:
+─────────────
+
+A. SKILL-FOCUSED MODULES (Single Skill or Skill Cluster)
+   Example: "Identify Assumptions Module"
+   - Video: "How to Spot Hidden Assumptions" (10 min)
+   - Drill 1: Untimed assumptions practice, 10 questions, easy-medium
+   - Drill 2: Timed assumptions practice, 10 questions, medium-hard
+   - Target Skills: [LR-03: Identify Assumptions]
+   - Estimated Time: 60 minutes
+
+B. MIXED REVIEW MODULES (Multiple Skills)
+   Example: "LR Argument Structure Review"
+   - Video: None (pure practice)
+   - Drill 1: Mixed LR questions, 15 questions, medium difficulty
+   - Target Skills: [LR-01, LR-02, LR-03, LR-04] (Conclusion, Premises, Assumptions, Method)
+   - Estimated Time: 45 minutes
+
+C. DOMAIN-FOCUSED MODULES (Broad Coverage)
+   Example: "Reading Comprehension Fundamentals"
+   - Video: "RC Strategy Overview" (15 min)
+   - Drill 1: Single passage + questions, untimed
+   - Drill 2: Timed passage practice
+   - Target Skills: [RC-01, RC-02, RC-03, RC-07] (Main Point, Structure, Author Attitude, Detail)
+   - Estimated Time: 75 minutes
+
+D. DIAGNOSTIC/CHECKPOINT MODULES
+   Example: "Week 3 Progress Check"
+   - Video: None
+   - Drill 1: Mixed diagnostic, 20 questions, test-like conditions
+   - Target Skills: ALL skills from previous 3 weeks
+   - Estimated Time: 35 minutes (timed)
+
+
+MODULE LIBRARY STRUCTURE (JSON):
+────────────────────────────────
+
+{
+  "modules": [
+    {
+      "module_id": "LR-ASSUMPTIONS-101",
+      "module_name": "Introduction to Assumptions",
+      "module_type": "skill_focused",
+      "target_skills": ["LR-03"],
+      "secondary_skills": ["LR-01", "LR-02"],  // Related skills
+      "difficulty_level": "foundation",  // foundation, intermediate, advanced
+      "phase_suitability": ["foundation", "practice"],  // Which phases this fits
+      "prerequisites": [],  // Module IDs that should be completed first
+      "estimated_minutes": 60,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "How to Spot Hidden Assumptions",
+          "video_id": "placeholder_assumptions_intro",
+          "estimated_minutes": 10
+        },
+        {
+          "task_type": "drill",
+          "title": "Assumptions Practice (Untimed)",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-03"],
+            "difficulties": ["easy", "medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 25
+        },
+        {
+          "task_type": "drill",
+          "title": "Assumptions Practice (Timed)",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-03"],
+            "difficulties": ["medium", "hard"],
+            "timing_mode": "timed",
+            "time_limit_seconds": 1500,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 25
+        }
+      ],
+      "learning_objectives": [
+        "Recognize when an argument relies on unstated assumptions",
+        "Identify the gap between premises and conclusion",
+        "Distinguish between necessary and sufficient assumptions"
+      ]
+    },
+    {
+      "module_id": "LR-MIXED-REVIEW-01",
+      "module_name": "Logical Reasoning Mixed Practice",
+      "module_type": "mixed_review",
+      "target_skills": ["LR-01", "LR-02", "LR-03", "LR-04", "LR-05", "LR-06"],
+      "secondary_skills": [],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["practice", "mastery"],
+      "prerequisites": ["LR-ASSUMPTIONS-101", "LR-STRENGTHEN-101", "LR-WEAKEN-101"],
+      "estimated_minutes": 45,
+      "tasks": [
+        {
+          "task_type": "drill",
+          "title": "Mixed LR Practice",
+          "task_config": {
+            "question_count": 15,
+            "skills": ["LR-01", "LR-02", "LR-03", "LR-04", "LR-05", "LR-06"],
+            "difficulties": ["medium"],
+            "timing_mode": "timed",
+            "time_limit_seconds": 2250,
+            "drill_type": "mixed_practice"
+          },
+          "estimated_minutes": 45
+        }
+      ],
+      "learning_objectives": [
+        "Apply multiple LR skills in mixed context",
+        "Improve question-type recognition speed",
+        "Build stamina for full LR sections"
+      ]
+    }
+  ]
+}
+
+
+MODULE SCORING (for Contextual Bandit):
+───────────────────────────────────────
+
+Each module a has:
+- Feature vector φ(a, m): combination of module features + mastery context
+- Expected reward: E[R | a, m] = θᵀφ(a, m)
+- Uncertainty: σ²(a, m) from Bayesian posterior
+
+Feature representation φ(a, m) ∈ ℝᵈ:
+[
+  m₁, m₂, ..., m₃₅,                    // Current mastery vector (35 dims)
+  1 - m_skill1, 1 - m_skill2, ...,     // Mastery gaps for module target skills
+  difficulty_encoding,                  // One-hot or ordinal encoding
+  phase_match_indicator,                // 1 if module matches current phase
+  prerequisite_completion,              // Fraction of prerequisites completed
+  time_since_skill_practiced,           // Recency features per skill
+  skill_interaction_terms               // Products of related skill masteries
+]
+
+Dimension d ≈ 100-150 (depending on feature engineering)
+
+================================================================================
+3. CONTEXTUAL BANDIT FORMULATION
+================================================================================
+
+PROBLEM SETUP:
+─────────────
+At each decision point (beginning of week t):
+- Context: xₜ = (mastery_vectorₜ, phase, week_number, completed_modules)
+- Action space: A = {all modules in library}
+- Choose K modules: aₜ = (a₁, a₂, ..., aₖ) from A
+- User completes modules → observe rewards rₜ = (r₁, r₂, ..., rₖ)
+- Reward rᵢ = mastery improvement from module aᵢ
+- Update model and repeat for week t+1
+
+ALGORITHM: THOMPSON SAMPLING WITH BAYESIAN LINEAR REGRESSION
+────────────────────────────────────────────────────────────
+
+Model Assumption:
+  E[r | a, x] = θᵀφ(a, x) + ε, where ε ~ N(0, σ²)
+
+  θ ~ N(μ, Σ)  [Bayesian posterior over parameters]
+
+At week t:
+  1. Sample parameter: θ̃ₜ ~ N(μₜ, Σₜ)
+  2. For each candidate module a ∈ A:
+       Compute expected reward: q(a) = θ̃ₜᵀφ(a, xₜ)
+  3. Select top K modules by q(a) (subject to constraints*)
+  4. Assign modules to week t
+  5. At end of week t, observe rewards {rᵢ} for modules {aᵢ}
+  6. Update posterior:
+       μₜ₊₁, Σₜ₊₁ = BayesianUpdate(μₜ, Σₜ, {φ(aᵢ, xₜ)}, {rᵢ})
+
+* Constraints:
+  - Total time per week ≤ time_budget (e.g., 5-10 hours)
+  - At least 1 diagnostic module every N weeks
+  - Phase-appropriate modules (don't assign advanced modules in foundation phase)
+  - Prerequisite satisfaction (don't assign module if prerequisites incomplete)
+  - Diversity (don't assign too many modules with overlapping skills)
+
+BAYESIAN UPDATE (Conjugate Prior):
+──────────────────────────────────
+
+Prior: θ ~ N(μ₀, Σ₀)
+Likelihood: r = Φθ + ε, ε ~ N(0, σ²I)
+  where Φ = [φ(a₁, x), φ(a₂, x), ..., φ(aₖ, x)]ᵀ ∈ ℝᴷˣᵈ
+        r = [r₁, r₂, ..., rₖ]ᵀ ∈ ℝᴷ
+
+Posterior: θ | r ~ N(μ₁, Σ₁)
+  Σ₁ = (Σ₀⁻¹ + σ⁻²ΦᵀΦ)⁻¹
+  μ₁ = Σ₁(Σ₀⁻¹μ₀ + σ⁻²Φᵀr)
+
+In practice, use online updates:
+  Σₜ₊₁⁻¹ = Σₜ⁻¹ + σ⁻²Φₜᵀ Φₜ
+  μₜ₊₁ = μₜ + Σₜ₊₁Φₜᵀ(rₜ - Φₜμₜ)/σ²
+
+INITIALIZATION:
+──────────────
+μ₀ = 0 ∈ ℝᵈ  (no prior bias on module effectiveness)
+Σ₀ = λI, where λ = 1.0 (moderate prior uncertainty)
+σ² = 0.1 (noise variance, tunable)
+
+REWARD CALCULATION:
+──────────────────
+
+For module a completed at time t:
+  r(a, t) = skillwise_improvement(a, t)
+
+where:
+  skillwise_improvement(a, t) = Σᵢ∈skills(a) wᵢ * (mᵢ,after - mᵢ,before)
+
+  wᵢ = skill weight (higher for target skills, lower for secondary)
+     = 1.0 if i in target_skills(a)
+     = 0.5 if i in secondary_skills(a)
+     = 0.0 otherwise
+
+  mᵢ,before = mastery of skill i at start of module
+  mᵢ,after = mastery of skill i after completing module
+
+Normalization: Divide by number of target skills to get average improvement
+  r_normalized(a, t) = skillwise_improvement(a, t) / |target_skills(a)|
+
+Typical reward range: [-0.2, +0.5]
+  (mastery can slightly decrease if user performs poorly, capped at -0.2)
+
+================================================================================
+4. HIERARCHICAL PLANNING ALGORITHM
+================================================================================
+
+HIERARCHY LEVELS:
+────────────────
+1. PHASE: Multi-week learning stage with specific objectives
+2. WEEK: 7-day planning unit with K modules
+3. MODULE: Atomic instructional unit (1-3 tasks)
+4. TASK: Single video or drill
+
+PHASE STRUCTURE:
+───────────────
+
+Phase 1: FOUNDATION (Weeks 1-N₁)
+  Objectives:
+    - Build understanding of core concepts for each skill
+    - Practice fundamentals in low-pressure settings (untimed)
+    - Establish baseline mastery for all 35 skills
+
+  Module Constraints:
+    - difficulty_level ∈ {foundation}
+    - Prioritize skill_focused modules over mixed_review
+    - Include at least 1 module per major skill category
+
+  Target Mastery: m_skill ≥ 0.4 for 80% of skills
+
+Phase 2: PRACTICE (Weeks N₁+1 to N₂)
+  Objectives:
+    - Deepen mastery of weak skills
+    - Introduce timed practice and mixed question types
+    - Build test-taking stamina
+
+  Module Constraints:
+    - difficulty_level ∈ {foundation, intermediate}
+    - Mix of skill_focused (60%) and mixed_review (40%)
+    - Increase proportion of timed drills
+
+  Target Mastery: m_skill ≥ 0.6 for 70% of skills
+
+Phase 3: MASTERY (Weeks N₂+1 to N₃)
+  Objectives:
+    - Polish weak areas identified in practice phase
+    - Full-length test simulations
+    - Build confidence and consistency
+
+  Module Constraints:
+    - difficulty_level ∈ {intermediate, advanced}
+    - Prioritize mixed_review and diagnostic modules
+    - All drills timed with test-like conditions
+
+  Target Mastery: m_skill ≥ 0.7 for 60% of skills
+
+PHASE ALLOCATION ALGORITHM:
+──────────────────────────
+
+Input: total_weeks, initial_mastery_vector
+Output: (N₁, N₂, N₃) phase durations
+
+def allocate_phases(total_weeks, mastery_vector):
+    """
+    Dynamically allocate weeks to phases based on initial skill level.
+    """
+    avg_mastery = mean(mastery_vector)
+    skill_variance = variance(mastery_vector)
+
+    # Default allocation for average student (mastery ≈ 0.3-0.4)
+    if total_weeks == 10:
+        base_allocation = (3, 4, 3)  # Foundation, Practice, Mastery
+    elif total_weeks == 12:
+        base_allocation = (4, 5, 3)
+    elif total_weeks == 8:
+        base_allocation = (2, 4, 2)
+    else:
+        base_allocation = (
+            max(2, total_weeks // 4),
+            max(3, total_weeks // 2),
+            max(2, total_weeks - (total_weeks // 4) - (total_weeks // 2))
+        )
+
+    N1, N2, N3 = base_allocation
+
+    # Adjust based on initial mastery
+    if avg_mastery < 0.25:
+        # Beginner: extend foundation
+        N1 += 1
+        N3 = max(2, N3 - 1)
+    elif avg_mastery > 0.5:
+        # Advanced: shorten foundation, extend mastery
+        N1 = max(2, N1 - 1)
+        N3 += 1
+
+    # Adjust based on skill variance
+    if skill_variance > 0.05:
+        # High variance (uneven skills): need more focused practice
+        N2 += 1
+        N3 = max(2, N3 - 1)
+
+    # Ensure valid allocation
+    while N1 + N2 + N3 != total_weeks:
+        if N1 + N2 + N3 < total_weeks:
+            N2 += 1  # Add to practice phase
+        else:
+            N2 = max(3, N2 - 1)  # Remove from practice
+
+    return (N1, N2, N3)
+
+
+WEEKLY MODULE SELECTION WITH PHASE AWARENESS:
+─────────────────────────────────────────────
+
+def select_modules_for_week(week_number, phase, mastery_vector,
+                             bandit_model, module_library,
+                             completed_modules, time_budget=300):
+    """
+    Select K modules for a given week using contextual bandit.
+
+    Args:
+        week_number: 1-indexed week number
+        phase: "foundation", "practice", or "mastery"
+        mastery_vector: Current 35-dim mastery (numpy array)
+        bandit_model: BayesianLinearRegression model
+        module_library: List of module dicts
+        completed_modules: Set of module_ids already completed
+        time_budget: Max minutes per week (default 300 = 5 hours)
+
+    Returns:
+        selected_modules: List of module dicts
+    """
+    # Sample from posterior
+    theta_sample = bandit_model.sample_parameters()
+
+    # Filter candidate modules
+    candidates = [
+        m for m in module_library
+        if phase in m['phase_suitability']
+        and m['module_id'] not in completed_modules
+        and prerequisites_satisfied(m, completed_modules)
+    ]
+
+    # Score each candidate
+    scores = []
+    for module in candidates:
+        context_features = construct_features(module, mastery_vector,
+                                               phase, week_number)
+        expected_reward = np.dot(theta_sample, context_features)
+        scores.append((module, expected_reward))
+
+    # Sort by score (descending)
+    scores.sort(key=lambda x: x[1], reverse=True)
+
+    # Greedy selection with constraints
+    selected = []
+    total_time = 0
+    covered_skills = set()
+
+    for module, score in scores:
+        # Check time budget
+        if total_time + module['estimated_minutes'] > time_budget:
+            continue
+
+        # Check diversity (don't overload same skills)
+        module_skills = set(module['target_skills'])
+        if len(module_skills & covered_skills) > 0.7 * len(module_skills):
+            continue  # Too much overlap, skip
+
+        # Add module
+        selected.append(module)
+        total_time += module['estimated_minutes']
+        covered_skills.update(module_skills)
+
+        # Stop if we have 3-5 modules
+        if len(selected) >= 5:
+            break
+
+    # Ensure at least 2 modules
+    if len(selected) < 2:
+        # Fallback: pick top 2 by score regardless of diversity
+        selected = [m for m, s in scores[:2]]
+
+    # Add diagnostic every 3 weeks
+    if week_number % 3 == 0:
+        diagnostic_module = get_diagnostic_module(phase, covered_skills)
+        selected.append(diagnostic_module)
+
+    return selected
+
+
+def construct_features(module, mastery_vector, phase, week_number):
+    """
+    Construct feature vector φ(module, context).
+
+    Returns:
+        features: numpy array of shape (d,)
+    """
+    features = []
+
+    # 1. Current mastery (35 dims)
+    features.extend(mastery_vector)
+
+    # 2. Mastery gaps for target skills
+    for skill_id in module['target_skills']:
+        skill_idx = skill_id_to_index(skill_id)
+        gap = 1.0 - mastery_vector[skill_idx]
+        features.append(gap)
+
+    # Pad if fewer than 5 target skills
+    while len(features) < 35 + 5:
+        features.append(0.0)
+
+    # 3. Difficulty encoding (one-hot)
+    difficulty_map = {'foundation': 0, 'intermediate': 1, 'advanced': 2}
+    diff_idx = difficulty_map[module['difficulty_level']]
+    diff_onehot = [0, 0, 0]
+    diff_onehot[diff_idx] = 1
+    features.extend(diff_onehot)
+
+    # 4. Phase match (binary)
+    phase_match = 1.0 if phase in module['phase_suitability'] else 0.0
+    features.append(phase_match)
+
+    # 5. Week number (normalized)
+    features.append(week_number / 10.0)
+
+    # 6. Skill interaction terms (5 terms: products of related skills)
+    for i, skill_a in enumerate(module['target_skills'][:3]):
+        for j, skill_b in enumerate(module['target_skills'][:3]):
+            if i < j:
+                idx_a = skill_id_to_index(skill_a)
+                idx_b = skill_id_to_index(skill_b)
+                features.append(mastery_vector[idx_a] * mastery_vector[idx_b])
+
+    # Pad to fixed dimension (e.g., 100)
+    while len(features) < 100:
+        features.append(0.0)
+
+    return np.array(features[:100])
+
+
+def prerequisites_satisfied(module, completed_modules):
+    """Check if all prerequisites for module have been completed."""
+    return all(prereq in completed_modules
+               for prereq in module['prerequisites'])
+
+
+def skill_id_to_index(skill_id):
+    """Map skill_id (e.g., 'LR-03') to index 0-34."""
+    # LR-01 to LR-18: indices 0-17
+    # RC-01 to RC-17: indices 18-34
+    if skill_id.startswith('LR'):
+        return int(skill_id.split('-')[1]) - 1
+    else:  # RC
+        return 18 + int(skill_id.split('-')[1]) - 1
+
+================================================================================
+5. WEEKLY ADAPTATION MECHANISM
+================================================================================
+
+ADAPTATION TRIGGER: End of each week
+───────────────────────────────────
+
+When user completes Week t:
+  1. COLLECT DATA
+     - For each module m in Week t:
+         * Get tasks associated with module
+         * Get drill_results for each drill task
+         * Extract mastery_before (at start of week)
+         * Extract mastery_after (at end of week)
+         * Compute reward r_m
+
+  2. UPDATE BANDIT MODEL
+     - Construct feature vectors φ_m for each module m
+     - Perform Bayesian update: (μₜ, Σₜ) → (μₜ₊₁, Σₜ₊₁)
+     - Update exploration/exploitation balance
+
+  3. REPLAN FUTURE WEEKS
+     - For weeks t+1 to N:
+         * Re-run module selection with updated model
+         * Keep phase structure fixed (don't change N₁, N₂, N₃)
+         * Update study_plan_tasks for future weeks
+     - Keep current week (t+1) fixed if already started
+
+  4. CHECK PHASE PROGRESSION
+     - Evaluate if phase objectives met early
+     - Option to advance to next phase if:
+         * All target skills meet phase threshold
+         * User explicitly requests acceleration
+     - Recalculate phase allocation if advancing early
+
+
+REWARD COMPUTATION DETAILS:
+──────────────────────────
+
+def compute_module_reward(module_id, user_id, week_start, week_end):
+    """
+    Compute reward for a completed module.
+
+    Args:
+        module_id: Module identifier
+        user_id: User identifier
+        week_start: Timestamp of week start
+        week_end: Timestamp of week end
+
+    Returns:
+        reward: Float in range [-0.2, 0.5]
+    """
+    # Get module definition
+    module = get_module_by_id(module_id)
+    target_skills = module['target_skills']
+    secondary_skills = module['secondary_skills']
+
+    # Get mastery vectors
+    mastery_before = get_mastery_vector(user_id, timestamp=week_start)
+    mastery_after = get_mastery_vector(user_id, timestamp=week_end)
+
+    # Calculate weighted improvement
+    total_improvement = 0.0
+    weight_sum = 0.0
+
+    for skill_id in target_skills:
+        skill_idx = skill_id_to_index(skill_id)
+        improvement = mastery_after[skill_idx] - mastery_before[skill_idx]
+        total_improvement += improvement * 1.0  # Weight = 1.0 for target
+        weight_sum += 1.0
+
+    for skill_id in secondary_skills:
+        skill_idx = skill_id_to_index(skill_id)
+        improvement = mastery_after[skill_idx] - mastery_before[skill_idx]
+        total_improvement += improvement * 0.5  # Weight = 0.5 for secondary
+        weight_sum += 0.5
+
+    # Average improvement
+    avg_improvement = total_improvement / weight_sum if weight_sum > 0 else 0.0
+
+    # Clip to reasonable range
+    reward = np.clip(avg_improvement, -0.2, 0.5)
+
+    # Optional: Add engagement bonus
+    completion_rate = get_module_completion_rate(module_id, user_id, week_start, week_end)
+    if completion_rate < 0.5:
+        reward *= 0.5  # Penalize if user didn't fully engage
+
+    return reward
+
+
+def get_mastery_vector(user_id, timestamp=None):
+    """
+    Retrieve mastery vector at a specific point in time.
+
+    If timestamp is None, return current mastery.
+    Otherwise, reconstruct mastery at historical timestamp.
+    """
+    if timestamp is None:
+        # Current mastery
+        row = db.execute(
+            "SELECT mastery_vector FROM user_abilities WHERE user_id = ?",
+            (user_id,)
+        ).fetchone()
+        if row:
+            return json.loads(row['mastery_vector'])
+        else:
+            return [0.3] * 35  # Default initialization
+    else:
+        # Historical mastery: need to store history or reconstruct
+        # OPTION A: Store mastery_vector_history table with timestamps
+        # OPTION B: Recompute from drill_results up to timestamp
+        # For simplicity, use OPTION A (see database schema section)
+        row = db.execute(
+            """SELECT mastery_vector FROM mastery_vector_history
+               WHERE user_id = ? AND timestamp <= ?
+               ORDER BY timestamp DESC LIMIT 1""",
+            (user_id, timestamp)
+        ).fetchone()
+        if row:
+            return json.loads(row['mastery_vector'])
+        else:
+            return [0.3] * 35
+
+
+REPLANNING LOGIC:
+────────────────
+
+def replan_future_weeks(user_id, current_week, study_plan_id):
+    """
+    Replan all weeks after current_week based on updated model.
+
+    Args:
+        user_id: User identifier
+        current_week: Just-completed week number
+        study_plan_id: Study plan identifier
+    """
+    # Load study plan metadata
+    plan = get_study_plan(study_plan_id)
+    total_weeks = plan['total_weeks']
+    phase_allocation = plan['phase_allocation']  # (N1, N2, N3)
+
+    # Load updated bandit model
+    bandit_model = load_bandit_model(user_id)
+
+    # Load module library
+    module_library = load_module_library()
+
+    # Get completed modules
+    completed_modules = get_completed_modules(user_id)
+
+    # Get current mastery
+    mastery_vector = get_mastery_vector(user_id)
+
+    # Determine current phase
+    N1, N2, N3 = phase_allocation
+    if current_week <= N1:
+        phase = "foundation"
+    elif current_week <= N1 + N2:
+        phase = "practice"
+    else:
+        phase = "mastery"
+
+    # Replan each future week
+    for week_num in range(current_week + 1, total_weeks + 1):
+        # Update phase if necessary
+        if week_num == N1 + 1:
+            phase = "practice"
+        elif week_num == N1 + N2 + 1:
+            phase = "mastery"
+
+        # Select modules for this week
+        selected_modules = select_modules_for_week(
+            week_number=week_num,
+            phase=phase,
+            mastery_vector=mastery_vector,
+            bandit_model=bandit_model,
+            module_library=module_library,
+            completed_modules=completed_modules
+        )
+
+        # Remove old tasks for this week
+        delete_tasks_for_week(study_plan_id, week_num)
+
+        # Create new tasks from selected modules
+        for module_order, module in enumerate(selected_modules):
+            insert_module_tasks(study_plan_id, week_num, module_order, module)
+
+        # Optimistically update completed_modules
+        # (assume these modules will be completed)
+        completed_modules.update(m['module_id'] for m in selected_modules)
+
+
+def delete_tasks_for_week(study_plan_id, week_number):
+    """Delete all tasks for a specific week in the study plan."""
+    db.execute(
+        """DELETE FROM study_plan_tasks
+           WHERE study_plan_id = ? AND week_number = ?""",
+        (study_plan_id, week_number)
+    )
+    db.commit()
+
+
+def insert_module_tasks(study_plan_id, week_number, module_order, module):
+    """
+    Insert tasks from a module into study_plan_tasks.
+
+    Args:
+        study_plan_id: Study plan identifier
+        week_number: Week number (1-indexed)
+        module_order: Order of this module within the week (0-indexed)
+        module: Module dict from library
+    """
+    task_order_base = module_order * 10  # Leave space between modules
+
+    for task_idx, task in enumerate(module['tasks']):
+        task_id = str(uuid.uuid4())
+
+        db.execute(
+            """INSERT INTO study_plan_tasks
+               (id, study_plan_id, week_number, task_order, task_type,
+                title, estimated_minutes, task_config, status, module_id)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                task_id,
+                study_plan_id,
+                week_number,
+                task_order_base + task_idx,
+                task['task_type'],
+                task['title'],
+                task['estimated_minutes'],
+                json.dumps(task.get('task_config', {})),
+                'pending',
+                module['module_id']
+            )
+        )
+
+    db.commit()
+
+================================================================================
+6. INTEGRATION WITH EXISTING INFRASTRUCTURE
+================================================================================
+
+INTEGRATION POINTS:
+──────────────────
+
+1. DIAGNOSTIC LAYER (backend/insights/)
+   - Use `get_current_mastery_vector(user_id)` to fetch 35-dim mastery
+   - Call after diagnostic completion to initialize study plan
+   - Hook into `glmm_online_update()` to get updated mastery after drills
+
+2. PERSONALIZATION LAYER (backend/personalization/)
+   - Modify `generate_study_plan()` in logic.py to use adaptive algorithm
+   - Replace fixed 10-week template with hierarchical + bandit planning
+   - Add new endpoints:
+       * POST /api/personalization/bandit/update (weekly adaptation trigger)
+       * GET /api/personalization/bandit/status (show model confidence, exploration rate)
+
+3. SKILL BUILDER LAYER (backend/skill_builder/)
+   - Drills created from modules should log module_id for reward attribution
+   - After drill completion, trigger mastery update + reward calculation
+
+4. DATABASE (backend/data/deductly.db)
+   - Add tables for bandit state, module library, mastery history
+   - Extend study_plan_tasks to include module_id foreign key
+
+5. FRONTEND (src/)
+   - Display phase progress (Foundation 2/3 weeks complete)
+   - Show weekly modules as expandable cards with tasks underneath
+   - Indicate adaptive replanning ("Your plan updates weekly based on performance!")
+
+
+CALL FLOW EXAMPLE:
+─────────────────
+
+User Journey: From Diagnostic to Adaptive Study Plan
+
+1. User completes diagnostic
+   → POST /api/insights/diagnostic
+   → Computes initial mastery_vector via GLMM
+   → Stores in user_abilities table
+
+2. Generate study plan
+   → POST /api/personalization/study-plan/generate
+   → adaptive_planner.allocate_phases(10, mastery_vector) → (3, 4, 3)
+   → Load module_library
+   → Initialize bandit_model with prior N(0, I)
+   → For week = 1:
+       * bandit.select_modules_for_week(week=1, phase="foundation", mastery_vector, ...)
+       * Returns 3-4 modules
+       * Expand modules into tasks
+       * Insert into study_plan_tasks
+   → For weeks 2-10:
+       * Same process (initial plan, will be replanned)
+   → Return study plan JSON to frontend
+
+3. User works through Week 1
+   → Complete tasks (videos, drills)
+   → Drills update mastery_vector via GLMM online update
+   → Frontend marks tasks as completed
+
+4. Week 1 ends (user or automatic trigger)
+   → POST /api/personalization/bandit/update
+   → For each module in Week 1:
+       * compute_module_reward(module_id, user_id, week_start, week_end)
+       * Get mastery_before and mastery_after
+       * Calculate Δ mastery
+   → Update bandit posterior: (μ, Σ) → (μ', Σ')
+   → Replan weeks 2-10:
+       * select_modules_for_week(week=2, phase="foundation", updated_mastery, ...)
+       * Delete old tasks for weeks 2-10
+       * Insert new tasks
+   → Return updated study plan
+
+5. Repeat steps 3-4 for each week
+
+6. Phase transitions
+   → Week 4: Phase changes from "foundation" to "practice"
+   → Bandit now selects from intermediate difficulty modules
+   → Mixed review modules become more common
+
+7. Final week (Week 10)
+   → Mastery phase: mostly advanced modules and full diagnostics
+   → User ready for actual LSAT
+
+================================================================================
+7. DATABASE SCHEMA EXTENSIONS
+================================================================================
+
+NEW TABLES:
+──────────
+
+-- Module library (could also be JSON file, but DB allows dynamic updates)
+CREATE TABLE IF NOT EXISTS modules (
+    module_id VARCHAR(50) PRIMARY KEY,
+    module_name VARCHAR(200) NOT NULL,
+    module_type VARCHAR(50) NOT NULL,  -- 'skill_focused', 'mixed_review', 'diagnostic'
+    target_skills TEXT NOT NULL,  -- JSON array of skill_ids
+    secondary_skills TEXT,  -- JSON array
+    difficulty_level VARCHAR(20) NOT NULL,  -- 'foundation', 'intermediate', 'advanced'
+    phase_suitability TEXT NOT NULL,  -- JSON array of phases
+    prerequisites TEXT,  -- JSON array of module_ids
+    estimated_minutes INTEGER NOT NULL,
+    tasks TEXT NOT NULL,  -- JSON array of task definitions
+    learning_objectives TEXT,  -- JSON array of strings
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Bandit model state per user
+CREATE TABLE IF NOT EXISTS bandit_models (
+    user_id VARCHAR(255) PRIMARY KEY,
+    mu_vector TEXT NOT NULL,  -- JSON array (mean parameters μ)
+    sigma_matrix TEXT NOT NULL,  -- JSON 2D array (covariance Σ)
+    dimension INTEGER NOT NULL,  -- Feature dimension d
+    noise_variance FLOAT DEFAULT 0.1,  -- σ²
+    num_updates INTEGER DEFAULT 0,  -- Number of Bayesian updates performed
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Mastery vector history (for temporal reward calculation)
+CREATE TABLE IF NOT EXISTS mastery_vector_history (
+    id VARCHAR(255) PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL,
+    mastery_vector TEXT NOT NULL,  -- JSON array of 35 floats
+    theta_scalar FLOAT,  -- Optional: overall ability at this time
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    trigger_event VARCHAR(50),  -- 'diagnostic', 'drill_complete', 'week_end'
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+CREATE INDEX idx_mastery_history_user_time ON mastery_vector_history(user_id, timestamp);
+
+-- Module completion tracking (for reward attribution)
+CREATE TABLE IF NOT EXISTS module_completions (
+    id VARCHAR(255) PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL,
+    module_id VARCHAR(50) NOT NULL,
+    study_plan_id VARCHAR(255),
+    week_number INTEGER,
+    started_at TIMESTAMP,
+    completed_at TIMESTAMP,
+    completion_rate FLOAT,  -- Fraction of tasks completed (0.0-1.0)
+    reward FLOAT,  -- Computed reward for this module
+    mastery_before TEXT,  -- JSON: mastery vector at start
+    mastery_after TEXT,  -- JSON: mastery vector at completion
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (module_id) REFERENCES modules(module_id),
+    FOREIGN KEY (study_plan_id) REFERENCES study_plans(id)
+);
+CREATE INDEX idx_module_completions_user ON module_completions(user_id);
+
+
+MODIFIED TABLES:
+───────────────
+
+-- Add module_id to study_plan_tasks
+ALTER TABLE study_plan_tasks ADD COLUMN module_id VARCHAR(50);
+ALTER TABLE study_plan_tasks ADD CONSTRAINT fk_module
+    FOREIGN KEY (module_id) REFERENCES modules(module_id);
+
+-- Add phase allocation to study_plans
+ALTER TABLE study_plans ADD COLUMN phase_allocation TEXT;  -- JSON: [N1, N2, N3]
+ALTER TABLE study_plans ADD COLUMN current_phase VARCHAR(20);  -- 'foundation', 'practice', 'mastery'
+ALTER TABLE study_plans ADD COLUMN adaptation_enabled BOOLEAN DEFAULT 1;  -- Allow disabling for A/B testing
+
+================================================================================
+8. PSEUDOCODE / ALGORITHMS
+================================================================================
+
+MAIN ENTRY POINT: Generate Adaptive Study Plan
+──────────────────────────────────────────────
+
+def generate_adaptive_study_plan(user_id, diagnostic_drill_id,
+                                  total_weeks=10, target_test_date=None):
+    """
+    Main function to generate an adaptive study plan.
+
+    Called when user completes diagnostic and wants to generate a plan.
+    """
+    # 1. Get initial mastery vector from diagnostic
+    mastery_vector = get_current_mastery_vector(user_id)
+
+    # 2. Determine phase allocation
+    N1, N2, N3 = allocate_phases(total_weeks, mastery_vector)
+    phase_allocation = [N1, N2, N3]
+
+    # 3. Initialize bandit model
+    bandit_model = BayesianLinearBandit(
+        dimension=100,
+        prior_mean=np.zeros(100),
+        prior_cov=np.eye(100) * 1.0,
+        noise_variance=0.1
+    )
+    save_bandit_model(user_id, bandit_model)
+
+    # 4. Create study plan record
+    study_plan_id = str(uuid.uuid4())
+    start_date = date.today()
+
+    db.execute(
+        """INSERT INTO study_plans
+           (id, user_id, diagnostic_drill_id, title, total_weeks,
+            start_date, phase_allocation, current_phase, adaptation_enabled)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (study_plan_id, user_id, diagnostic_drill_id,
+         "Adaptive LSAT Study Plan", total_weeks, start_date,
+         json.dumps(phase_allocation), "foundation", True)
+    )
+
+    # 5. Load module library
+    module_library = load_module_library()
+
+    # 6. Plan all weeks
+    completed_modules = set()
+
+    for week_num in range(1, total_weeks + 1):
+        # Determine phase
+        if week_num <= N1:
+            phase = "foundation"
+        elif week_num <= N1 + N2:
+            phase = "practice"
+        else:
+            phase = "mastery"
+
+        # Select modules
+        selected_modules = select_modules_for_week(
+            week_number=week_num,
+            phase=phase,
+            mastery_vector=mastery_vector,
+            bandit_model=bandit_model,
+            module_library=module_library,
+            completed_modules=completed_modules,
+            time_budget=300  # 5 hours per week
+        )
+
+        # Insert tasks
+        for module_order, module in enumerate(selected_modules):
+            insert_module_tasks(study_plan_id, week_num, module_order, module)
+
+        # Update completed set (optimistic)
+        completed_modules.update(m['module_id'] for m in selected_modules)
+
+    # 7. Store initial mastery snapshot
+    store_mastery_snapshot(user_id, mastery_vector,
+                           trigger_event='study_plan_init')
+
+    # 8. Return study plan
+    return get_study_plan_json(study_plan_id)
+
+
+WEEKLY ADAPTATION TRIGGER:
+─────────────────────────
+
+def trigger_weekly_adaptation(user_id, study_plan_id, completed_week):
+    """
+    Called at the end of each week to update bandit and replan.
+
+    Can be triggered by:
+    - User clicking "Start Next Week" button
+    - Automatic cron job on Sundays
+    - After last task in week is completed
+    """
+    # 1. Verify week is actually complete
+    if not is_week_complete(study_plan_id, completed_week):
+        raise ValueError(f"Week {completed_week} is not yet complete")
+
+    # 2. Get modules from completed week
+    modules = get_modules_for_week(study_plan_id, completed_week)
+
+    # 3. Compute rewards for each module
+    week_start = get_week_start_time(study_plan_id, completed_week)
+    week_end = datetime.now()
+
+    rewards = []
+    features = []
+
+    for module in modules:
+        reward = compute_module_reward(
+            module_id=module['module_id'],
+            user_id=user_id,
+            week_start=week_start,
+            week_end=week_end
+        )
+
+        context_features = construct_features(
+            module=module,
+            mastery_vector=get_mastery_vector(user_id, timestamp=week_start),
+            phase=module['phase'],
+            week_number=completed_week
+        )
+
+        rewards.append(reward)
+        features.append(context_features)
+
+        # Log module completion
+        log_module_completion(
+            user_id=user_id,
+            module_id=module['module_id'],
+            study_plan_id=study_plan_id,
+            week_number=completed_week,
+            reward=reward
+        )
+
+    # 4. Update bandit model
+    bandit_model = load_bandit_model(user_id)
+    bandit_model.update(features, rewards)
+    save_bandit_model(user_id, bandit_model)
+
+    # 5. Store mastery snapshot
+    current_mastery = get_mastery_vector(user_id)
+    store_mastery_snapshot(user_id, current_mastery,
+                           trigger_event=f'week_{completed_week}_end')
+
+    # 6. Replan future weeks
+    replan_future_weeks(user_id, completed_week, study_plan_id)
+
+    # 7. Check if phase transition needed
+    plan = get_study_plan(study_plan_id)
+    N1, N2, N3 = json.loads(plan['phase_allocation'])
+
+    if completed_week == N1:
+        update_study_plan_phase(study_plan_id, "practice")
+    elif completed_week == N1 + N2:
+        update_study_plan_phase(study_plan_id, "mastery")
+
+    return {
+        "status": "success",
+        "week_completed": completed_week,
+        "rewards": rewards,
+        "avg_reward": np.mean(rewards),
+        "next_phase": get_current_phase(study_plan_id)
+    }
+
+
+BAYESIAN BANDIT MODEL CLASS:
+───────────────────────────
+
+class BayesianLinearBandit:
+    """
+    Thompson Sampling with Bayesian Linear Regression.
+
+    Maintains posterior N(μ, Σ) over parameters θ.
+    """
+
+    def __init__(self, dimension, prior_mean, prior_cov, noise_variance):
+        """
+        Args:
+            dimension: Feature dimension d
+            prior_mean: μ₀ ∈ ℝᵈ
+            prior_cov: Σ₀ ∈ ℝᵈˣᵈ
+            noise_variance: σ²
+        """
+        self.d = dimension
+        self.mu = prior_mean.copy()
+        self.Sigma = prior_cov.copy()
+        self.sigma_sq = noise_variance
+        self.Sigma_inv = np.linalg.inv(prior_cov)
+        self.num_updates = 0
+
+    def sample_parameters(self):
+        """
+        Sample θ̃ ~ N(μ, Σ) for Thompson Sampling.
+
+        Returns:
+            theta_sample: ℝᵈ
+        """
+        return np.random.multivariate_normal(self.mu, self.Sigma)
+
+    def predict(self, features):
+        """
+        Compute expected reward E[r | φ] = μᵀφ.
+
+        Args:
+            features: φ ∈ ℝᵈ
+
+        Returns:
+            expected_reward, uncertainty
+        """
+        expected_reward = np.dot(self.mu, features)
+        uncertainty = np.sqrt(np.dot(features, np.dot(self.Sigma, features)))
+        return expected_reward, uncertainty
+
+    def update(self, features_list, rewards_list):
+        """
+        Bayesian update with new observations.
+
+        Args:
+            features_list: List of φᵢ ∈ ℝᵈ (length K)
+            rewards_list: List of rᵢ ∈ ℝ (length K)
+        """
+        Phi = np.array(features_list)  # K × d
+        r = np.array(rewards_list)  # K
+
+        # Update Sigma_inv
+        self.Sigma_inv += (1 / self.sigma_sq) * Phi.T @ Phi
+        self.Sigma = np.linalg.inv(self.Sigma_inv)
+
+        # Update mu
+        self.mu = self.Sigma @ (
+            self.Sigma_inv @ self.mu + (1 / self.sigma_sq) * Phi.T @ r
+        )
+
+        self.num_updates += len(rewards_list)
+
+    def to_dict(self):
+        """Serialize for database storage."""
+        return {
+            'dimension': self.d,
+            'mu': self.mu.tolist(),
+            'Sigma': self.Sigma.tolist(),
+            'sigma_sq': self.sigma_sq,
+            'num_updates': self.num_updates
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        """Deserialize from database."""
+        model = cls(
+            dimension=data['dimension'],
+            prior_mean=np.array(data['mu']),
+            prior_cov=np.array(data['Sigma']),
+            noise_variance=data['sigma_sq']
+        )
+        model.num_updates = data['num_updates']
+        return model
+
+================================================================================
+9. IMPLEMENTATION ROADMAP
+================================================================================
+
+PHASE 1: FOUNDATION (Week 1-2 of development)
+─────────────────────────────────────────────
+✓ Create module library JSON/database
+✓ Define 20-30 initial modules covering all skill types
+✓ Implement BayesianLinearBandit class
+✓ Implement feature construction (construct_features)
+✓ Database schema extensions (new tables, alter existing)
+✓ Write allocate_phases() function
+
+PHASE 2: CORE ALGORITHM (Week 3-4)
+──────────────────────────────────
+✓ Implement select_modules_for_week() with Thompson Sampling
+✓ Implement generate_adaptive_study_plan() main entry point
+✓ Add mastery_vector_history logging
+✓ Implement compute_module_reward()
+✓ Test bandit update logic with synthetic data
+
+PHASE 3: INTEGRATION (Week 5-6)
+───────────────────────────────
+✓ Modify personalization/routes.py to use new generate function
+✓ Add POST /api/personalization/bandit/update endpoint
+✓ Hook into insights layer for mastery updates
+✓ Implement trigger_weekly_adaptation()
+✓ Test end-to-end: diagnostic → plan → week completion → adaptation
+
+PHASE 4: FRONTEND (Week 7-8)
+────────────────────────────
+✓ Update StudyPlan.jsx to display phase structure
+✓ Add module grouping in weekly view
+✓ Show "Week X: Foundation Phase (2/3 complete)"
+✓ Add "Next Week" button to trigger adaptation
+✓ Visualize skill mastery progress (radar chart)
+
+PHASE 5: REFINEMENT (Week 9-10)
+───────────────────────────────
+✓ A/B test: adaptive vs. fixed study plans
+✓ Tune hyperparameters (σ², prior variance, feature engineering)
+✓ Add module diversity constraints
+✓ Implement early phase advancement logic
+✓ User feedback: survey on plan quality and difficulty
+
+PHASE 6: OPTIMIZATION (Week 11-12)
+──────────────────────────────────
+✓ Optimize bandit updates (sparse matrix operations)
+✓ Cache module features for faster selection
+✓ Add background job for automatic weekly adaptation
+✓ Dashboard for admin: view bandit convergence, module effectiveness
+✓ Analyze logged data to improve module library
+
+================================================================================
+10. TUNABLE PARAMETERS & CONFIGURATION
+================================================================================
+
+HYPERPARAMETERS TO TUNE:
+───────────────────────
+
+1. Bandit Prior Variance (λ in Σ₀ = λI)
+   - Default: 1.0
+   - Higher → more exploration early
+   - Lower → faster convergence, less exploration
+   - Recommended range: [0.5, 2.0]
+
+2. Noise Variance (σ²)
+   - Default: 0.1
+   - Higher → slower learning, more robust to outliers
+   - Lower → faster learning, sensitive to noise
+   - Recommended range: [0.05, 0.2]
+
+3. Feature Dimension (d)
+   - Default: 100
+   - Trade-off: expressiveness vs. sample efficiency
+   - Smaller d → faster learning, less capacity
+   - Larger d → more expressive, needs more data
+
+4. Modules per Week (K)
+   - Default: 3-5
+   - Constrained by time_budget (e.g., 300 minutes)
+   - More modules → more data for bandit, less depth
+   - Fewer modules → deeper practice, slower bandit learning
+
+5. Time Budget per Week
+   - Default: 300 minutes (5 hours)
+   - Adjustable based on user availability
+   - Options: 180 (3h), 300 (5h), 420 (7h), 600 (10h)
+
+6. Phase Allocation Flexibility
+   - Default: (3, 4, 3) for 10 weeks
+   - Allow early phase advancement if mastery thresholds met
+   - Minimum weeks per phase: 2
+
+7. Reward Clipping
+   - Default: [-0.2, 0.5]
+   - Prevents extreme rewards from dominating updates
+   - Adjust based on observed reward distribution
+
+8. Diversity Penalty
+   - Default: 70% skill overlap threshold
+   - Higher → force more skill coverage (less repetition)
+   - Lower → allow specialization (more repetition if effective)
+
+9. Diagnostic Frequency
+   - Default: Every 3 weeks
+   - Options: 2 weeks (more frequent), 4 weeks (less frequent)
+   - Trade-off: measurement accuracy vs. practice time
+
+
+CONFIGURATION FILE:
+──────────────────
+
+# adaptive_config.yaml (or JSON)
+
+bandit:
+  prior_variance: 1.0
+  noise_variance: 0.1
+  feature_dimension: 100
+
+planning:
+  default_total_weeks: 10
+  default_time_budget_minutes: 300
+  modules_per_week_min: 2
+  modules_per_week_max: 5
+  diagnostic_frequency_weeks: 3
+
+phases:
+  foundation:
+    mastery_threshold: 0.4
+    min_weeks: 2
+    max_weeks: 4
+  practice:
+    mastery_threshold: 0.6
+    min_weeks: 3
+    max_weeks: 6
+  mastery:
+    mastery_threshold: 0.7
+    min_weeks: 2
+    max_weeks: 4
+
+rewards:
+  clip_min: -0.2
+  clip_max: 0.5
+  completion_rate_weight: 0.2
+  engagement_bonus: true
+
+features:
+  include_skill_interactions: true
+  include_recency: false  # Future: time since skill practiced
+  normalize_mastery: false
+
+constraints:
+  skill_overlap_threshold: 0.7
+  prerequisite_enforcement: true
+  phase_lock: true  # Don't allow skipping phases
+
+adaptation:
+  enabled: true
+  frequency: "weekly"  # Options: "weekly", "biweekly", "manual"
+  replan_future_weeks: true
+  fix_current_week: true
+
+================================================================================
+11. FUTURE EXTENSIONS
+================================================================================
+
+SHORT-TERM (Next 3 months):
+─────────────────────────
+• Add recency features (time since skill last practiced)
+• Implement skill interaction discovery (learn which skill combos are effective)
+• Multi-objective reward (mastery + engagement + time efficiency)
+• Personalized time budgets based on user input
+• Mobile-friendly weekly progress view
+
+MEDIUM-TERM (6 months):
+──────────────────────
+• Contextual bandit with non-linear models (neural contextual bandit)
+• Transfer learning: use aggregate data to improve cold start
+• Skill dependency graph (e.g., must master assumptions before strengthen/weaken)
+• Dynamic phase boundaries (allow phases to overlap or extend)
+• Integration with video curriculum (personalized video recommendations)
+
+LONG-TERM (1 year+):
+───────────────────
+• Reinforcement learning for multi-step planning (POMDP formulation)
+• Curriculum learning: order skills from easy to hard automatically
+• Collaborative filtering: "Users similar to you improved most with Module X"
+• Causal inference: isolate module effectiveness from user motivation/time-of-day
+• Real-time adaptation: adjust difficulty within a week based on drill performance
+
+================================================================================
+12. EVALUATION METRICS
+================================================================================
+
+To measure success of adaptive study plan:
+
+1. LEARNING METRICS:
+   - Δ mastery per week (average across all skills)
+   - Time to reach mastery thresholds (e.g., 70% at 0.7 mastery)
+   - Skill coverage (% of skills with mastery > 0.5)
+
+2. ENGAGEMENT METRICS:
+   - Task completion rate (% of assigned tasks completed)
+   - Study plan adherence (% of weeks completed on time)
+   - User retention (% still active after 4 weeks, 8 weeks)
+
+3. BANDIT PERFORMANCE:
+   - Cumulative reward over time (should increase as model learns)
+   - Regret: difference from oracle policy (requires counterfactual)
+   - Exploration rate (entropy of module selection probabilities)
+
+4. COMPARISON METRICS (A/B Test):
+   - Adaptive vs. Fixed Plan:
+       * Final mastery vector comparison
+       * LSAT score improvement (if available)
+       * User satisfaction survey (1-5 rating)
+       * Time to readiness (weeks until user feels test-ready)
+
+5. MODULE ANALYTICS:
+   - Most effective modules (highest average reward)
+   - Most selected modules (bandit favorites)
+   - Module completion rates (engagement proxy)
+   - Skill-specific effectiveness (which skills improve most per module)
+
+================================================================================
+END OF DESIGN DOCUMENT
+================================================================================
+
+Next steps:
+1. Review and adjust design based on constraints/requirements
+2. Implement Phase 1 (module library + database schema)
+3. Build core algorithms (Phase 2)
+4. Test with synthetic users before deploying to real users
+
+For questions or clarifications, refer to:
+- backend/personalization/logic.py (current implementation)
+- backend/insights/glmm_implementation.py (mastery vector updates)
+- backend/data/lsat_skills_taxonomy.json (skill definitions)
+
+Document version: 1.0
+Last updated: 2025-10-30

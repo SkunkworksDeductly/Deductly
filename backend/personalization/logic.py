@@ -5,18 +5,13 @@ Handles personalized study plans and adaptive learning recommendations
 import sqlite3
 import os
 import json
+from utils import generate_id, generate_sequential_id
+from db import get_db_connection, get_db_cursor, execute_query
 from datetime import datetime, timedelta, date
 
 from skill_builder.logic import create_drill_session
 
-# Import ID generator
-import sys
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.id_generator import generate_id
 
-# Path to data files
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
 
 # Sample data (will be replaced with database queries)
 sample_study_plans = [
@@ -38,11 +33,6 @@ sample_study_plans = [
     }
 ]
 
-def get_db_connection():
-    """Create a database connection"""
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
 
 def get_all_study_plans():
     """Retrieve all study plans"""

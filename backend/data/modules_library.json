@@ -1,0 +1,1145 @@
+{
+  "modules": [
+    {
+      "module_id": "LR-CONCLUSIONS-101",
+      "module_name": "Identifying Conclusions",
+      "module_type": "skill_focused",
+      "target_skills": ["LR-01"],
+      "secondary_skills": ["LR-02"],
+      "difficulty_level": "foundation",
+      "phase_suitability": ["foundation"],
+      "prerequisites": [],
+      "estimated_minutes": 50,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "How to Identify Conclusions",
+          "video_id": "placeholder_conclusions_intro",
+          "estimated_minutes": 12
+        },
+        {
+          "task_type": "drill",
+          "title": "Conclusion Practice (Untimed)",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["LR-01"],
+            "difficulties": ["Easy", "Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 20
+        },
+        {
+          "task_type": "drill",
+          "title": "Conclusion Practice (Timed)",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["LR-01"],
+            "difficulties": ["Medium"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 18
+        }
+      ],
+      "learning_objectives": [
+        "Identify conclusion indicator words (therefore, thus, so)",
+        "Distinguish main conclusion from intermediate conclusions",
+        "Separate conclusions from premises"
+      ]
+    },
+    {
+      "module_id": "LR-ASSUMPTIONS-101",
+      "module_name": "Introduction to Assumptions",
+      "module_type": "skill_focused",
+      "target_skills": ["LR-03"],
+      "secondary_skills": ["LR-01", "LR-02"],
+      "difficulty_level": "foundation",
+      "phase_suitability": ["foundation", "practice"],
+      "prerequisites": ["LR-CONCLUSIONS-101"],
+      "estimated_minutes": 60,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "How to Spot Hidden Assumptions",
+          "video_id": "placeholder_assumptions_intro",
+          "estimated_minutes": 15
+        },
+        {
+          "task_type": "drill",
+          "title": "Assumptions Practice (Untimed)",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-03"],
+            "difficulties": ["Easy", "Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 25
+        },
+        {
+          "task_type": "drill",
+          "title": "Assumptions Practice (Timed)",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-03"],
+            "difficulties": ["Medium"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 20
+        }
+      ],
+      "learning_objectives": [
+        "Recognize when an argument relies on unstated assumptions",
+        "Identify the gap between premises and conclusion",
+        "Distinguish necessary from sufficient assumptions"
+      ]
+    },
+    {
+      "module_id": "LR-STRENGTHEN-101",
+      "module_name": "Strengthening Arguments",
+      "module_type": "skill_focused",
+      "target_skills": ["LR-04"],
+      "secondary_skills": ["LR-03"],
+      "difficulty_level": "foundation",
+      "phase_suitability": ["foundation", "practice"],
+      "prerequisites": ["LR-ASSUMPTIONS-101"],
+      "estimated_minutes": 55,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Strengthen Question Strategy",
+          "video_id": "placeholder_strengthen_intro",
+          "estimated_minutes": 12
+        },
+        {
+          "task_type": "drill",
+          "title": "Strengthen Practice",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-04"],
+            "difficulties": ["Easy", "Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 25
+        },
+        {
+          "task_type": "drill",
+          "title": "Strengthen Timed Drills",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["LR-04"],
+            "difficulties": ["Medium"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 18
+        }
+      ],
+      "learning_objectives": [
+        "Identify answer choices that support assumptions",
+        "Recognize relevant vs irrelevant strengtheners",
+        "Understand how to close gaps in reasoning"
+      ]
+    },
+    {
+      "module_id": "LR-WEAKEN-101",
+      "module_name": "Weakening Arguments",
+      "module_type": "skill_focused",
+      "target_skills": ["LR-05"],
+      "secondary_skills": ["LR-03"],
+      "difficulty_level": "foundation",
+      "phase_suitability": ["foundation", "practice"],
+      "prerequisites": ["LR-ASSUMPTIONS-101"],
+      "estimated_minutes": 55,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Weaken Question Strategy",
+          "video_id": "placeholder_weaken_intro",
+          "estimated_minutes": 12
+        },
+        {
+          "task_type": "drill",
+          "title": "Weaken Practice",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-05"],
+            "difficulties": ["Easy", "Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 25
+        },
+        {
+          "task_type": "drill",
+          "title": "Weaken Timed Drills",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["LR-05"],
+            "difficulties": ["Medium"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 18
+        }
+      ],
+      "learning_objectives": [
+        "Identify answer choices that attack assumptions",
+        "Recognize alternative explanations",
+        "Understand how to exploit reasoning gaps"
+      ]
+    },
+    {
+      "module_id": "LR-FLAW-101",
+      "module_name": "Identifying Logical Flaws",
+      "module_type": "skill_focused",
+      "target_skills": ["LR-06"],
+      "secondary_skills": ["LR-03", "LR-05"],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["foundation", "practice"],
+      "prerequisites": ["LR-WEAKEN-101"],
+      "estimated_minutes": 60,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Common Logical Flaws",
+          "video_id": "placeholder_flaw_intro",
+          "estimated_minutes": 15
+        },
+        {
+          "task_type": "drill",
+          "title": "Flaw Identification Practice",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-06"],
+            "difficulties": ["Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 28
+        },
+        {
+          "task_type": "drill",
+          "title": "Flaw Questions Timed",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["LR-06"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 17
+        }
+      ],
+      "learning_objectives": [
+        "Recognize common reasoning errors",
+        "Distinguish between different types of flaws",
+        "Articulate flaws in technical language"
+      ]
+    },
+    {
+      "module_id": "LR-CONDITIONAL-101",
+      "module_name": "Conditional Logic Fundamentals",
+      "module_type": "skill_focused",
+      "target_skills": ["LR-09"],
+      "secondary_skills": ["LR-07", "LR-08"],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["foundation", "practice"],
+      "prerequisites": [],
+      "estimated_minutes": 70,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Conditional Logic & Contrapositives",
+          "video_id": "placeholder_conditional_intro",
+          "estimated_minutes": 18
+        },
+        {
+          "task_type": "drill",
+          "title": "Conditional Logic Practice",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-09"],
+            "difficulties": ["Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 30
+        },
+        {
+          "task_type": "drill",
+          "title": "Conditional Logic Timed",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["LR-09", "LR-07", "LR-08"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 22
+        }
+      ],
+      "learning_objectives": [
+        "Master if-then statement notation",
+        "Apply contrapositive reasoning",
+        "Chain conditional statements"
+      ]
+    },
+    {
+      "module_id": "LR-INFERENCE-101",
+      "module_name": "Making Valid Inferences",
+      "module_type": "skill_focused",
+      "target_skills": ["LR-10"],
+      "secondary_skills": ["LR-11"],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["foundation", "practice"],
+      "prerequisites": [],
+      "estimated_minutes": 58,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Must Be True Questions",
+          "video_id": "placeholder_inference_intro",
+          "estimated_minutes": 13
+        },
+        {
+          "task_type": "drill",
+          "title": "Inference Practice",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-10"],
+            "difficulties": ["Easy", "Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 25
+        },
+        {
+          "task_type": "drill",
+          "title": "Inference Timed Drills",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["LR-10"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 20
+        }
+      ],
+      "learning_objectives": [
+        "Distinguish valid from invalid inferences",
+        "Avoid extreme answer choices",
+        "Stay within scope of stimulus"
+      ]
+    },
+    {
+      "module_id": "LR-PARALLEL-101",
+      "module_name": "Parallel Reasoning",
+      "module_type": "skill_focused",
+      "target_skills": ["LR-12"],
+      "secondary_skills": ["LR-13"],
+      "difficulty_level": "advanced",
+      "phase_suitability": ["practice", "mastery"],
+      "prerequisites": ["LR-CONCLUSIONS-101"],
+      "estimated_minutes": 65,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Matching Logical Structure",
+          "video_id": "placeholder_parallel_intro",
+          "estimated_minutes": 15
+        },
+        {
+          "task_type": "drill",
+          "title": "Parallel Reasoning Practice",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["LR-12"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 30
+        },
+        {
+          "task_type": "drill",
+          "title": "Parallel Reasoning Timed",
+          "task_config": {
+            "question_count": 5,
+            "skills": ["LR-12"],
+            "difficulties": ["Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 20
+        }
+      ],
+      "learning_objectives": [
+        "Abstract argument structure",
+        "Match logical patterns",
+        "Efficiently eliminate non-parallel answers"
+      ]
+    },
+    {
+      "module_id": "LR-ARG-STRUCTURE-MIX",
+      "module_name": "Argument Structure Mixed Review",
+      "module_type": "mixed_review",
+      "target_skills": ["LR-01", "LR-02", "LR-03"],
+      "secondary_skills": [],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["practice", "mastery"],
+      "prerequisites": ["LR-CONCLUSIONS-101", "LR-ASSUMPTIONS-101"],
+      "estimated_minutes": 45,
+      "tasks": [
+        {
+          "task_type": "drill",
+          "title": "Argument Structure Mixed Practice",
+          "task_config": {
+            "question_count": 15,
+            "skills": ["LR-01", "LR-02", "LR-03"],
+            "difficulties": ["Medium"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "mixed_practice"
+          },
+          "estimated_minutes": 25
+        },
+        {
+          "task_type": "drill",
+          "title": "Argument Structure Challenge",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-01", "LR-02", "LR-03"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "mixed_practice"
+          },
+          "estimated_minutes": 20
+        }
+      ],
+      "learning_objectives": [
+        "Apply multiple argument structure skills",
+        "Quickly identify question type",
+        "Build speed on fundamental skills"
+      ]
+    },
+    {
+      "module_id": "LR-ARG-EVAL-MIX",
+      "module_name": "Argument Evaluation Mixed Review",
+      "module_type": "mixed_review",
+      "target_skills": ["LR-04", "LR-05", "LR-06", "LR-18"],
+      "secondary_skills": ["LR-03"],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["practice", "mastery"],
+      "prerequisites": ["LR-STRENGTHEN-101", "LR-WEAKEN-101", "LR-FLAW-101"],
+      "estimated_minutes": 50,
+      "tasks": [
+        {
+          "task_type": "drill",
+          "title": "Argument Evaluation Mixed",
+          "task_config": {
+            "question_count": 15,
+            "skills": ["LR-04", "LR-05", "LR-06", "LR-18"],
+            "difficulties": ["Medium"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "mixed_practice"
+          },
+          "estimated_minutes": 28
+        },
+        {
+          "task_type": "drill",
+          "title": "Argument Evaluation Advanced",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-04", "LR-05", "LR-06"],
+            "difficulties": ["Hard", "Challenging"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "mixed_practice"
+          },
+          "estimated_minutes": 22
+        }
+      ],
+      "learning_objectives": [
+        "Distinguish strengthen vs weaken vs flaw questions",
+        "Apply assumption-finding to all question types",
+        "Build evaluation speed"
+      ]
+    },
+    {
+      "module_id": "LR-COMPREHENSIVE-MIX",
+      "module_name": "LR Comprehensive Review",
+      "module_type": "mixed_review",
+      "target_skills": ["LR-01", "LR-02", "LR-03", "LR-04", "LR-05", "LR-06", "LR-10", "LR-14"],
+      "secondary_skills": [],
+      "difficulty_level": "advanced",
+      "phase_suitability": ["practice", "mastery"],
+      "prerequisites": ["LR-ARG-STRUCTURE-MIX", "LR-ARG-EVAL-MIX"],
+      "estimated_minutes": 60,
+      "tasks": [
+        {
+          "task_type": "drill",
+          "title": "LR Full Section Simulation (Part 1)",
+          "task_config": {
+            "question_count": 13,
+            "skills": ["LR-01", "LR-02", "LR-03", "LR-04", "LR-05", "LR-06", "LR-10"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "mixed_practice"
+          },
+          "estimated_minutes": 28
+        },
+        {
+          "task_type": "drill",
+          "title": "LR Full Section Simulation (Part 2)",
+          "task_config": {
+            "question_count": 12,
+            "skills": ["LR-01", "LR-03", "LR-04", "LR-05", "LR-06", "LR-14"],
+            "difficulties": ["Medium", "Hard", "Challenging"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "mixed_practice"
+          },
+          "estimated_minutes": 27
+        }
+      ],
+      "learning_objectives": [
+        "Perform under test-like time pressure",
+        "Manage full section pacing",
+        "Apply all LR skills in realistic context"
+      ]
+    },
+    {
+      "module_id": "RC-MAIN-POINT-101",
+      "module_name": "Main Point and Purpose",
+      "module_type": "skill_focused",
+      "target_skills": ["RC-01"],
+      "secondary_skills": ["RC-02"],
+      "difficulty_level": "foundation",
+      "phase_suitability": ["foundation"],
+      "prerequisites": [],
+      "estimated_minutes": 55,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Finding Main Point in RC",
+          "video_id": "placeholder_rc_main_point",
+          "estimated_minutes": 13
+        },
+        {
+          "task_type": "drill",
+          "title": "Main Point Practice",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["RC-01"],
+            "difficulties": ["Easy", "Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 25
+        },
+        {
+          "task_type": "drill",
+          "title": "Main Point Timed",
+          "task_config": {
+            "question_count": 6,
+            "skills": ["RC-01"],
+            "difficulties": ["Medium"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 17
+        }
+      ],
+      "learning_objectives": [
+        "Identify thesis statements",
+        "Distinguish main point from supporting details",
+        "Understand primary purpose questions"
+      ]
+    },
+    {
+      "module_id": "RC-STRUCTURE-101",
+      "module_name": "Passage Structure",
+      "module_type": "skill_focused",
+      "target_skills": ["RC-02"],
+      "secondary_skills": ["RC-12"],
+      "difficulty_level": "foundation",
+      "phase_suitability": ["foundation", "practice"],
+      "prerequisites": ["RC-MAIN-POINT-101"],
+      "estimated_minutes": 58,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Analyzing Passage Organization",
+          "video_id": "placeholder_rc_structure",
+          "estimated_minutes": 14
+        },
+        {
+          "task_type": "drill",
+          "title": "Structure Questions Practice",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["RC-02", "RC-12"],
+            "difficulties": ["Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 26
+        },
+        {
+          "task_type": "drill",
+          "title": "Structure Questions Timed",
+          "task_config": {
+            "question_count": 6,
+            "skills": ["RC-02"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 18
+        }
+      ],
+      "learning_objectives": [
+        "Recognize common passage structures",
+        "Identify function of paragraphs",
+        "Map passage organization"
+      ]
+    },
+    {
+      "module_id": "RC-INFERENCE-101",
+      "module_name": "RC Inference Questions",
+      "module_type": "skill_focused",
+      "target_skills": ["RC-07", "RC-08"],
+      "secondary_skills": ["RC-05"],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["foundation", "practice"],
+      "prerequisites": ["RC-MAIN-POINT-101"],
+      "estimated_minutes": 60,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Making Valid RC Inferences",
+          "video_id": "placeholder_rc_inference",
+          "estimated_minutes": 14
+        },
+        {
+          "task_type": "drill",
+          "title": "RC Inference Practice",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["RC-07", "RC-08"],
+            "difficulties": ["Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 28
+        },
+        {
+          "task_type": "drill",
+          "title": "RC Inference Timed",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["RC-07", "RC-08"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 18
+        }
+      ],
+      "learning_objectives": [
+        "Draw valid inferences from passages",
+        "Avoid going beyond passage scope",
+        "Recognize must-be-true vs could-be-true"
+      ]
+    },
+    {
+      "module_id": "RC-DETAIL-101",
+      "module_name": "Detail and Explicit Information",
+      "module_type": "skill_focused",
+      "target_skills": ["RC-05", "RC-06"],
+      "secondary_skills": ["RC-17"],
+      "difficulty_level": "foundation",
+      "phase_suitability": ["foundation"],
+      "prerequisites": [],
+      "estimated_minutes": 48,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Finding Details Efficiently",
+          "video_id": "placeholder_rc_detail",
+          "estimated_minutes": 10
+        },
+        {
+          "task_type": "drill",
+          "title": "Detail Questions Practice",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["RC-05", "RC-06"],
+            "difficulties": ["Easy", "Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 22
+        },
+        {
+          "task_type": "drill",
+          "title": "Detail Questions Timed",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["RC-05", "RC-06"],
+            "difficulties": ["Medium"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 16
+        }
+      ],
+      "learning_objectives": [
+        "Quickly locate specific information",
+        "Avoid trap answers with slight distortions",
+        "Master scanning techniques"
+      ]
+    },
+    {
+      "module_id": "RC-AUTHOR-101",
+      "module_name": "Author's Perspective",
+      "module_type": "skill_focused",
+      "target_skills": ["RC-03", "RC-04"],
+      "secondary_skills": ["RC-01"],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["foundation", "practice"],
+      "prerequisites": ["RC-MAIN-POINT-101"],
+      "estimated_minutes": 52,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Understanding Author's Tone and Purpose",
+          "video_id": "placeholder_rc_author",
+          "estimated_minutes": 12
+        },
+        {
+          "task_type": "drill",
+          "title": "Author Questions Practice",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["RC-03", "RC-04"],
+            "difficulties": ["Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 24
+        },
+        {
+          "task_type": "drill",
+          "title": "Author Questions Timed",
+          "task_config": {
+            "question_count": 6,
+            "skills": ["RC-03", "RC-04"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 16
+        }
+      ],
+      "learning_objectives": [
+        "Identify author's attitude indicators",
+        "Distinguish neutral vs opinionated passages",
+        "Understand purpose vs attitude questions"
+      ]
+    },
+    {
+      "module_id": "RC-GLOBAL-MIX",
+      "module_name": "RC Global Questions Review",
+      "module_type": "mixed_review",
+      "target_skills": ["RC-01", "RC-02", "RC-03", "RC-04"],
+      "secondary_skills": [],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["practice", "mastery"],
+      "prerequisites": ["RC-MAIN-POINT-101", "RC-STRUCTURE-101", "RC-AUTHOR-101"],
+      "estimated_minutes": 55,
+      "tasks": [
+        {
+          "task_type": "drill",
+          "title": "RC Global Mixed Practice",
+          "task_config": {
+            "question_count": 12,
+            "skills": ["RC-01", "RC-02", "RC-03", "RC-04"],
+            "difficulties": ["Medium"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "mixed_practice"
+          },
+          "estimated_minutes": 30
+        },
+        {
+          "task_type": "drill",
+          "title": "RC Global Advanced",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["RC-01", "RC-02", "RC-03", "RC-04"],
+            "difficulties": ["Hard", "Challenging"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "mixed_practice"
+          },
+          "estimated_minutes": 25
+        }
+      ],
+      "learning_objectives": [
+        "Apply all global understanding skills",
+        "Build passage comprehension speed",
+        "Master big-picture questions"
+      ]
+    },
+    {
+      "module_id": "RC-COMPREHENSIVE-MIX",
+      "module_name": "RC Full Section Practice",
+      "module_type": "mixed_review",
+      "target_skills": ["RC-01", "RC-02", "RC-03", "RC-05", "RC-07", "RC-08"],
+      "secondary_skills": ["RC-04", "RC-06", "RC-12"],
+      "difficulty_level": "advanced",
+      "phase_suitability": ["practice", "mastery"],
+      "prerequisites": ["RC-GLOBAL-MIX", "RC-INFERENCE-101"],
+      "estimated_minutes": 70,
+      "tasks": [
+        {
+          "task_type": "drill",
+          "title": "RC Full Section Simulation",
+          "task_config": {
+            "question_count": 20,
+            "skills": ["RC-01", "RC-02", "RC-03", "RC-05", "RC-07", "RC-08"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "mixed_practice"
+          },
+          "estimated_minutes": 35
+        },
+        {
+          "task_type": "drill",
+          "title": "RC Full Section Challenge",
+          "task_config": {
+            "question_count": 15,
+            "skills": ["RC-01", "RC-02", "RC-05", "RC-07", "RC-08"],
+            "difficulties": ["Hard", "Challenging"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "mixed_practice"
+          },
+          "estimated_minutes": 30
+        }
+      ],
+      "learning_objectives": [
+        "Complete full RC section under time pressure",
+        "Apply all RC skills in realistic context",
+        "Master passage selection and timing"
+      ]
+    },
+    {
+      "module_id": "DIAGNOSTIC-WEEK-3",
+      "module_name": "Week 3 Progress Check",
+      "module_type": "diagnostic",
+      "target_skills": [],
+      "secondary_skills": [],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["foundation", "practice"],
+      "prerequisites": [],
+      "estimated_minutes": 40,
+      "tasks": [
+        {
+          "task_type": "drill",
+          "title": "Mixed Diagnostic Assessment",
+          "task_config": {
+            "question_count": 20,
+            "skills": [],
+            "difficulties": ["Easy", "Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "diagnostic"
+          },
+          "estimated_minutes": 35
+        }
+      ],
+      "learning_objectives": [
+        "Assess progress across all practiced skills",
+        "Identify remaining weak areas",
+        "Build confidence with timed practice"
+      ]
+    },
+    {
+      "module_id": "DIAGNOSTIC-WEEK-6",
+      "module_name": "Week 6 Midpoint Assessment",
+      "module_type": "diagnostic",
+      "target_skills": [],
+      "secondary_skills": [],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["practice"],
+      "prerequisites": [],
+      "estimated_minutes": 45,
+      "tasks": [
+        {
+          "task_type": "drill",
+          "title": "Comprehensive Midpoint Diagnostic",
+          "task_config": {
+            "question_count": 25,
+            "skills": [],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "diagnostic"
+          },
+          "estimated_minutes": 40
+        }
+      ],
+      "learning_objectives": [
+        "Evaluate mastery at midpoint",
+        "Identify skills needing additional practice",
+        "Gauge test readiness"
+      ]
+    },
+    {
+      "module_id": "DIAGNOSTIC-WEEK-9",
+      "module_name": "Week 9 Final Assessment",
+      "module_type": "diagnostic",
+      "target_skills": [],
+      "secondary_skills": [],
+      "difficulty_level": "advanced",
+      "phase_suitability": ["mastery"],
+      "prerequisites": [],
+      "estimated_minutes": 50,
+      "tasks": [
+        {
+          "task_type": "drill",
+          "title": "Final Comprehensive Diagnostic",
+          "task_config": {
+            "question_count": 30,
+            "skills": [],
+            "difficulties": ["Medium", "Hard", "Challenging"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "diagnostic"
+          },
+          "estimated_minutes": 45
+        }
+      ],
+      "learning_objectives": [
+        "Demonstrate mastery across all skills",
+        "Perform under realistic test conditions",
+        "Identify final polish areas"
+      ]
+    },
+    {
+      "module_id": "LR-PRINCIPLES-101",
+      "module_name": "Principle Questions",
+      "module_type": "skill_focused",
+      "target_skills": ["LR-16", "LR-17"],
+      "secondary_skills": ["LR-03"],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["practice", "mastery"],
+      "prerequisites": ["LR-ASSUMPTIONS-101"],
+      "estimated_minutes": 62,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Identifying and Applying Principles",
+          "video_id": "placeholder_principles_intro",
+          "estimated_minutes": 14
+        },
+        {
+          "task_type": "drill",
+          "title": "Principle Questions Practice",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-16", "LR-17"],
+            "difficulties": ["Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 28
+        },
+        {
+          "task_type": "drill",
+          "title": "Principle Questions Timed",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["LR-16", "LR-17"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 20
+        }
+      ],
+      "learning_objectives": [
+        "Abstract principles from specific cases",
+        "Apply general rules to new situations",
+        "Recognize principle-conforming vs violating answers"
+      ]
+    },
+    {
+      "module_id": "LR-METHOD-101",
+      "module_name": "Method of Reasoning",
+      "module_type": "skill_focused",
+      "target_skills": ["LR-14", "LR-15"],
+      "secondary_skills": ["LR-01", "LR-02"],
+      "difficulty_level": "intermediate",
+      "phase_suitability": ["practice", "mastery"],
+      "prerequisites": ["LR-CONCLUSIONS-101"],
+      "estimated_minutes": 56,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Describing Argument Methods",
+          "video_id": "placeholder_method_intro",
+          "estimated_minutes": 13
+        },
+        {
+          "task_type": "drill",
+          "title": "Method Questions Practice",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["LR-14", "LR-15"],
+            "difficulties": ["Medium"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 25
+        },
+        {
+          "task_type": "drill",
+          "title": "Method Questions Timed",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["LR-14", "LR-15"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 18
+        }
+      ],
+      "learning_objectives": [
+        "Identify common argumentative techniques",
+        "Describe role of specific statements",
+        "Master technical reasoning vocabulary"
+      ]
+    },
+    {
+      "module_id": "RC-APPLICATION-101",
+      "module_name": "RC Application Questions",
+      "module_type": "skill_focused",
+      "target_skills": ["RC-09", "RC-10", "RC-11"],
+      "secondary_skills": ["RC-07"],
+      "difficulty_level": "advanced",
+      "phase_suitability": ["practice", "mastery"],
+      "prerequisites": ["RC-INFERENCE-101"],
+      "estimated_minutes": 65,
+      "tasks": [
+        {
+          "task_type": "video",
+          "title": "Applying Passage Reasoning",
+          "video_id": "placeholder_rc_application",
+          "estimated_minutes": 14
+        },
+        {
+          "task_type": "drill",
+          "title": "Application Questions Practice",
+          "task_config": {
+            "question_count": 10,
+            "skills": ["RC-09", "RC-10", "RC-11"],
+            "difficulties": ["Medium", "Hard"],
+            "timing_mode": "untimed",
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 30
+        },
+        {
+          "task_type": "drill",
+          "title": "Application Questions Timed",
+          "task_config": {
+            "question_count": 8,
+            "skills": ["RC-09", "RC-10", "RC-11"],
+            "difficulties": ["Hard"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "skill_builder"
+          },
+          "estimated_minutes": 21
+        }
+      ],
+      "learning_objectives": [
+        "Extend passage reasoning to new contexts",
+        "Identify strengthen/weaken for RC arguments",
+        "Apply analogous reasoning"
+      ]
+    },
+    {
+      "module_id": "FULL-TEST-SIMULATION",
+      "module_name": "Full LSAT Section Simulation",
+      "module_type": "diagnostic",
+      "target_skills": [],
+      "secondary_skills": [],
+      "difficulty_level": "advanced",
+      "phase_suitability": ["mastery"],
+      "prerequisites": [],
+      "estimated_minutes": 90,
+      "tasks": [
+        {
+          "task_type": "drill",
+          "title": "Full LR Section (35 min)",
+          "task_config": {
+            "question_count": 25,
+            "skills": [],
+            "difficulties": ["Medium", "Hard", "Challenging"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "diagnostic"
+          },
+          "estimated_minutes": 40
+        },
+        {
+          "task_type": "drill",
+          "title": "Full RC Section (35 min)",
+          "task_config": {
+            "question_count": 27,
+            "skills": [],
+            "difficulties": ["Medium", "Hard", "Challenging"],
+            "timing_mode": "timed",
+            "time_percentage": 100,
+            "drill_type": "diagnostic"
+          },
+          "estimated_minutes": 40
+        }
+      ],
+      "learning_objectives": [
+        "Complete full sections under real test conditions",
+        "Manage energy and focus across entire section",
+        "Build test-day confidence"
+      ]
+    }
+  ]
+}

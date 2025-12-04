@@ -5,11 +5,11 @@ runtime: python311
 build:
   commands:
     build:
-      - pip install -r backend/requirements.txt
+      - pip3 install -r backend/requirements.txt
 
 run:
   runtime-version: 3.11
-  command: cd backend && python app.py
+  command: cd backend && python3 app.py
   network:
     port: 5001
     env: APP_PORT

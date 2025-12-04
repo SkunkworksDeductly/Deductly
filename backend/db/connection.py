@@ -9,10 +9,11 @@ from contextlib import contextmanager
 
 # Configuration
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DEFAULT_DB_PATH = os.path.join(BASE_DIR, 'data', 'test_study_plan.db')
+DEFAULT_DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
 
-# Allow override via environment variable (useful for testing)
-DB_PATH = os.getenv('DEDUCTLY_DB_PATH', DEFAULT_DB_PATH)
+# Allow override via environment variable (useful for testing and production)
+# DB_PATH supports both DEDUCTLY_DB_PATH and DB_PATH for flexibility
+DB_PATH = os.getenv('DB_PATH') or os.getenv('DEDUCTLY_DB_PATH', DEFAULT_DB_PATH)
 
 
 class DatabaseConnection:
@@ -29,10 +30,14 @@ class DatabaseConnection:
     def get_connection(self) -> sqlite3.Connection:
         """Get or create database connection"""
         if self._connection is None:
-            self._connection = sqlite3.connect(DB_PATH, check_same_thread=False)
+            self._connection = sqlite3.connect(DB_PATH, check_same_thread=False, timeout=30.0)
             self._connection.row_factory = sqlite3.Row
             # Enable foreign keys
             self._connection.execute("PRAGMA foreign_keys = ON")
+            # Enable WAL mode for better concurrency (especially on EFS)
+            self._connection.execute("PRAGMA journal_mode=WAL")
+            # Set busy timeout to 30 seconds for network file systems
+            self._connection.execute("PRAGMA busy_timeout=30000")
         return self._connection
 
     def close(self):

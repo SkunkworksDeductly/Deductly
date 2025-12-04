@@ -1,0 +1,68 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+DEPLOYMENT.md
+AWS_DEPLOYMENT.md
+*.md
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/venv/
+backend/env/
+*.egg-info/
+
+# Frontend (not needed in backend container)
+node_modules/
+dist/
+src/
+public/
+index.html
+package.json
+package-lock.json
+vite.config.js
+tailwind.config.js
+
+# Environment files (use App Runner env vars instead)
+.env
+.env.local
+.env.example
+
+# Firebase credentials (add via secrets)
+**/firebase-credentials.json
+
+# Database files (use EFS instead)
+backend/data/*.db
+backend/data/*.db-shm
+backend/data/*.db-wal
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Tests
+backend/tests/
+**/test_*.py
+**/*_test.py
+
+# Scrapers and utilities (not needed in production)
+backend/scrapers/
+backend/data/*.json
+backend/data/*.sql
+backend/data/backups/
+
+# Setup scripts
+setup_database.py
+insert_lsat_questions.py
+insert_sample_videos.py
+create_videos_table.py

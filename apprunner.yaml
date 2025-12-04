@@ -1,0 +1,22 @@
+version: 1.0
+
+runtime: python3
+
+build:
+  commands:
+    build:
+      - echo "Building Deductly backend..."
+
+run:
+  runtime-version: 3.14
+  command: python app.py
+  network:
+    port: 5001
+    env: APP_PORT
+  env:
+    - name: APP_PORT
+      value: "5001"
+    - name: FLASK_ENV
+      value: "production"
+    - name: DB_PATH
+      value: "/mnt/efs/deductly.db"

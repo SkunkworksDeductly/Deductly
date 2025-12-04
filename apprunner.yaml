@@ -1,15 +1,16 @@
 version: 1.0
 
-runtime: python3
+runtime: python311
 
 build:
   commands:
     build:
-      - echo "Building Deductly backend..."
+      - cd backend
+      - pip install -r requirements.txt
 
 run:
   runtime-version: 3.11
-  command: python app.py
+  command: cd backend && python app.py
   network:
     port: 5001
     env: APP_PORT
@@ -19,4 +20,4 @@ run:
     - name: FLASK_ENV
       value: "production"
     - name: DB_PATH
-      value: "/mnt/efs/deductly.db"
+      value: "/mnt/efs/deductly/deductly.db"

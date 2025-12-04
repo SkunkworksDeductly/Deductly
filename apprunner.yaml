@@ -5,8 +5,7 @@ runtime: python311
 build:
   commands:
     build:
-      - cd backend
-      - pip install -r requirements.txt
+      - pip install -r backend/requirements.txt
 
 run:
   runtime-version: 3.11

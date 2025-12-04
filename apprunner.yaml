@@ -9,7 +9,7 @@ build:
 
 run:
   runtime-version: 3.11
-  command: "sh -c 'cd backend && python3 app.py'"
+  command: ./start.sh
   network:
     port: 5001
     env: APP_PORT

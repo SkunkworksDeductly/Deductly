@@ -50,20 +50,38 @@ const DrillSession = () => {
     }
 
     // Restore saved progress if available
-    if (drillSession.current_question_index !== undefined && drillSession.current_question_index > 0) {
-      setCurrentQuestionIndex(drillSession.current_question_index)
+    if (drillSession.current_question_index !== undefined && drillSession.current_question_index !== null) {
+      const savedIndex = parseInt(drillSession.current_question_index)
+      if (!isNaN(savedIndex) && savedIndex >= 0) {
+        setCurrentQuestionIndex(savedIndex)
+        console.log('Restored question index:', savedIndex)
+      }
     } else {
       setCurrentQuestionIndex(0)
     }
 
     // Restore saved answers if available
-    if (drillSession.user_answers && Object.keys(drillSession.user_answers).length > 0) {
-      // Convert string keys to numbers for selectedAnswers state
-      const restoredAnswers = {}
-      Object.keys(drillSession.user_answers).forEach(key => {
-        restoredAnswers[parseInt(key)] = drillSession.user_answers[key]
-      })
-      setSelectedAnswers(restoredAnswers)
+    if (drillSession.user_answers) {
+      const answers = drillSession.user_answers
+      // Handle both object and JSON string formats
+      const answersObj = typeof answers === 'string' ? JSON.parse(answers) : answers
+
+      if (answersObj && Object.keys(answersObj).length > 0) {
+        // Convert all keys to numbers and values to numbers
+        const restoredAnswers = {}
+        Object.keys(answersObj).forEach(key => {
+          const questionIndex = parseInt(key)
+          const answerValue = parseInt(answersObj[key])
+          if (!isNaN(questionIndex) && !isNaN(answerValue)) {
+            restoredAnswers[questionIndex] = answerValue
+          }
+        })
+        setSelectedAnswers(restoredAnswers)
+        console.log('Restored answers:', restoredAnswers)
+      }
+    } else {
+      // Clear answers if no saved progress
+      setSelectedAnswers({})
     }
   }, [drillSession, navigate, setCurrentQuestionIndex, setSelectedAnswers, fallbackPath])
 
@@ -369,7 +387,11 @@ const DrillSession = () => {
                     {currentQuestionIndex < questions.length - 1 && (
                       <button
                         type="button"
-                        className="px-4 py-2 bg-button-primary hover:bg-button-primary-hover rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
+                        className={`px-4 py-2 rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed ${
+                          selectedAnswers[currentQuestionIndex] !== undefined
+                            ? 'bg-button-primary hover:bg-button-primary-hover shadow-sm ring-2 ring-button-primary ring-opacity-50'
+                            : 'bg-button-primary hover:bg-button-primary-hover shadow-sm opacity-75'
+                        }`}
                         onClick={handleNext}
                         disabled={normalizedOptions.length === 0}
                       >
@@ -380,7 +402,11 @@ const DrillSession = () => {
                   {currentQuestionIndex === questions.length - 1 && questions.length > 0 && (
                     <button
                       type="button"
-                      className="px-4 py-2 bg-button-success hover:bg-button-success-hover rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
+                      className={`px-4 py-2 rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed ${
+                        selectedAnswers[currentQuestionIndex] !== undefined
+                          ? 'bg-button-success hover:bg-button-success-hover shadow-sm ring-2 ring-button-success ring-opacity-50'
+                          : 'bg-button-success hover:bg-button-success-hover shadow-sm opacity-75'
+                      }`}
                       onClick={handleSubmit}
                       disabled={normalizedOptions.length === 0}
                     >

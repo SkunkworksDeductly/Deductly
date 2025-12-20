@@ -301,13 +301,14 @@ def get_drill_by_id(drill_id, include_questions=False):
     """Retrieve a specific drill by ID, optionally with full question data."""
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        row = cursor.execute("""
+        cursor.execute("""
             SELECT drill_id, user_id, question_count, timing, difficulty,
                    skills, drill_type, question_ids, status, created_at, completed_at,
                    current_question_index, user_answers, user_highlights
             FROM drills
             WHERE drill_id = %s
-        """, (drill_id,)).fetchone()
+        """, (drill_id,))
+        row = cursor.fetchone()
 
         if not row:
             return None
@@ -335,11 +336,12 @@ def get_drill_by_id(drill_id, include_questions=False):
             placeholders = ','.join(['%s'] * len(question_ids))
             fields = ', '.join(QUESTION_SELECT_FIELDS)
 
-            question_rows = cursor.execute(f"""
+            cursor.execute(f"""
                 SELECT {fields}
                 FROM questions
                 WHERE id IN ({placeholders})
-            """, question_ids).fetchall()
+            """, question_ids)
+            question_rows = cursor.fetchall()
 
             # Maintain original order
             questions_by_id = {row['id']: _transform_question_row(row) for row in question_rows}

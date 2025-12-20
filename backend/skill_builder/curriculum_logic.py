@@ -1,19 +1,9 @@
 """
 Curriculum logic for video lessons
 """
-import sqlite3
 import json
-import os
 from datetime import datetime
-
-# Database connection
-DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'deductly.db')
-
-def get_db_connection():
-    """Create database connection."""
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+from db import get_db_connection, get_db_cursor
 
 def get_all_videos():
     """Get all videos from the curriculum."""
@@ -55,7 +45,7 @@ def get_video_by_id(video_id, user_id=None):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute('SELECT * FROM videos WHERE id = ?', (video_id,))
+    cursor.execute('SELECT * FROM videos WHERE id = %s', (video_id,))
     row = cursor.fetchone()
 
     if not row:
@@ -86,8 +76,8 @@ def get_video_by_id(video_id, user_id=None):
     if user_id:
         cursor.execute('''
             SELECT completed_at FROM study_plan_tasks
-            WHERE video_id = ? AND status = 'completed'
-            AND study_plan_id IN (SELECT id FROM study_plans WHERE user_id = ?)
+            WHERE video_id = %s AND status = 'completed'
+            AND study_plan_id IN (SELECT id FROM study_plans WHERE user_id = %s)
             LIMIT 1
         ''', (video_id, user_id))
         completed = cursor.fetchone()
@@ -103,7 +93,7 @@ def get_related_videos(video_id, limit=5):
     cursor = conn.cursor()
 
     # Get the category of the current video
-    cursor.execute('SELECT category FROM videos WHERE id = ?', (video_id,))
+    cursor.execute('SELECT category FROM videos WHERE id = %s', (video_id,))
     row = cursor.fetchone()
 
     if not row:
@@ -115,9 +105,9 @@ def get_related_videos(video_id, limit=5):
     # Get other videos in the same category
     cursor.execute('''
         SELECT * FROM videos
-        WHERE category = ? AND id != ?
+        WHERE category = %s AND id != %s
         ORDER BY difficulty, title
-        LIMIT ?
+        LIMIT %s
     ''', (category, video_id, limit))
 
     videos = []
@@ -149,10 +139,10 @@ def mark_video_complete(video_id, user_id):
         # Find and mark task as complete
         cursor.execute('''
             UPDATE study_plan_tasks
-            SET status = 'completed', completed_at = ?
-            WHERE video_id = ?
+            SET status = 'completed', completed_at = %s
+            WHERE video_id = %s
             AND study_plan_id IN (
-                SELECT id FROM study_plans WHERE user_id = ?
+                SELECT id FROM study_plans WHERE user_id = %s
             )
             AND status != 'completed'
         ''', (datetime.utcnow().isoformat(), video_id, user_id))
@@ -179,9 +169,9 @@ def mark_video_incomplete(video_id, user_id):
         cursor.execute('''
             UPDATE study_plan_tasks
             SET status = 'pending', completed_at = NULL
-            WHERE video_id = ?
+            WHERE video_id = %s
             AND study_plan_id IN (
-                SELECT id FROM study_plans WHERE user_id = ?
+                SELECT id FROM study_plans WHERE user_id = %s
             )
             AND status = 'completed'
         ''', (video_id, user_id))

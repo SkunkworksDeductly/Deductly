@@ -7,9 +7,9 @@ from .logic import (
 from .curriculum_logic import (
     get_all_videos, get_video_by_id, get_related_videos, mark_video_complete, mark_video_incomplete
 )
+from insights.logic import irt_online_update, glmm_online_update
 import firebase_admin
 from firebase_admin import auth as firebase_auth
-import requests
 
 skill_builder_bp = Blueprint('skill_builder', __name__, url_prefix='/api/skill-builder')
 
@@ -34,13 +34,13 @@ def get_user_id_from_token():
 
 def _update_insights(user_id, answers):
     """
-    Update user ability estimates and skill mastery via insights endpoints.
+    Update user ability estimates and skill mastery via direct function calls.
 
     Args:
         user_id: The user's unique identifier
         answers: List of answer dictionaries with question_id and is_correct fields
     """
-    # Transform answers into the format expected by insights endpoints
+    # Transform answers into the format expected by insights functions
     new_evidence = [
         {
             'question_id': answer.get('question_id'),
@@ -55,35 +55,17 @@ def _update_insights(user_id, answers):
         print(f"No valid evidence to update insights for user {user_id}")
         return
 
-    # Get the base URL from the app config or construct it
-    # Since we're in the same Flask app, we can use localhost
-    base_url = 'http://localhost:5001/api/insights'
-
     try:
-        # Update IRT ability estimates
-        irt_response = requests.post(
-            f'{base_url}/online/irt/update/{user_id}',
-            json={'new_evidence': new_evidence},
-            timeout=5
-        )
-        if irt_response.status_code == 200:
-            print(f"Successfully updated IRT estimates for user {user_id}")
-        else:
-            print(f"Failed to update IRT estimates: {irt_response.status_code} - {irt_response.text}")
+        # Update IRT ability estimates (direct function call)
+        irt_online_update(user_id, new_evidence)
+        print(f"Successfully updated IRT estimates for user {user_id}")
     except Exception as e:
         print(f"Error updating IRT estimates for user {user_id}: {e}")
 
     try:
-        # Update GLMM skill mastery
-        glmm_response = requests.post(
-            f'{base_url}/online/glmm/update/{user_id}',
-            json={'new_evidence': new_evidence},
-            timeout=5
-        )
-        if glmm_response.status_code == 200:
-            print(f"Successfully updated GLMM mastery for user {user_id}")
-        else:
-            print(f"Failed to update GLMM mastery: {glmm_response.status_code} - {glmm_response.text}")
+        # Update GLMM skill mastery (direct function call)
+        glmm_online_update(user_id, new_evidence)
+        print(f"Successfully updated GLMM mastery for user {user_id}")
     except Exception as e:
         print(f"Error updating GLMM mastery for user {user_id}: {e}")
 

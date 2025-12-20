@@ -144,8 +144,13 @@ const StudyPlan = () => {
 
   const handleStartTask = async (task) => {
     // Handle video tasks
-    if (task.task_type === 'video' && task.video_id) {
-      navigate(`/curriculum/${task.video_id}`)
+    if (task.task_type === 'video') {
+      if (task.video_id) {
+        navigate(`/curriculum/${task.video_id}`)
+      } else {
+        // Video not yet available
+        alert('This video is coming soon! Check back later.')
+      }
       return
     }
 

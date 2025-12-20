@@ -17,14 +17,43 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 # Initialize Firebase Admin SDK
 if not firebase_admin._apps:
     try:
-        # Try to find credentials file in order of preference:
-        # 1. Render secret file (set via FIREBASE_CREDENTIALS_PATH env var)
-        # 2. Local development file
-        cred_path = os.getenv('FIREBASE_CREDENTIALS_PATH') or os.path.join(os.path.dirname(__file__), 'firebase-credentials.json')
+        # Try to initialize Firebase from AWS Secrets Manager, environment variable, or file:
+        # 1. AWS Secrets Manager (for Lambda production)
+        # 2. Credentials file path (for local development)
+        import json
 
-        if os.path.exists(cred_path):
-            cred = credentials.Certificate(cred_path)
-            firebase_admin.initialize_app(cred)
+        # Check if running in AWS Lambda (AWS_REGION environment variable exists)
+        if os.getenv('AWS_REGION') or os.getenv('AWS_EXECUTION_ENV'):
+            try:
+                import boto3
+                from botocore.exceptions import ClientError
+
+                # Fetch credentials from AWS Secrets Manager
+                secret_name = "deductly/firebase-credentials"
+                region_name = "us-east-1"
+
+                session = boto3.session.Session()
+                client = session.client(
+                    service_name='secretsmanager',
+                    region_name=region_name
+                )
+
+                get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+                creds_dict = json.loads(get_secret_value_response['SecretString'])
+                cred = credentials.Certificate(creds_dict)
+                firebase_admin.initialize_app(cred)
+                print("Firebase Admin SDK initialized from AWS Secrets Manager")
+            except ClientError as e:
+                print(f"Failed to retrieve secret from AWS Secrets Manager: {e}")
+                raise
+        else:
+            # Fall back to file-based credentials for local development
+            cred_path = os.getenv('FIREBASE_CREDENTIALS_PATH') or os.path.join(os.path.dirname(__file__), 'firebase-credentials.json')
+
+            if os.path.exists(cred_path):
+                cred = credentials.Certificate(cred_path)
+                firebase_admin.initialize_app(cred)
+                print(f"Firebase Admin SDK initialized from file: {cred_path}")
     except Exception as e:
         print(f"Warning: Firebase Admin SDK initialization failed: {e}")
 
@@ -33,7 +62,8 @@ CORS(app,
     origins=[
         'http://localhost:5173',  # Local development
         'http://localhost:5174',  # Local development (alternate port)
-        'https://nikhilanand1998.github.io'  # GitHub Pages production
+        'https://deductly.org',  # Production custom domain
+        'https://www.deductly.org'  # Production custom domain with www
     ],
     allow_headers=['Content-Type', 'Authorization'],  # Explicitly allow Authorization header
     expose_headers=['Content-Type', 'Authorization'],
@@ -57,6 +87,12 @@ def home():
             'skill_builder': '/api/skill-builder/*'
         }
     })
+
+@app.route('/api/warm', methods=['GET'])
+def warm():
+    """Lightweight endpoint for Lambda warming - responds immediately without DB queries"""
+    from datetime import datetime
+    return jsonify({'status': 'warm', 'timestamp': datetime.now().isoformat()})
 
 # Legacy endpoint compatibility (redirect to new structure)
 @app.route('/api/diagnostics', methods=['GET'])

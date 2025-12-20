@@ -52,18 +52,19 @@ def save_bandit_model(user_id: str, bandit: BayesianLinearBandit):
         model_data = bandit.to_dict()
 
         # Check if model exists
-        existing = cursor.execute(
-            "SELECT user_id FROM bandit_models WHERE user_id = ?",
+        cursor.execute(
+            "SELECT user_id FROM bandit_models WHERE user_id = %s",
             (user_id,)
-        ).fetchone()
+        )
+        existing = cursor.fetchone()
 
         if existing:
             # Update
             cursor.execute(
                 """UPDATE bandit_models
-                   SET mu_vector = ?, sigma_matrix = ?, dimension = ?,
-                       noise_variance = ?, num_updates = ?, last_updated = CURRENT_TIMESTAMP
-                   WHERE user_id = ?""",
+                   SET mu_vector = %s, sigma_matrix = %s, dimension = %s,
+                       noise_variance = %s, num_updates = %s, last_updated = CURRENT_TIMESTAMP
+                   WHERE user_id = %s""",
                 (json.dumps(model_data['mu']),
                  json.dumps(model_data['Sigma']),
                  model_data['dimension'],
@@ -76,7 +77,7 @@ def save_bandit_model(user_id: str, bandit: BayesianLinearBandit):
             cursor.execute(
                 """INSERT INTO bandit_models
                    (user_id, mu_vector, sigma_matrix, dimension, noise_variance, num_updates)
-                   VALUES (?, ?, ?, ?, ?, ?)""",
+                   VALUES (%s, %s, %s, %s, %s, %s)""",
                 (user_id,
                  json.dumps(model_data['mu']),
                  json.dumps(model_data['Sigma']),
@@ -101,10 +102,11 @@ def load_bandit_model(user_id: str) -> BayesianLinearBandit:
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
-        row = cursor.execute(
-            "SELECT * FROM bandit_models WHERE user_id = ?",
+        cursor.execute(
+            "SELECT * FROM bandit_models WHERE user_id = %s",
             (user_id,)
-        ).fetchone()
+        )
+        row = cursor.fetchone()
 
         if row:
             # Restore from database
@@ -273,8 +275,8 @@ def insert_module_tasks(study_plan_id: str, week_number: int,
                 """INSERT INTO study_plan_tasks
                    (id, study_plan_id, week_number, task_order,
                     task_type, title, estimated_minutes, task_config,
-                    status, module_id)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                    status, module_id, video_id)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                 (
                     task_id,
                     study_plan_id,
@@ -285,7 +287,8 @@ def insert_module_tasks(study_plan_id: str, week_number: int,
                     task['estimated_minutes'],
                     json.dumps(task.get('task_config', {})),
                     'pending',
-                    module['module_id']
+                    module['module_id'],
+                    task.get('video_id')  # Include video_id as-is (no filtering)
                 )
             )
 
@@ -305,7 +308,7 @@ def delete_tasks_for_week(study_plan_id: str, week_number: int):
 
         cursor.execute(
             """DELETE FROM study_plan_tasks
-               WHERE study_plan_id = ? AND week_number = ?""",
+               WHERE study_plan_id = %s AND week_number = %s""",
             (study_plan_id, week_number)
         )
         conn.commit()
@@ -364,7 +367,7 @@ def generate_adaptive_study_plan(
             """INSERT INTO study_plans
                (id, user_id, diagnostic_drill_id, title, total_weeks,
                 start_date, phase_allocation, current_phase, adaptation_enabled)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
             (study_plan_id, user_id, diagnostic_drill_id,
              "Adaptive LSAT Study Plan", total_weeks, start_date.isoformat(),
              json.dumps(phase_allocation), "foundation", 1)
@@ -523,10 +526,11 @@ def trigger_weekly_adaptation(user_id: str, study_plan_id: str, completed_week: 
     # 7. Check if phase transition needed
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        row = cursor.execute(
-            "SELECT phase_allocation FROM study_plans WHERE id = ?",
+        cursor.execute(
+            "SELECT phase_allocation FROM study_plans WHERE id = %s",
             (study_plan_id,)
-        ).fetchone()
+        )
+        row = cursor.fetchone()
 
         N1, N2, N3 = json.loads(row['phase_allocation'])
 
@@ -562,10 +566,11 @@ def replan_future_weeks(user_id: str, current_week: int, study_plan_id: str):
     # Load study plan metadata
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        plan_row = cursor.execute(
-            "SELECT * FROM study_plans WHERE id = ?",
+        cursor.execute(
+            "SELECT * FROM study_plans WHERE id = %s",
             (study_plan_id,)
-        ).fetchone()
+        )
+        plan_row = cursor.fetchone()
 
         total_weeks = plan_row['total_weeks']
         phase_allocation = json.loads(plan_row['phase_allocation'])
@@ -635,13 +640,14 @@ def is_week_complete(study_plan_id: str, week_number: int) -> bool:
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
-        row = cursor.execute(
+        cursor.execute(
             """SELECT COUNT(*) as total,
                       SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed
                FROM study_plan_tasks
-               WHERE study_plan_id = ? AND week_number = ?""",
+               WHERE study_plan_id = %s AND week_number = %s""",
             (study_plan_id, week_number)
-        ).fetchone()
+        )
+        row = cursor.fetchone()
 
         if row and row['total'] > 0:
             return row['completed'] == row['total']
@@ -663,11 +669,12 @@ def get_modules_for_week(study_plan_id: str, week_number: int) -> List[Dict]:
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
-        rows = cursor.execute(
+        cursor.execute(
             """SELECT DISTINCT module_id FROM study_plan_tasks
-               WHERE study_plan_id = ? AND week_number = ? AND module_id IS NOT NULL""",
+               WHERE study_plan_id = %s AND week_number = %s AND module_id IS NOT NULL""",
             (study_plan_id, week_number)
-        ).fetchall()
+        )
+        rows = cursor.fetchall()
 
         module_ids = [row['module_id'] for row in rows]
 

@@ -25,8 +25,9 @@ const Diagnostics = () => {
       setIsStarting(true)
 
       const headers = await getAuthHeaders()
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
 
-      const response = await fetch('/api/personalization/diagnostic', {
+      const response = await fetch(`${apiBaseUrl}/personalization/diagnostic`, {
         method: 'POST',
         headers,
         body: JSON.stringify({

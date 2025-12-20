@@ -9,6 +9,18 @@ const Landing = () => {
   const [isLoadingActivity, setIsLoadingActivity] = useState(true)
 
   useEffect(() => {
+    const warmLambda = async () => {
+      // Ping the backend to warm up Lambda on page load
+      // This ensures Lambda is hot when user navigates to Study Plan
+      try {
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'
+        await fetch(`${apiBaseUrl}/warm`, { method: 'GET' })
+      } catch (error) {
+        // Silent fail - warming is a performance optimization, not critical
+        console.debug('Lambda warming ping failed:', error)
+      }
+    }
+
     const fetchRecentActivity = async () => {
       try {
         setIsLoadingActivity(true)
@@ -34,6 +46,9 @@ const Landing = () => {
         setIsLoadingActivity(false)
       }
     }
+
+    // Warm Lambda immediately on mount
+    warmLambda()
 
     if (currentUser) {
       fetchRecentActivity()

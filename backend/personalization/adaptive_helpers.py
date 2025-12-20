@@ -87,10 +87,11 @@ def get_mastery_vector(user_id: str, timestamp: Optional[datetime] = None) -> np
 
         if timestamp is None:
             # Get current mastery
-            row = cursor.execute(
-                "SELECT mastery_vector FROM user_abilities WHERE user_id = ?",
+            cursor.execute(
+                "SELECT mastery_vector FROM user_abilities WHERE user_id = %s",
                 (user_id,)
-            ).fetchone()
+            )
+            row = cursor.fetchone()
 
             if row and row['mastery_vector']:
                 return np.array(json.loads(row['mastery_vector']))
@@ -99,12 +100,13 @@ def get_mastery_vector(user_id: str, timestamp: Optional[datetime] = None) -> np
                 return np.full(35, 0.3)
         else:
             # Get historical mastery from history table
-            row = cursor.execute(
+            cursor.execute(
                 """SELECT mastery_vector FROM mastery_vector_history
-                   WHERE user_id = ? AND timestamp <= ?
+                   WHERE user_id = %s AND timestamp <= %s
                    ORDER BY timestamp DESC LIMIT 1""",
                 (user_id, timestamp)
-            ).fetchone()
+            )
+            row = cursor.fetchone()
 
             if row and row['mastery_vector']:
                 return np.array(json.loads(row['mastery_vector']))
@@ -134,7 +136,7 @@ def store_mastery_snapshot(user_id: str, mastery_vector: np.ndarray,
         cursor.execute(
             """INSERT INTO mastery_vector_history
                (id, user_id, mastery_vector, theta_scalar, trigger_event)
-               VALUES (?, ?, ?, ?, ?)""",
+               VALUES (%s, %s, %s, %s, %s)""",
             (snapshot_id, user_id, json.dumps(mastery_vector.tolist()),
              theta_scalar, trigger_event)
         )
@@ -306,13 +308,14 @@ def get_module_completion_rate(module_id: str, user_id: str,
         cursor = conn.cursor()
 
         # Get all tasks for this module in the time range
-        rows = cursor.execute(
+        cursor.execute(
             """SELECT COUNT(*) as total,
                       SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed
                FROM study_plan_tasks
-               WHERE module_id = ? AND created_at >= ? AND created_at <= ?""",
+               WHERE module_id = %s AND created_at >= %s AND created_at <= %s""",
             (module_id, week_start, week_end)
-        ).fetchone()
+        )
+        rows = cursor.fetchone()
 
         if rows and rows['total'] > 0:
             return rows['completed'] / rows['total']
@@ -475,13 +478,20 @@ def get_week_start_time(study_plan_id: str, week_number: int) -> datetime:
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
-        row = cursor.execute(
-            "SELECT start_date FROM study_plans WHERE id = ?",
+        cursor.execute(
+            "SELECT start_date FROM study_plans WHERE id = %s",
             (study_plan_id,)
-        ).fetchone()
+        )
+        row = cursor.fetchone()
 
         if row:
-            start_date = datetime.strptime(row['start_date'], '%Y-%m-%d')
+            # Handle both SQLite (string) and PostgreSQL (date object)
+            start_date_raw = row['start_date']
+            if isinstance(start_date_raw, str):
+                start_date = datetime.strptime(start_date_raw, '%Y-%m-%d')
+            else:
+                # PostgreSQL returns date object, convert to datetime
+                start_date = datetime.combine(start_date_raw, datetime.min.time())
             week_start = start_date + timedelta(weeks=week_number - 1)
             return week_start
         else:
@@ -501,10 +511,11 @@ def get_current_phase(study_plan_id: str) -> str:
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
-        row = cursor.execute(
-            "SELECT current_phase FROM study_plans WHERE id = ?",
+        cursor.execute(
+            "SELECT current_phase FROM study_plans WHERE id = %s",
             (study_plan_id,)
-        ).fetchone()
+        )
+        row = cursor.fetchone()
 
         if row and row['current_phase']:
             return row['current_phase']
@@ -524,7 +535,7 @@ def update_study_plan_phase(study_plan_id: str, new_phase: str):
         cursor = conn.cursor()
 
         cursor.execute(
-            "UPDATE study_plans SET current_phase = ? WHERE id = ?",
+            "UPDATE study_plans SET current_phase = %s WHERE id = %s",
             (new_phase, study_plan_id)
         )
         conn.commit()
@@ -547,11 +558,12 @@ def get_completed_modules(user_id: str) -> set:
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
-        rows = cursor.execute(
+        cursor.execute(
             """SELECT DISTINCT module_id FROM module_completions
-               WHERE user_id = ? AND completion_rate >= 0.8""",
+               WHERE user_id = %s AND completion_rate >= 0.8""",
             (user_id,)
-        ).fetchall()
+        )
+        rows = cursor.fetchall()
 
         return {row['module_id'] for row in rows if row['module_id']}
 
@@ -585,7 +597,7 @@ def log_module_completion(user_id: str, module_id: str, study_plan_id: str,
                (id, user_id, module_id, study_plan_id, week_number,
                 completed_at, completion_rate, reward,
                 mastery_before, mastery_after)
-               VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?)""",
+               VALUES (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP, %s, %s, %s, %s)""",
             (completion_id, user_id, module_id, study_plan_id, week_number,
              completion_rate, reward,
              json.dumps(mastery_before.tolist()),

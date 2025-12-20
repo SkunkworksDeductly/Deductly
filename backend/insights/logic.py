@@ -7,7 +7,6 @@ from typing import Any, Dict, List
 from utils import generate_id, generate_sequential_id
 import os
 import json
-import sqlite3
 import torch
 from db import get_db_connection, get_db_cursor, execute_query
 from .irt_implementation import rasch_online_update_theta_torch
@@ -52,7 +51,7 @@ def get_item_difficulties(question_ids) -> torch.Tensor:
     #placeholders = ','.join('?' for _ in question_ids)
     difficulties = []
     for q in question_ids:
-        query = f"SELECT b FROM item_difficulties WHERE question_id = ?"
+        query = f"SELECT b FROM item_difficulties WHERE question_id = %s"
         with get_db_cursor() as cursor:
             cursor.execute(query, (q,))
             row = cursor.fetchone()
@@ -65,7 +64,7 @@ def get_item_difficulties(question_ids) -> torch.Tensor:
 
 def fetch_current_ability(model_name: str, user_id: str) -> Dict[str, Any]:
     """Retrieve the latest overall ability score, creating a new record if none exists."""
-    query = "SELECT theta_scalar FROM user_abilities WHERE user_id = ?"
+    query = "SELECT theta_scalar FROM user_abilities WHERE user_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_id,))
         row = cursor.fetchone()
@@ -77,7 +76,7 @@ def fetch_current_ability(model_name: str, user_id: str) -> Dict[str, Any]:
             theta = 0.0
             cursor.execute(
                 """INSERT INTO user_abilities (id, user_id, theta_scalar, mastery_vector, last_updated)
-                   VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)""",
+                   VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)""",
                 (new_id, user_id, theta, json.dumps([0.0] * len(skill_taxonomy)))
             )
 
@@ -147,14 +146,15 @@ def fetch_skill_mastery(user_id: str) -> Dict[str, Any]:
 
     Returns a stable structure even when no data exists yet.
     """
-    query = "SELECT mastery_vector FROM user_abilities WHERE user_id = ?"
+    query = "SELECT mastery_vector FROM user_abilities WHERE user_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_id,))
         row = cursor.fetchone()
 
-    if row and row[0]:
+    # Handle PostgreSQL RealDictRow (dict-like) - access by column name
+    if row and row['mastery_vector']:
         try:
-            mastery_vec = json.loads(row[0])
+            mastery_vec = json.loads(row['mastery_vector'])
         except Exception:
             mastery_vec = []
     else:
@@ -217,7 +217,7 @@ def irt_online_update(user_id: str, new_evidence: List[Dict[str, Any]]) -> None:
     b = get_item_difficulties(qids)
     new_theta = rasch_online_update_theta_torch(responses, b, theta0, prior_mean, prior_var)
     with get_db_cursor() as cursor:
-        cursor.execute("""UPDATE user_abilities SET theta_scalar = ?, last_updated = CURRENT_TIMESTAMP WHERE user_id = ?;""", (new_theta, user_id))
+        cursor.execute("""UPDATE user_abilities SET theta_scalar = %s, last_updated = CURRENT_TIMESTAMP WHERE user_id = %s;""", (new_theta, user_id))
     return "Successfully updated user ability theta."
 
 
@@ -233,7 +233,7 @@ def get_skill_vector_for_question(question_id: str) -> torch.Tensor:
         SELECT s.skill_id
         FROM question_skills qs
         JOIN skills s ON qs.skill_id = s.id
-        WHERE qs.question_id = ?
+        WHERE qs.question_id = %s
     """
 
     with get_db_cursor() as cursor:
@@ -269,7 +269,7 @@ def get_current_mastery_vector(user_id: str) -> List[float]:
     Fetch the current mastery vector for a user from the database.
     If the user doesn't have a mastery vector yet, initialize with zeros.
     """
-    query = "SELECT mastery_vector FROM user_abilities WHERE user_id = ?"
+    query = "SELECT mastery_vector FROM user_abilities WHERE user_id = %s"
 
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_id,))
@@ -294,15 +294,15 @@ def persist_mastery_vector(user_id: str, mastery_vector: List[float]) -> None:
 
     with get_db_cursor() as cursor:
         # Check if user already has a record
-        cursor.execute("SELECT id FROM user_abilities WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT id FROM user_abilities WHERE user_id = %s", (user_id,))
         row = cursor.fetchone()
 
         if row:
             # Update existing record
             cursor.execute(
                 """UPDATE user_abilities
-                   SET mastery_vector = ?, last_updated = CURRENT_TIMESTAMP
-                   WHERE user_id = ?""",
+                   SET mastery_vector = %s, last_updated = CURRENT_TIMESTAMP
+                   WHERE user_id = %s""",
                 (mastery_json, user_id)
             )
         else:
@@ -310,7 +310,7 @@ def persist_mastery_vector(user_id: str, mastery_vector: List[float]) -> None:
             new_id = generate_id("UA")
             cursor.execute(
                 """INSERT INTO user_abilities (id, user_id, theta_scalar, mastery_vector, last_updated)
-                   VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)""",
+                   VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)""",
                 (new_id, user_id, 0.0, mastery_json)
             )
 

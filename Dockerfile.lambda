@@ -1,0 +1,27 @@
+# Dockerfile for AWS Lambda deployment
+# Uses AWS Lambda Python 3.11 base image
+FROM public.ecr.aws/lambda/python:3.11
+
+# Install build dependencies for compiling Python packages
+RUN yum install -y gcc gcc-c++ make
+
+# Copy requirements file first
+COPY backend/requirements.txt ${LAMBDA_TASK_ROOT}/
+
+# Install Python dependencies
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r ${LAMBDA_TASK_ROOT}/requirements.txt
+
+# Copy backend code to Lambda task root
+COPY backend/ ${LAMBDA_TASK_ROOT}/
+
+# Fix file permissions for Lambda runtime
+# Lambda runs as sbx_user, so ensure all files are world-readable
+RUN chmod -R 755 ${LAMBDA_TASK_ROOT} && \
+    find ${LAMBDA_TASK_ROOT} -type f -exec chmod 644 {} \;
+
+# Prevent Python from writing bytecode files (Lambda /var/task is read-only)
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Set the Lambda handler
+CMD ["lambda_handler.lambda_handler"]

@@ -225,8 +225,9 @@ const DrillBuilder = () => {
       }
 
       const headers = await getAuthHeaders()
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
 
-      const response = await fetch('/api/skill-builder/drill', {
+      const response = await fetch(`${apiBaseUrl}/skill-builder/drill`, {
         method: 'POST',
         headers,
         body: JSON.stringify(payload)

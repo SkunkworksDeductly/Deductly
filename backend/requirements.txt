@@ -4,5 +4,8 @@ python-dotenv==1.0.0
 gunicorn==21.2.0
 firebase-admin==6.5.0
 requests==2.31.0
-torch>=2.0.0
-numpy>=1.24.3
+torch==2.5.1
+numpy==1.26.4
+psycopg2-binary==2.9.9
+mangum==0.17.0
+asgiref==3.7.2

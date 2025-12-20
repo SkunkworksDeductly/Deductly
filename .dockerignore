@@ -58,6 +58,8 @@ backend/tests/
 # Scrapers and utilities (not needed in production)
 backend/scrapers/
 backend/data/*.json
+# BUT include modules_library.json - needed at runtime for study plan generation
+!backend/data/modules_library.json
 backend/data/*.sql
 backend/data/backups/
 

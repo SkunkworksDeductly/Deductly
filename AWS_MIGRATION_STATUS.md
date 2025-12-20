@@ -175,55 +175,43 @@ CORS(app,
 
 ---
 
-## 📋 PENDING TASKS
+## 📋 DEPLOYMENT STATUS
 
-### Task 1: Fix CloudFront SPA Routing
-Configure custom error pages in CloudFront (see Bug #1 above) - 5 minutes via AWS Console
+### ✅ Fully Automated CI/CD
+Both frontend and backend now auto-deploy on push to `main` or `production` branches:
 
-### Task 2: Deploy Lambda Warming Fix
-Deploy latest changes to production:
-```bash
-# Build with legacy Docker (no BuildKit)
-cd /Users/nikhil/Desktop/deductly/Deductly
-DOCKER_BUILDKIT=0 docker build -f Dockerfile.lambda \
-  -t 205960220508.dkr.ecr.us-east-1.amazonaws.com/deductly-backend:latest .
+**Frontend Deployment:**
+- Triggers: Changes to any file (except `backend/**`)
+- Workflow: `.github/workflows/deploy-s3.yml`
+- Deploy time: ~3-5 minutes
 
-# Login to ECR
-aws ecr get-login-password --region us-east-1 | \
-  docker login --username AWS --password-stdin \
-  205960220508.dkr.ecr.us-east-1.amazonaws.com
+**Backend Deployment:**
+- Triggers: Changes to `backend/**`, `Dockerfile.lambda`, or workflow file
+- Workflow: `.github/workflows/deploy-lambda.yml`
+- Deploy time: ~5-8 minutes (Docker build + push + Lambda update)
 
-# Push to ECR
-docker push 205960220508.dkr.ecr.us-east-1.amazonaws.com/deductly-backend:latest
-
-# Update Lambda
-aws lambda update-function-code \
-  --function-name deductly-backend \
-  --image-uri 205960220508.dkr.ecr.us-east-1.amazonaws.com/deductly-backend:latest
-```
-
-Frontend auto-deploys via GitHub Actions on push to `main`.
+**Manual deployment is no longer needed!** Just push to `main` or `production` branch.
 
 ---
 
 ## 📊 DEPLOYMENT WORKFLOW
 
 ### Frontend (Automated)
-1. Developer pushes to `main` branch
+1. Developer pushes to `main` or `production` branch
 2. GitHub Actions workflow triggers (`.github/workflows/deploy-s3.yml`)
 3. Builds React app with Vite using secrets from GitHub
 4. Syncs `dist/` folder to S3 bucket
 5. Invalidates CloudFront cache (`/*`)
 6. Changes live in ~2-5 minutes
 
-### Backend (Manual - Can Be Automated)
-1. Developer pushes to `main` branch
-2. **Manual steps** (can be automated with GitHub Actions):
-   - Build Docker image with `DOCKER_BUILDKIT=0`
-   - Push to ECR
-   - Update Lambda function code
-3. Lambda starts using new image on next cold start
-4. Changes live immediately for new requests
+### Backend (Automated)
+1. Developer pushes to `main` or `production` branch with changes to `backend/**` files
+2. GitHub Actions workflow triggers (`.github/workflows/deploy-lambda.yml`)
+3. Builds Docker image with legacy builder (`DOCKER_BUILDKIT=0`)
+4. Pushes image to ECR with commit SHA tag + `latest` tag
+5. Updates Lambda function to use new image
+6. Waits for Lambda update to complete
+7. Changes live on next Lambda invocation (~10-30 seconds)
 
 ---
 
@@ -302,8 +290,8 @@ The migration will be complete when:
 - ✅ Website loads without errors
 - ✅ All API endpoints tested and working
 - ✅ Lambda warming implemented for better performance
+- ✅ Backend auto-deploy via GitHub Actions
 - 🟡 CloudFront SPA routing fix needed (simple config change)
-- ⬜ Backend auto-deploy via GitHub Actions (OPTIONAL - currently manual)
 
 ---
 

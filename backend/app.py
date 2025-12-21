@@ -58,6 +58,7 @@ if not firebase_admin._apps:
         print(f"Warning: Firebase Admin SDK initialization failed: {e}")
 
 app = Flask(__name__)
+# CORS configuration for all allowed origins
 CORS(app,
     origins=[
         'http://localhost:5173',  # Local development

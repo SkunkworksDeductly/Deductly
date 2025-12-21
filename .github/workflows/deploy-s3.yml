@@ -5,6 +5,14 @@ on:
     branches:
       - main
       - production
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'vite.config.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy-s3.yml'
 
 jobs:
   deploy:

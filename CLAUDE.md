@@ -171,8 +171,9 @@ Located in `backend/scrapers/`:
 **Frontend: S3 + CloudFront**
 - S3 Bucket: `deductly-frontend` (static website hosting)
 - CloudFront Distribution: `E3897ANC87L60Y`
-- GitHub Actions CI/CD: Auto-deploy on push to `main` branch
+- GitHub Actions CI/CD: Auto-deploy on push to `main` or `production` branches
 - Workflow: `.github/workflows/deploy-s3.yml`
+  - Triggers only on changes to: `src/**`, `public/**`, `index.html`, `vite.config.js`, `package.json`, `package-lock.json`, or the workflow file itself
 - Invalidates CloudFront cache on each deployment
 
 **Backend: Lambda + API Gateway**
@@ -181,6 +182,9 @@ Located in `backend/scrapers/`:
 - API Gateway: HTTP API with custom domain `api.deductly.org`
 - Container Image: ECR repository `205960220508.dkr.ecr.us-east-1.amazonaws.com/deductly-backend`
 - Runtime: Python 3.11 with Flask via Mangum ASGI adapter
+- GitHub Actions CI/CD: Auto-deploy on push to `main` or `production` branches
+- Workflow: `.github/workflows/deploy-lambda.yml`
+  - Triggers only on changes to: `backend/**`, `Dockerfile.lambda`, or the workflow file itself
 - **Lambda Warming:** Landing page (`src/pages/Landing.jsx`) pings `/api/warm` on load to prevent cold starts
   - Ensures Lambda is hot when users navigate to Study Plan or other pages
   - Zero additional cost (only warms when users visit)

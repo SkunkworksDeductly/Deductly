@@ -66,6 +66,17 @@ jobs:
           aws lambda wait function-updated \
             --function-name deductly-backend
 
+      - name: Configure Lambda handler entrypoint
+        run: |
+          aws lambda update-function-configuration \
+            --function-name deductly-backend \
+            --image-config '{"Command":["lambda_handler.lambda_handler"]}'
+
+      - name: Wait for configuration update
+        run: |
+          aws lambda wait function-updated \
+            --function-name deductly-backend
+
       - name: Deployment complete
         run: |
           echo "✅ Lambda function deployed successfully!"

@@ -1,6 +1,8 @@
 """
 AWS Lambda Handler for Deductly Backend
 Uses Mangum with WsgiToAsgi to adapt Flask app for Lambda execution
+
+Version: 1.0.1 - Verified CMD instruction for proper entrypoint
 """
 from mangum import Mangum
 from asgiref.wsgi import WsgiToAsgi

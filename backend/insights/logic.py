@@ -7,11 +7,21 @@ from typing import Any, Dict, List
 from utils import generate_id, generate_sequential_id
 import os
 import json
-import sqlite3
 import torch
 from db import get_db_connection, get_db_cursor, execute_query
 from .irt_implementation import rasch_online_update_theta_torch
 from .glmm_implementation import RaschFrozenSkillGLMM, micro_update_one
+from .elo_system import (
+    UserSkillRating,
+    Question,
+    QuestionSkill,
+    QuestionRating,
+    update_elo,
+    DEFAULT_RATING,
+    ELO_SCALE
+)
+
+
 
 
 skill_taxonomy = [('LR-01', 'Identify Conclusion'), ('LR-02', 'Identify Premises'), ('LR-03', 'Identify Assumptions'), ('LR-04', 'Strengthen Argument'), ('LR-05', 'Weaken Argument'), ('LR-06', 'Identify Flaw'), ('LR-07', 'Necessary Conditions'), ('LR-08', 'Sufficient Conditions'), ('LR-09', 'Conditional Logic'), ('LR-10', 'Must Be True/Inference'), ('LR-11', 'Resolve Paradox'), ('LR-12', 'Parallel Reasoning'), ('LR-13', 'Parallel Flaw'), ('LR-14', 'Method of Reasoning'), ('LR-15', 'Role of Statement'), ('LR-16', 'Principle - Identify'), ('LR-17', 'Principle - Apply'), ('LR-18', 'Evaluate Argument'), ('RC-01', 'Main Point/Primary Purpose'), ('RC-02', 'Passage Structure/Organization'), ('RC-03', "Author's Attitude/Tone"), ('RC-04', "Author's Purpose"), ('RC-05', 'Specific Detail Retrieval'), ('RC-06', 'Explicit Information'), ('RC-07', 'Inference'), ('RC-08', 'Must Be True'), ('RC-09', 'Strengthen/Support'), ('RC-10', 'Weaken/Challenge'), ('RC-11', 'Analogous Reasoning'), ('RC-12', 'Function of Paragraph/Section'), ('RC-13', 'Comparative Analysis'), ('RC-14', 'Point of Agreement/Disagreement'), ('RC-15', 'Identify Argument'), ('RC-16', 'Evaluate Evidence'), ('RC-17', 'Vocabulary in Context')]
@@ -52,7 +62,7 @@ def get_item_difficulties(question_ids) -> torch.Tensor:
     #placeholders = ','.join('?' for _ in question_ids)
     difficulties = []
     for q in question_ids:
-        query = f"SELECT b FROM item_difficulties WHERE question_id = ?"
+        query = "SELECT b FROM item_difficulties WHERE question_id = %s"
         with get_db_cursor() as cursor:
             cursor.execute(query, (q,))
             row = cursor.fetchone()
@@ -65,7 +75,7 @@ def get_item_difficulties(question_ids) -> torch.Tensor:
 
 def fetch_current_ability(model_name: str, user_id: str) -> Dict[str, Any]:
     """Retrieve the latest overall ability score, creating a new record if none exists."""
-    query = "SELECT theta_scalar FROM user_abilities WHERE user_id = ?"
+    query = "SELECT theta_scalar FROM user_abilities WHERE user_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_id,))
         row = cursor.fetchone()
@@ -77,7 +87,7 @@ def fetch_current_ability(model_name: str, user_id: str) -> Dict[str, Any]:
             theta = 0.0
             cursor.execute(
                 """INSERT INTO user_abilities (id, user_id, theta_scalar, mastery_vector, last_updated)
-                   VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)""",
+                   VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)""",
                 (new_id, user_id, theta, json.dumps([0.0] * len(skill_taxonomy)))
             )
 
@@ -147,14 +157,14 @@ def fetch_skill_mastery(user_id: str) -> Dict[str, Any]:
 
     Returns a stable structure even when no data exists yet.
     """
-    query = "SELECT mastery_vector FROM user_abilities WHERE user_id = ?"
+    query = "SELECT mastery_vector FROM user_abilities WHERE user_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_id,))
         row = cursor.fetchone()
 
-    if row and row[0]:
+    if row and row['mastery_vector']:
         try:
-            mastery_vec = json.loads(row[0])
+            mastery_vec = json.loads(row['mastery_vector'])
         except Exception:
             mastery_vec = []
     else:
@@ -217,7 +227,7 @@ def irt_online_update(user_id: str, new_evidence: List[Dict[str, Any]]) -> None:
     b = get_item_difficulties(qids)
     new_theta = rasch_online_update_theta_torch(responses, b, theta0, prior_mean, prior_var)
     with get_db_cursor() as cursor:
-        cursor.execute("""UPDATE user_abilities SET theta_scalar = ?, last_updated = CURRENT_TIMESTAMP WHERE user_id = ?;""", (new_theta, user_id))
+        cursor.execute("""UPDATE user_abilities SET theta_scalar = %s, last_updated = CURRENT_TIMESTAMP WHERE user_id = %s;""", (new_theta, user_id))
     return "Successfully updated user ability theta."
 
 
@@ -233,7 +243,7 @@ def get_skill_vector_for_question(question_id: str) -> torch.Tensor:
         SELECT s.skill_id
         FROM question_skills qs
         JOIN skills s ON qs.skill_id = s.id
-        WHERE qs.question_id = ?
+        WHERE qs.question_id = %s
     """
 
     with get_db_cursor() as cursor:
@@ -269,7 +279,7 @@ def get_current_mastery_vector(user_id: str) -> List[float]:
     Fetch the current mastery vector for a user from the database.
     If the user doesn't have a mastery vector yet, initialize with zeros.
     """
-    query = "SELECT mastery_vector FROM user_abilities WHERE user_id = ?"
+    query = "SELECT mastery_vector FROM user_abilities WHERE user_id = %s"
 
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_id,))
@@ -294,15 +304,15 @@ def persist_mastery_vector(user_id: str, mastery_vector: List[float]) -> None:
 
     with get_db_cursor() as cursor:
         # Check if user already has a record
-        cursor.execute("SELECT id FROM user_abilities WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT id FROM user_abilities WHERE user_id = %s", (user_id,))
         row = cursor.fetchone()
 
         if row:
             # Update existing record
             cursor.execute(
                 """UPDATE user_abilities
-                   SET mastery_vector = ?, last_updated = CURRENT_TIMESTAMP
-                   WHERE user_id = ?""",
+                   SET mastery_vector = %s, last_updated = CURRENT_TIMESTAMP
+                   WHERE user_id = %s""",
                 (mastery_json, user_id)
             )
         else:
@@ -310,7 +320,7 @@ def persist_mastery_vector(user_id: str, mastery_vector: List[float]) -> None:
             new_id = generate_id("UA")
             cursor.execute(
                 """INSERT INTO user_abilities (id, user_id, theta_scalar, mastery_vector, last_updated)
-                   VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)""",
+                   VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)""",
                 (new_id, user_id, 0.0, mastery_json)
             )
 
@@ -387,3 +397,255 @@ def glmm_online_update(user_id: str, responses: List[Dict[str, Any]]) -> str:
     persist_mastery_vector(user_id, updated_mastery)
 
     return "Successfully updated user skill mastery vector."
+
+
+# --- Elo System Integration ---
+
+def irt_b_to_elo(b_value: float) -> float:
+    """
+    Convert IRT b-parameter to Elo rating.
+    Mapping: b=0 -> 1500, b=1 -> 1700, b=-1 -> 1300 (approx 200 points per unit b)
+    """
+    return 1500.0 + (b_value * 200.0)
+
+
+def fetch_user_elo_ratings(user_id: str) -> Dict[int, UserSkillRating]:
+    """
+    Fetch all skill ratings for a user.
+    Returns a dict mapping skill_id (int) -> UserSkillRating.
+    """
+    ratings = {}
+    query = "SELECT skill_id, rating, num_updates FROM user_elo_ratings WHERE user_id = %s"
+    
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (user_id,))
+        rows = cursor.fetchall()
+        
+        for row in rows:
+            # skill_id in DB is string (e.g., 'LR-01'), but Elo system uses int IDs if possible.
+            # However, our system uses string IDs. We need to map or adapt.
+            # The elo_system.py uses int IDs in the dataclasses. 
+            # Let's assume we can hash the string ID to int or just use the string if the dataclass allows.
+            # Checking elo_system.py: `skill_id: int`. 
+            # We should probably map our string IDs to ints or modify elo_system to accept strings.
+            # For now, let's assume we map string IDs to a stable hash or index.
+            # Actually, `skill_taxonomy` is a list of tuples. We can use the index in `skill_taxonomy` + 1 as the ID.
+            
+            skill_str_id = row['skill_id']
+            skill_int_id = _get_skill_int_id(skill_str_id)
+            
+            ratings[skill_int_id] = UserSkillRating(
+                user_id=user_id, # This expects int in dataclass but we pass str? 
+                # elo_system.py: `user_id: int`. We need to be careful.
+                # Let's override/ignore the type hint or fix elo_system.
+                # Python doesn't enforce types at runtime, so passing str is fine if logic doesn't do math on it.
+                skill_id=skill_int_id,
+                rating=row['rating'],
+                num_updates=row['num_updates']
+            )
+            # Fix user_id type mismatch in object if needed, but likely fine.
+            ratings[skill_int_id].user_id = user_id 
+
+    return ratings
+
+
+def _get_skill_int_id(skill_str_id: str) -> int:
+    """Helper to map string skill ID to int index."""
+    for idx, (tax_id, _) in enumerate(skill_taxonomy):
+        if tax_id == skill_str_id:
+            return idx + 1
+    return 0 # Unknown
+
+
+def _get_skill_str_id(skill_int_id: int) -> str:
+    """Helper to map int skill ID back to string."""
+    if 1 <= skill_int_id <= len(skill_taxonomy):
+        return skill_taxonomy[skill_int_id - 1][0]
+    return "UNKNOWN"
+
+
+def fetch_question_elo_data(question_id: str):
+    """
+    Fetch Question object and its QuestionRating.
+    """
+    # 1. Fetch Question Details (Difficulty, Skills)
+    # We need to join with question_skills
+    query_q = "SELECT b, difficulty_elo_base FROM questions WHERE id = %s"
+    query_s = "SELECT skill_id, skill_type, weight FROM question_skills WHERE question_id = %s"
+    
+    with get_db_cursor() as cursor:
+        cursor.execute(query_q, (question_id,))
+        row_q = cursor.fetchone()
+        
+        if not row_q:
+            raise ValueError(f"Question {question_id} not found")
+            
+        # Determine base difficulty
+        if row_q['difficulty_elo_base'] is not None:
+            base_diff = row_q['difficulty_elo_base']
+        elif row_q['b'] is not None:
+            base_diff = irt_b_to_elo(row_q['b'])
+        else:
+            base_diff = 1500.0 # Default
+            
+        # Fetch skills
+        cursor.execute(query_s, (question_id,))
+        rows_s = cursor.fetchall()
+        
+        q_skills = []
+        
+        # If no weights stored, apply heuristic
+        # Heuristic: Primary sum = 0.7, Secondary sum = 0.3
+        primaries = [r for r in rows_s if r['skill_type'] == 'primary']
+        secondaries = [r for r in rows_s if r['skill_type'] == 'secondary']
+        
+        # If we have weights in DB, use them. If all weights are 1.0 (default) or NULL, apply heuristic?
+        # Let's assume if 'weight' column exists and is populated, we use it.
+        # But since we are just adding the column, it might be default 1.0.
+        # Let's apply heuristic if weights look like defaults (all 1.0) or if we want to enforce it.
+        # For safety, let's calculate weights if they seem unset.
+        
+        use_heuristic = True
+        if rows_s and any(r['weight'] != 1.0 for r in rows_s):
+            use_heuristic = False
+            
+        if use_heuristic:
+            w_p = 0.7 / len(primaries) if primaries else 0
+            w_s = 0.3 / len(secondaries) if secondaries else 0
+            
+            for r in primaries:
+                q_skills.append(QuestionSkill(skill_id=_get_skill_int_id(r['skill_id']), weight=w_p))
+            for r in secondaries:
+                q_skills.append(QuestionSkill(skill_id=_get_skill_int_id(r['skill_id']), weight=w_s))
+                
+            # If no primaries but secondaries, or vice versa, normalize?
+            # If only primaries, w_p = 1.0 / len.
+            if not secondaries and primaries:
+                for qs in q_skills: qs.weight = 1.0 / len(primaries)
+            elif not primaries and secondaries:
+                for qs in q_skills: qs.weight = 1.0 / len(secondaries)
+                
+        else:
+            for r in rows_s:
+                q_skills.append(QuestionSkill(
+                    skill_id=_get_skill_int_id(r['skill_id']), 
+                    weight=r['weight']
+                ))
+
+        # Create Question object
+        # Question ID in dataclass is int, we have str. 
+        # We'll use a hash or just 0 since we don't strictly need it for the math, 
+        # but let's try to be consistent.
+        q_obj = Question(
+            id=hash(question_id) % 1000000, # Mock int ID
+            difficulty_elo_base=base_diff,
+            skills=q_skills
+        )
+        
+        # 2. Fetch Question Rating (Delta)
+        query_qr = "SELECT rating_delta, num_updates FROM question_elo_ratings WHERE question_id = %s"
+        cursor.execute(query_qr, (question_id,))
+        row_qr = cursor.fetchone()
+        
+        qr_obj = None
+        if row_qr:
+            qr_obj = QuestionRating(
+                question_id=q_obj.id,
+                rating_delta=row_qr['rating_delta'],
+                num_updates=row_qr['num_updates']
+            )
+            
+        return q_obj, qr_obj
+
+
+def persist_user_elo_rating(rating: UserSkillRating) -> None:
+    """Upsert user skill rating."""
+    skill_str_id = _get_skill_str_id(rating.skill_id)
+    
+    query = """
+        INSERT INTO user_elo_ratings (id, user_id, skill_id, rating, num_updates, last_updated)
+        VALUES (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+        ON CONFLICT(user_id, skill_id) DO UPDATE SET
+            rating = excluded.rating,
+            num_updates = excluded.num_updates,
+            last_updated = CURRENT_TIMESTAMP
+    """
+    # Generate ID if inserting
+    # We can't easily know if it's insert or update without checking, 
+    # but ON CONFLICT handles the data. The 'id' field is required for insert.
+    # We can generate a deterministic ID or random.
+    rec_id = generate_id("UER")
+    
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (
+            rec_id, 
+            rating.user_id, 
+            skill_str_id, 
+            rating.rating, 
+            rating.num_updates
+        ))
+
+
+def elo_online_update(user_id: str, new_evidence: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    Process new evidence and update user Elo ratings.
+    """
+    # 1. Fetch all user ratings (so we have them for the update)
+    user_ratings = fetch_user_elo_ratings(user_id)
+    
+    # Initialize missing ratings if necessary
+    # We need to know which skills are involved in the new evidence to ensure we have ratings for them.
+    # But we don't know the skills until we fetch the questions.
+    # We will handle initialization inside the loop or pre-fetch.
+    
+    updates_log = []
+    
+    for item in new_evidence:
+        qid = item['question_id']
+        is_correct = item['is_correct']
+        
+        # Fetch question data
+        try:
+            question, question_rating = fetch_question_elo_data(qid)
+        except ValueError:
+            continue # Skip unknown questions
+            
+        # Ensure user has ratings for these skills
+        for qs in question.skills:
+            if qs.skill_id not in user_ratings:
+                user_ratings[qs.skill_id] = UserSkillRating(
+                    user_id=user_id,
+                    skill_id=qs.skill_id,
+                    rating=DEFAULT_RATING,
+                    num_updates=0
+                )
+        
+        # Perform Update
+        # We do NOT update question ratings per user request
+        result = update_elo(
+            user_ratings=user_ratings,
+            question=question,
+            question_rating=question_rating,
+            is_correct=is_correct,
+            update_question=False 
+        )
+        
+        updates_log.append({
+            'question_id': qid,
+            'delta': result.get('delta'),
+            'skill_updates': result.get('skill_updates')
+        })
+        
+        # Persist changes for this question immediately (or batch at end)
+        # The `user_ratings` dict is updated in-place by `update_elo`.
+        # We should persist the changed skills.
+        for skill_update in result.get('skill_updates', []):
+            sid = skill_update['skill_id']
+            persist_user_elo_rating(user_ratings[sid])
+            
+    return {
+        "user_id": user_id,
+        "updates_processed": len(updates_log),
+        "details": updates_log
+    }
+

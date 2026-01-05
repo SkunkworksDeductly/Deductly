@@ -249,10 +249,11 @@ def adapt_study_plan():
     from db import get_db_connection
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        row = cursor.execute(
-            "SELECT id FROM study_plans WHERE user_id = ?",
+        cursor.execute(
+            "SELECT id FROM study_plans WHERE user_id = %s",
             (user_id,)
-        ).fetchone()
+        )
+        row = cursor.fetchone()
 
         if not row:
             return jsonify({'error': 'No study plan found for user'}), 404

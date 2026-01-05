@@ -1,0 +1,65 @@
+# LSAT READING COMPREHENSION SKILL TAXONOMY (REVISED v2.0)
+# Designed for Q-Matrix Construction
+
+=============================================================================
+DOMAIN I: MACRO-STRUCTURAL (The Bird's Eye View)
+Focus: The Skeleton and The Soul of the text.
+=============================================================================
+[RC_01] Global Thesis ID
+        - Definition: Synthesizing the main argument of the entire text.
+        - Note: Must encompass the scope of all paragraphs (The "What").
+
+[RC_02] Authorial Purpose
+        - Definition: Identifying the rhetorical reason the text was written.
+        - Trigger: "Primarily concerned with," "Primary purpose" (The "Why").
+
+[RC_03] Passage Architecture (Structure)
+        - Definition: Identifying how paragraphs function in relation to each other (e.g., Phenomenon -> Explanation -> Critique).
+        - Trigger: "Which of the following best describes the organization?" (The "How").
+
+=============================================================================
+DOMAIN II: MICRO-SYNTACTIC (Locate & Translate)
+Focus: Finding facts and local logic.
+=============================================================================
+[RC_04] Detail Retrieval
+        - Definition: Locating explicit facts. The answer is "on the page."
+        - Trigger: "According to the passage," "The passage states."
+
+[RC_05] Logical Function (Role of Detail)
+        - Definition: Identifying why an example/sentence was included.
+        - Trigger: "The author mentions X primarily in order to..."
+
+=============================================================================
+DOMAIN III: INFERENTIAL SYNTHESIS (Reading Between Lines)
+Focus: Deductions, Voices, and Implications.
+=============================================================================
+[RC_06] Viewpoint Tracking (Attribution)
+        - Definition: Distinguishing which claims belong to the author versus other sources (critics, traditionalists, scientists).
+        - Relevance: Prerequisite for accurate Tone and Inference answering.
+
+[RC_07] Inference (Implication)
+        - Definition: Deducing a claim that is not written but must be true based on the text.
+        - Trigger: "Inferred," "Suggests," "Implies."
+
+[RC_08] Tone/Attitude
+        - Definition: Identifying subjective opinion (Positive/Negative/Neutral/Ambivalent).
+        - Trigger: "Attitude," "Opinion," "Tone."
+
+[RC_09] Analogy/Application
+        - Definition: Abstracting the passage's principle and mapping it to a new, parallel scenario.
+        - Trigger: "Most analogous to," "Similar to."
+
+[RC_10] New Info Impact (Strengthen/Weaken)
+        - Definition: Assessing how outside facts affect the author's argument.
+        - Trigger: "Which of the following, if true, would weaken..."
+
+=============================================================================
+DOMAIN IV: COMPARATIVE DYNAMICS (Dual Passage Only)
+Focus: The relationship between two texts.
+=============================================================================
+[RC_11] Comparative Relationship
+        - Definition: Describing the structural relationship between Passage A and B (e.g., A proposes a problem, B proposes a solution).
+
+[RC_12] Cross-Reference / Agreement
+        - Definition: Identifying points of overlap (agreement) or contention (disagreement) between authors.
+        - Application: Used for "How would Author A respond to Author B?" questions.

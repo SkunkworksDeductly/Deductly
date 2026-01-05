@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/Deductly/',
+  base: '/',
   server: {
     proxy: {
       '/api': {
@@ -22,5 +22,4 @@ export default defineConfig({
       },
     },
   },
-  base: process.env.NODE_ENV === 'production' ? '/Deductly/' : '/',
 })

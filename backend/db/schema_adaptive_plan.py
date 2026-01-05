@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS drills (
     user_id VARCHAR(100) NOT NULL,
     question_count INTEGER NOT NULL,
     timing INTEGER,
-    difficulty VARCHAR(20),
+    difficulty TEXT,
     skills TEXT,
     drill_type VARCHAR(50),
     question_ids TEXT NOT NULL,

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { renderTextWithHighlights } from '../utils/highlightRenderer'
+import { getChoiceText } from '../utils/answerChoiceUtils'
 
 const letterFromIndex = (index) => String.fromCharCode(65 + index)
 
@@ -10,12 +11,6 @@ const indexFromLetter = (letter) => {
   const normalized = letter.trim().toUpperCase()
   const code = normalized.charCodeAt(0) - 65
   return code >= 0 && code < 26 ? code : null
-}
-
-const stripChoicePrefix = (choice) => {
-  if (typeof choice !== 'string') return ''
-  const match = choice.match(/^[A-Z]\)\s*(.*)$/)
-  return match ? match[1] : choice
 }
 
 const DrillResults = () => {
@@ -70,7 +65,7 @@ const DrillResults = () => {
     return (
       <div className="py-10">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="rounded-2xl border border-border-light bg-white p-8 text-center shadow-md">
+          <div className="rounded-3xl border border-border-default bg-bg-secondary/80 p-8 text-center shadow-card">
             <p className="text-lg text-text-secondary">Loading drill results...</p>
           </div>
         </div>
@@ -82,12 +77,12 @@ const DrillResults = () => {
     return (
       <div className="py-10">
         <div className="max-w-5xl mx-auto px-4 space-y-6">
-          <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center shadow-md">
-            <p className="text-lg font-semibold text-red-700 mb-2">Error</p>
-            <p className="text-sm text-red-600 mb-4">{error}</p>
+          <div className="rounded-3xl border border-danger/40 bg-danger/10 p-8 text-center shadow-card">
+            <p className="text-lg font-semibold text-danger mb-2">Error</p>
+            <p className="text-sm text-text-primary mb-4">{error}</p>
             <button
               type="button"
-              className="px-4 py-2 rounded-lg bg-button-primary hover:bg-button-primary-hover text-white transition"
+              className="px-4 py-2 rounded-xl bg-button-primary hover:bg-button-primary-hover text-white transition"
               onClick={() => navigate('/drill')}
             >
               Back to Drills
@@ -103,49 +98,148 @@ const DrillResults = () => {
   }
 
   const userHighlights = drillData.user_highlights || {}
+  const drillConfig = drillData.drill_config || {}
+  const skillPerformance = drillData.skill_performance || {}
+  const questionResults = Array.isArray(drillData.question_results) ? drillData.question_results : []
+
+  const totalQuestions = drillData.total_questions ?? 0
+  const correctAnswers = drillData.correct_answers ?? 0
+  const reviewCount = Math.max(totalQuestions - correctAnswers, 0)
+  const formattedScore = useMemo(() => Math.round(drillData.score_percentage ?? 0), [drillData.score_percentage])
+  const completedLabel = drillData.completed_at
+    ? new Date(drillData.completed_at).toLocaleString()
+    : 'just now'
+  const timeTakenLabel = typeof drillData.time_taken === 'number'
+    ? `${Math.max(Math.round(drillData.time_taken / 60), 1)} min`
+    : 'Untimed'
+  const hasTimingConfig = Object.prototype.hasOwnProperty.call(drillConfig, 'timing')
+  const timingLabel = typeof drillConfig.timing === 'number'
+    ? `${Math.round(drillConfig.timing / 60)} min limit`
+    : 'Untimed'
+  const showSkills = Array.isArray(drillConfig.skills) && drillConfig.skills.length > 0
+  const difficultyLabel = Array.isArray(drillConfig.difficulty)
+    ? drillConfig.difficulty.join(', ')
+    : drillConfig.difficulty
+  const skillEntries = Object.entries(skillPerformance)
 
   return (
     <div className="py-10">
-      <div className="max-w-5xl mx-auto px-4 space-y-6">
+      <div className="max-w-5xl mx-auto px-4 space-y-8">
         {/* Summary Section */}
-        <section className="rounded-2xl border border-border-light bg-white p-8 text-text-primary shadow-md">
-          <div className="flex justify-between items-start mb-4">
+        <section className="rounded-3xl border border-border-default bg-gradient-to-br from-bg-secondary/90 to-bg-tertiary/95 p-8 text-text-primary shadow-card">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2">Drill Results</h1>
-              <p className="text-sm text-text-secondary">
-                Completed on {new Date(drillData.completed_at).toLocaleString()}
+              <p className="text-xs uppercase tracking-[0.3em] text-text-muted mb-2">Performance recap</p>
+              <h1 className="font-display text-4xl md:text-5xl text-text-primary leading-tight">Drill Results</h1>
+              <p className="text-text-secondary mt-3">
+                Completed {completedLabel}
               </p>
             </div>
-            <button
-              type="button"
-              className="px-4 py-2 rounded-lg bg-button-secondary border border-border-default hover:bg-surface-hover text-text-secondary transition"
-              onClick={() => navigate('/drill')}
-            >
-              Back to Drills
-            </button>
+            <div className="flex gap-3 flex-wrap">
+              <button
+                type="button"
+                className="px-4 py-2 rounded-xl bg-bg-secondary border border-border-default text-text-primary hover:bg-bg-tertiary transition"
+                onClick={() => navigate('/drill')}
+              >
+                Build New Drill
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 rounded-xl bg-button-primary hover:bg-button-primary-hover text-white shadow-glow-primary transition"
+                onClick={() => navigate('/study-plan')}
+              >
+                View Study Plan
+              </button>
+            </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3 mt-6">
-            <div className="bg-accent-lavender/20 border border-border-light rounded-xl p-4 text-center">
-              <p className="text-sm text-text-secondary uppercase tracking-wide">Total Questions</p>
-              <p className="text-2xl font-semibold mt-2">{drillData.total_questions}</p>
+          <div className="grid gap-4 sm:grid-cols-3 mt-10">
+            <div className="rounded-2xl border border-border-default bg-bg-primary/50 p-4 text-center backdrop-blur">
+              <p className="text-[11px] uppercase tracking-[0.4em] text-text-tertiary">Total Questions</p>
+              <p className="font-display text-4xl text-text-primary mt-3">{totalQuestions}</p>
             </div>
-            <div className="bg-accent-mint/20 border border-border-light rounded-xl p-4 text-center">
-              <p className="text-sm text-text-secondary uppercase tracking-wide">Correct Answers</p>
-              <p className="text-2xl font-semibold mt-2 text-accent-mint">{drillData.correct_answers}</p>
+            <div className="rounded-2xl border border-brand-primary/30 bg-brand-primary/10 p-4 text-center">
+              <p className="text-[11px] uppercase tracking-[0.4em] text-text-tertiary">Correct</p>
+              <p className="font-display text-4xl text-success mt-3">{correctAnswers}</p>
+              <p className="text-sm text-text-secondary">{reviewCount} to review</p>
             </div>
-            <div className="bg-primary/20 border border-border-light rounded-xl p-4 text-center">
-              <p className="text-sm text-text-secondary uppercase tracking-wide">Score</p>
-              <p className="text-2xl font-semibold mt-2">{drillData.score_percentage}%</p>
+            <div className="rounded-2xl border border-border-active bg-brand-secondary/10 p-4 text-center">
+              <p className="text-[11px] uppercase tracking-[0.4em] text-text-tertiary">Score</p>
+              <p className="font-display text-4xl text-text-primary mt-3">{formattedScore}%</p>
+              <p className="text-sm text-text-secondary">{timeTakenLabel}</p>
             </div>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {showSkills && (
+              <div className="rounded-2xl border border-border-default bg-bg-secondary/70 p-4">
+                <p className="text-[11px] uppercase tracking-[0.3em] text-text-muted mb-3">Skills Targeted</p>
+                <div className="flex flex-wrap gap-2">
+                  {drillConfig.skills.map((skill) => (
+                    <span key={skill} className="px-3 py-1 rounded-full border border-border-default text-xs text-text-secondary">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {difficultyLabel && (
+              <div className="rounded-2xl border border-border-default bg-bg-secondary/70 p-4">
+                <p className="text-[11px] uppercase tracking-[0.3em] text-text-muted mb-3">Difficulty Mix</p>
+                <p className="text-text-primary text-lg font-medium">{difficultyLabel}</p>
+              </div>
+            )}
+            {hasTimingConfig && (
+              <div className="rounded-2xl border border-border-default bg-bg-secondary/70 p-4">
+                <p className="text-[11px] uppercase tracking-[0.3em] text-text-muted mb-3">Timing</p>
+                <p className="text-text-primary text-lg font-medium">{timingLabel}</p>
+              </div>
+            )}
           </div>
         </section>
 
-        {/* Questions Section */}
-        <section className="rounded-2xl border border-border-light bg-white p-6 text-text-primary space-y-6 shadow-md">
-          <h2 className="text-2xl font-semibold mb-4">Question Review</h2>
+        {skillEntries.length > 0 && (
+          <section className="rounded-3xl border border-border-default bg-bg-secondary/80 p-6 shadow-card">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-text-muted">Skill focus</p>
+                <h2 className="font-display text-3xl text-text-primary">Performance by Skill</h2>
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {skillEntries.map(([skill, stats]) => {
+                const percentage = stats.total > 0
+                  ? Math.round((stats.correct / stats.total) * 100)
+                  : 0
+                return (
+                  <div
+                    key={skill}
+                    className="rounded-2xl border border-border-default bg-bg-primary/60 p-5 flex flex-col gap-2"
+                  >
+                    <p className="text-sm text-text-secondary uppercase tracking-wide">{skill}</p>
+                    <p className="text-3xl font-semibold text-text-primary">{percentage}%</p>
+                    <p className="text-sm text-text-tertiary">{stats.correct} / {stats.total} correct</p>
+                    <div className="h-2 w-full rounded-full bg-bg-secondary">
+                      <div
+                        className="h-full rounded-full bg-brand-primary"
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </section>
+        )}
 
-          {drillData.question_results.map((result, index) => {
+        {/* Questions Section */}
+        <section className="rounded-3xl border border-border-default bg-bg-secondary/80 p-6 text-text-primary space-y-6 shadow-card">
+          <div className="flex flex-col gap-2">
+            <p className="text-xs uppercase tracking-[0.3em] text-text-muted">Deep dive</p>
+            <h2 className="font-display text-3xl">Question Review</h2>
+          </div>
+
+          {questionResults.map((result, index) => {
             const questionDetails = result.question_details
             if (!questionDetails) return null
 
@@ -157,11 +251,14 @@ const DrillResults = () => {
 
             // Get highlights for this question
             const questionHighlights = userHighlights[result.question_id] || []
+            const answerChoices = Array.isArray(questionDetails.answer_choices)
+              ? questionDetails.answer_choices
+              : []
 
             return (
               <div
                 key={result.question_id}
-                className="rounded-xl border border-border-light bg-accent-lavender/10 p-5 text-text-primary space-y-4"
+                className="rounded-2xl border border-border-default bg-bg-primary/70 p-5 text-text-primary space-y-4 shadow-sm"
               >
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex flex-col">
@@ -170,12 +267,12 @@ const DrillResults = () => {
                     </span>
                     <div className="flex gap-2 text-xs text-text-secondary">
                       {questionDetails.question_type && (
-                        <span className="px-2 py-0.5 rounded-full bg-primary/20 text-primary">
+                        <span className="px-2 py-0.5 rounded-full bg-brand-primary/20 text-brand-primary">
                           {questionDetails.question_type}
                         </span>
                       )}
                       {questionDetails.difficulty_level && (
-                        <span className="px-2 py-0.5 rounded-full bg-accent-peach/20 text-accent-peach">
+                        <span className="px-2 py-0.5 rounded-full bg-warning/10 text-warning">
                           Difficulty: {questionDetails.difficulty_level}
                         </span>
                       )}
@@ -183,7 +280,7 @@ const DrillResults = () => {
                   </div>
                   <span
                     className={`text-sm font-semibold ${
-                      result.is_correct ? 'text-accent-mint' : 'text-red-500'
+                      result.is_correct ? 'text-success' : 'text-danger'
                     }`}
                   >
                     {result.is_correct ? 'Correct' : 'Review this one'}
@@ -195,28 +292,28 @@ const DrillResults = () => {
                 </p>
 
                 {questionDetails.passage_text && (
-                  <div className="bg-white rounded-lg border border-border-light p-4 text-xs text-text-secondary whitespace-pre-wrap">
+                  <div className="bg-bg-secondary rounded-xl border border-border-default p-4 text-xs text-text-secondary whitespace-pre-wrap">
                     {renderTextWithHighlights(questionDetails.passage_text, questionHighlights)}
                   </div>
                 )}
 
                 <div className="grid gap-2">
-                  {questionDetails.answer_choices.map((choice, choiceIndex) => {
+                  {answerChoices.map((choice, choiceIndex) => {
                     const optionLetter = letterFromIndex(choiceIndex)
-                    const optionText = stripChoicePrefix(choice)
+                    const optionText = getChoiceText(choice)
                     const isCorrect = choiceIndex === correctAnswerIndex
                     const isSelected = choiceIndex === userAnswerIndex
 
-                    let optionClass = 'border border-border-light bg-white text-text-primary'
+                    let optionClass = 'border border-border-default bg-bg-secondary text-text-primary'
                     if (isCorrect) {
-                      optionClass = 'border-accent-mint bg-accent-mint/15 text-accent-mint'
+                      optionClass = 'border-success bg-success/10 text-success'
                     } else if (isSelected && !isCorrect) {
-                      optionClass = 'border-red-400 bg-red-50 text-red-600'
+                      optionClass = 'border-danger bg-danger/10 text-danger'
                     }
 
                     return (
                       <div
-                        key={`${choice}-${choiceIndex}`}
+                        key={`choice-${choiceIndex}-${choice?.letter || ''}`}
                         className={`rounded-lg px-4 py-2 text-sm flex items-start gap-3 ${optionClass}`}
                       >
                         <span className="font-semibold">{optionLetter}.</span>
@@ -236,16 +333,37 @@ const DrillResults = () => {
                   })}
                 </div>
 
-                <div className="text-xs text-text-secondary">
-                  <span className="font-semibold text-text-primary mr-2">Your answer:</span>
-                  {userAnswerLetter || 'No selection'}
-                  <span className="font-semibold text-text-primary ml-4 mr-2">Correct answer:</span>
-                  {correctAnswerLetter || '—'}
+                <div className="text-xs text-text-secondary flex flex-wrap gap-4">
+                  <span>
+                    <span className="font-semibold text-text-primary mr-1">Your answer:</span>
+                    {userAnswerLetter || 'No selection'}
+                  </span>
+                  <span>
+                    <span className="font-semibold text-text-primary mr-1">Correct answer:</span>
+                    {correctAnswerLetter || '—'}
+                  </span>
                 </div>
               </div>
             )
           })}
         </section>
+
+        <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
+          <button
+            type="button"
+            className="px-4 py-2 rounded-xl bg-bg-secondary border border-border-default hover:bg-bg-tertiary text-text-primary transition"
+            onClick={() => navigate('/drill')}
+          >
+            Review Builder
+          </button>
+          <button
+            type="button"
+            className="px-4 py-2 rounded-xl bg-button-primary hover:bg-button-primary-hover text-white shadow-glow-primary transition"
+            onClick={() => navigate('/analytics')}
+          >
+            View Analytics
+          </button>
+        </div>
       </div>
     </div>
   )

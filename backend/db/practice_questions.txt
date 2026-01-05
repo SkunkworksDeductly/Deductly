@@ -1,0 +1,278 @@
+{
+  "stimulus": "Some economists claim that imposing a modest carbon tax will not harm low-income households, because the revenue can be rebated as equal per-capita payments. In fact, if the tax is paired with such rebates, it will likely help those households overall: low-income households generally consume less carbon-intensive energy than high-income households, so they will pay less in tax than they receive back. Therefore, a carbon tax with equal rebates is a progressive policy.",
+  "stem": "The argument depends on assuming which one of the following?",
+  "options": [
+    {
+      "text": "The per-capita rebates will actually be funded from the carbon-tax revenue and delivered to households in the manner described.",
+      "is_correct": true,
+      "explanation": "This is required by RH_04 (Necessity Gaps): the conclusion that the policy will help low-income households, and thus be progressive, relies on the rebate mechanism working as stated. If we negate this—if rebates are not funded by the tax revenue or are not delivered as described—then the fact that low-income households pay less tax provides no basis for concluding they will receive more back overall, so the argument collapses.",
+      "skill_tested": "RH_04"
+    },
+    {
+      "text": "Most low-income households will receive a rebate that is larger than the total carbon tax they personally pay.",
+      "is_correct": false,
+      "trap_type": "Sufficient assumption (too strong—guarantees conclusion)",
+      "explanation": "This would essentially guarantee the conclusion that low-income households benefit overall, but the argument does not require it as an assumption; it tries to infer that claim from lower carbon-intensive consumption plus equal rebates. A student missing the distinction between what is needed versus what would clinch the argument may choose this.",
+      "skill_gap": "Confusing a sufficient condition with a necessary one in necessary-assumption questions."
+    },
+    {
+      "text": "The carbon tax will reduce national carbon emissions by decreasing consumption of carbon-intensive energy.",
+      "is_correct": false,
+      "trap_type": "Helpful but not required (argument survives negation)",
+      "explanation": "Emissions reductions might make the policy more attractive, but the argument’s conclusion is about progressivity (net financial benefit by income group), not environmental effectiveness. Negating this does not undermine the claim that low-income households pay less tax than they receive back. Students who focus on topical relevance rather than logical necessity may pick this.",
+      "skill_gap": "Treating relevant background benefits as required support for the stated conclusion."
+    },
+    {
+      "text": "Low-income households generally consume less carbon-intensive energy than high-income households do.",
+      "is_correct": false,
+      "trap_type": "Assumption of a premise, not the argument",
+      "explanation": "This statement is explicitly given as a premise in the stimulus. The question asks for an unstated condition the reasoning relies on; repeating a premise does not fill a necessity gap. Students who do not distinguish premises from assumptions may select it.",
+      "skill_gap": "Failure to identify what is stated versus what must be supplied to make the inference work."
+    },
+    {
+      "text": "The carbon tax will be set at a level that is widely regarded as modest rather than burdensome.",
+      "is_correct": false,
+      "trap_type": "Necessary for real-world truth, not argument validity",
+      "explanation": "Whether the tax is 'modest' may matter to real-world acceptance or to some broader policy judgment, but the argument’s logic about net payments hinges on the relationship between tax paid and rebate received, not on a societal label of modesty. The argument could still be valid even if the tax is not widely regarded as modest. Students may conflate rhetorical framing with a required logical link.",
+      "skill_gap": "Confusing pragmatic or contextual conditions with assumptions required for the inference."
+    }
+  ],
+  "metadata": {
+    "question_type": "Necessary Assumption",
+    "family": "Help/Hurt Family",
+    "primary_skill_id": "RH_04",
+    "primary_skill_name": "Necessity Gaps",
+    "secondary_skills": [
+      "S_01",
+      "S_04",
+      "FL_01"
+    ],
+    "difficulty": "MEDIUM",
+    "topic": "Economics",
+    "word_count": 79,
+    "validation_method": "NEGATION TEST: If you negate the correct answer, the argument must fall apart. The correct answer is required for the argument, but may not be sufficient alone to prove the conclusion."
+  }
+}
+
+{
+  "stimulus": "In a longitudinal psychological study, participants who adopted a daily mindfulness routine for eight weeks subsequently reported fewer episodes of insomnia than matched participants who did not. The researchers conclude that the mindfulness routine itself reduced insomnia by dampening cognitive arousal at bedtime. This inference is reinforced, they claim, because the reduction was greatest among participants who initially reported high stress. Therefore, implementing mindfulness training should be an effective intervention for insomnia in stressed populations.",
+  "stem": "Which one of the following, if true, most undermines the conclusion drawn above?",
+  "options": [
+    {
+      "text": "Participants who adopted the mindfulness routine also, far more often than nonadopters, simultaneously reduced evening screen exposure after being advised that the study concerned “sleep hygiene.”",
+      "is_correct": true,
+      "explanation": "This introduces a plausible third-factor alternative explanation (RH_02: Alternative Explanations): the observed insomnia reduction could be driven by reduced evening screen exposure rather than the mindfulness routine. If a co-occurring change that independently improves sleep is correlated with adopting mindfulness, the causal link from mindfulness to reduced insomnia is less likely, weakening the conclusion that mindfulness training itself is the effective intervention.",
+      "skill_tested": "RH_02"
+    },
+    {
+      "text": "Several participants in both groups described the eight-week period as emotionally difficult and reported feeling frustrated that their sleep did not improve sooner.",
+      "is_correct": false,
+      "trap_type": "Negative in tone but doesn't affect argument",
+      "explanation": "Even if true, dissatisfaction or difficulty during the period does not bear on whether mindfulness caused the reported reduction in insomnia; it neither supplies an alternative cause nor challenges the reported comparison between groups.",
+      "skill_gap": "Confusing evaluative or emotionally negative information with logically relevant evidence (RH_07: misjudging evidential weight)."
+    },
+    {
+      "text": "The study did not verify whether participants performed the mindfulness routine correctly, relying instead on participants’ self-reports of adherence.",
+      "is_correct": false,
+      "trap_type": "Attacks a premise the argument doesn't rely on",
+      "explanation": "The argument’s premise is that adopters reported fewer insomnia episodes than nonadopters; it does not require that adopters executed the routine correctly. If anything, imperfect compliance could coexist with the reported outcome and does not directly supply a competing explanation for the group difference.",
+      "skill_gap": "Attacking methodological details without identifying whether they are necessary to the stated inference (S_01/RH_07)."
+    },
+    {
+      "text": "Independent laboratory research indicates that mindfulness practice can reduce physiological markers of stress reactivity, including elevated cortisol levels, in adults.",
+      "is_correct": false,
+      "trap_type": "Strengthens the argument (opposite effect)",
+      "explanation": "This supports the researchers’ proposed mechanism that mindfulness dampens arousal/stress, thereby making it more likely that mindfulness could reduce insomnia—so it bolsters rather than weakens the conclusion.",
+      "skill_gap": "Failing to track directionality in weaken questions and mistaking corroboration of a causal mechanism for a challenge (RH_07)."
+    },
+    {
+      "text": "Among participants who already had low stress at baseline, the difference in insomnia reports between adopters and nonadopters was small and not statistically reliable.",
+      "is_correct": false,
+      "trap_type": "Weakens a related but different conclusion",
+      "explanation": "This targets general effectiveness across all stress levels, but the argument’s final claim is explicitly about effectiveness in stressed populations. Showing limited impact in low-stress participants does not significantly cast doubt on the intervention’s efficacy for high-stress groups, so it misses the key scope.",
+      "skill_gap": "Scope shift confusion—treating evidence about a different subgroup as refuting a subgroup-specific conclusion (RH_08)."
+    }
+  ],
+  "metadata": {
+    "question_type": "Weaken",
+    "family": "Help/Hurt Family",
+    "primary_skill_id": "RH_02",
+    "primary_skill_name": "Alternative Explanations",
+    "secondary_skills": [
+      "S_01",
+      "RH_07",
+      "RH_08",
+      "RH_01"
+    ],
+    "difficulty": "HARD",
+    "topic": "Psychology",
+    "word_count": 79,
+    "validation_method": "The correct answer must decrease the probability of the conclusion being true by attacking a necessary assumption, introducing an alternative explanation, or identifying a relevant disanalogy."
+  }
+}
+
+{
+  "stimulus": "Some economists claim that minimum wage laws invariably increase unemployment. But in several cities, employment rose after modest minimum wage increases, while overall consumer spending also increased. Since higher consumer spending typically leads businesses to hire more workers, these cases suggest that a modest minimum wage increase can raise employment. Therefore, policymakers should not treat minimum wage laws as inevitably harmful to employment; they should evaluate such proposals by local economic conditions rather than by a blanket assumption.",
+  "stem": "Which option best states the main conclusion of the argument?",
+  "options": [
+    {
+      "text": "Policymakers should assess minimum wage proposals based on local economic conditions, not on the assumption that they inevitably reduce employment.",
+      "is_correct": true,
+      "explanation": "This statement is the author’s final recommendation and is supported by all earlier claims. The stimulus first challenges a universal claim, then uses evidence and a causal generalization to reach an intermediate takeaway about what the cases suggest, and finally draws a policy conclusion signaled by “Therefore.” Identifying this final claim, rather than the earlier supported claim, tests S_01 (Main Conclusion ID).",
+      "skill_tested": "S_01"
+    },
+    {
+      "text": "The city examples suggest that a modest minimum wage increase can raise employment in some circumstances.",
+      "is_correct": false,
+      "trap_type": "Intermediate conclusion (supports main point but is not it)",
+      "explanation": "This is supported by the evidence and is used to justify the later policy recommendation, but it is not the argument’s ultimate point. A student missing the shift from the intermediate inference to the final “Therefore” conclusion may select it.",
+      "skill_gap": "S_04 (Intermediate Conclusion Recognition): treating a supported sub-conclusion as the main conclusion"
+    },
+    {
+      "text": "In several cities, employment rose after modest minimum wage increases, and consumer spending increased as well.",
+      "is_correct": false,
+      "trap_type": "Premise stated as if it were conclusion",
+      "explanation": "This merely restates the factual evidence the argument relies on; it does not express what the author is trying to prove. A student who confuses premises with conclusions, rather than identifying the claim they support, may choose it.",
+      "skill_gap": "S_02 (Role Identification): mislabeling evidence as the conclusion"
+    },
+    {
+      "text": "Some economists claim that minimum wage laws invariably increase unemployment.",
+      "is_correct": false,
+      "trap_type": "Restatement of background information",
+      "explanation": "This is presented as a view the author introduces to set up the discussion, not as a claim the author endorses or aims to establish. A student who focuses on the opening context rather than the argument’s endpoint may pick it.",
+      "skill_gap": "S_01 (Main Conclusion ID): failing to distinguish setup/background from the author’s conclusion"
+    },
+    {
+      "text": "Minimum wage laws, when increased modestly, generally boost employment by increasing consumer spending in most places.",
+      "is_correct": false,
+      "trap_type": "Overly broad paraphrase that adds claims",
+      "explanation": "The stimulus claims only that the examples suggest a modest increase can raise employment in some circumstances and that policy should avoid blanket assumptions. This option improperly strengthens the claim to “generally,” adds “in most places,” and asserts a broad mechanism as if established. A student prone to overstating what is proven may select it.",
+      "skill_gap": "S_01 (Main Conclusion ID): choosing an answer that goes beyond the argument’s scope and strength"
+    }
+  ],
+  "metadata": {
+    "question_type": "Main Point",
+    "family": "Prove Family",
+    "primary_skill_id": "S_01",
+    "primary_skill_name": "Main Conclusion ID",
+    "secondary_skills": [
+      "S_04",
+      "S_02"
+    ],
+    "difficulty": "EASY",
+    "topic": "Economics",
+    "word_count": 80,
+    "validation_method": "The correct answer must capture the MAIN conclusio..."
+  }
+}
+
+{
+  "stimulus": "In a certain jurisdiction, any contract clause that waives statutory remedies is unenforceable. Any unenforceable clause cannot be used to support a damages award. Every clause that cannot support a damages award is excluded from judicial interpretation. However, some clauses that are excluded from judicial interpretation are still included in settlement negotiations.",
+  "stem": "On the assumption that the statements above are accurate, which one of the following is logically required?",
+  "options": [
+    {
+      "text": "Any contract clause that waives statutory remedies is excluded from judicial interpretation.",
+      "is_correct": true,
+      "explanation": "From the stimulus: waives statutory remedies -> unenforceable; unenforceable -> cannot support a damages award; cannot support a damages award -> excluded from judicial interpretation. By FL_03 (Chain/Transitive Deduction), linking these conditionals yields waives statutory remedies -> excluded from judicial interpretation, which must be true if the premises are true.",
+      "skill_tested": "FL_03"
+    },
+    {
+      "text": "Some contract clauses that waive statutory remedies are included in settlement negotiations.",
+      "is_correct": false,
+      "trap_type": "Possible but not certain (could be true, not must be true)",
+      "explanation": "The stimulus says only that some clauses excluded from judicial interpretation are included in settlement negotiations; it does not state that any of those excluded clauses waive statutory remedies. Since waiving statutory remedies is sufficient for exclusion but not necessary for it, this could be true but is not guaranteed.",
+      "skill_gap": "Assuming a subset of a group with a property (some excluded are negotiated) must include a particular subclass (those that waive remedies), reflecting weak control of conditional/quantifier interaction."
+    },
+    {
+      "text": "Any contract clause that is excluded from judicial interpretation waives statutory remedies.",
+      "is_correct": false,
+      "trap_type": "Reverses conditional direction",
+      "explanation": "The stimulus supports waives statutory remedies -> excluded from judicial interpretation, not the reverse. Exclusion can arise from other reasons besides waiving statutory remedies, so the reversed conditional is not entailed.",
+      "skill_gap": "Mistaking sufficient conditions for necessary conditions (a core conditional-reasoning error)."
+    },
+    {
+      "text": "All contract clauses that are excluded from judicial interpretation are included in settlement negotiations.",
+      "is_correct": false,
+      "trap_type": "Exceeds quantifier scope (Some → All)",
+      "explanation": "The stimulus states that some excluded clauses are included in settlement negotiations; it does not justify extending that to all excluded clauses. The move from an existential claim to a universal claim is invalid.",
+      "skill_gap": "Overgeneralizing from 'some' to 'all' and failing to track quantifier scope."
+    },
+    {
+      "text": "Because such clauses are unenforceable, a contract clause that waives statutory remedies is likely to be included in settlement negotiations.",
+      "is_correct": false,
+      "trap_type": "Introduces outside information",
+      "explanation": "Nothing in the stimulus connects unenforceability (or exclusion) to being likely included in settlement negotiations, nor does it introduce probability language. This option adds an unsupported causal/practical assumption about negotiation behavior.",
+      "skill_gap": "Importing real-world assumptions and probabilistic reasoning instead of deducing only what follows from the stated logical relationships."
+    }
+  ],
+  "metadata": {
+    "question_type": "Must Be True",
+    "family": "Prove Family",
+    "primary_skill_id": "FL_03",
+    "primary_skill_name": "Chain/Transitive Deduction",
+    "secondary_skills": [
+      "FL_01",
+      "FL_02",
+      "FL_04"
+    ],
+    "difficulty": "MEDIUM",
+    "topic": "Law",
+    "word_count": 58,
+    "validation_method": "The correct answer must be 100% guaranteed by the statements in the stimulus under every interpretation consistent with their literal meaning."
+  }
+}
+
+{
+  "stimulus": "In a cohort study of shift workers, participants who began taking an over-the-counter melatonin supplement reported, after three months, both longer sleep duration and lower fasting glucose than they had reported at baseline. Investigators note that the improvement persisted even among those whose self-reported caloric intake did not decline. Since glycemic control typically improves only when circadian rhythm stabilizes, and melatonin is widely used for that purpose, the observed glucose reduction must have been produced by the melatonin regimen rather than by unrelated lifestyle changes or measurement artifacts.",
+  "stem": "Which one of the following most accurately describes a flaw in the argument's reasoning?",
+  "options": [
+    {
+      "text": "treats a before-and-after association as sufficient to establish that the intervention caused the observed physiological change, without ruling out confounding variables, regression to the mean, or other alternative explanations",
+      "is_correct": true,
+      "explanation": "The argument infers that melatonin produced lower fasting glucose because glucose was lower after participants began the supplement. That is the classic RH_01 (Causality vs. Correlation) flaw: moving from temporal/correlational evidence (post-treatment improvement) to a causal conclusion while failing to exclude other causes such as concurrent behavior changes not captured by caloric intake, differential reporting, seasonal effects, or simple regression to the mean in repeated measurement.",
+      "skill_tested": "RH_01"
+    },
+    {
+      "text": "presumes that because some people who take melatonin do not show improved glycemic control, no one’s glucose reduction could be attributable to melatonin in the first place",
+      "is_correct": false,
+      "trap_type": "Describes a flaw not present in this argument",
+      "explanation": "The stimulus never argues from a lack of effect in some subgroup to deny any causal effect; it does the opposite by affirming causation. This answer describes an erroneous inference from exceptions, which is not part of the given reasoning.",
+      "skill_gap": "Misreading the argument’s direction or importing outside counterexamples instead of tracking what the argument actually claims."
+    },
+    {
+      "text": "rests on defective reasoning, offering an inadequately supported conclusion on the basis of considerations that could be interpreted in several different ways",
+      "is_correct": false,
+      "trap_type": "Too vague to be diagnostic (e.g., 'bad reasoning')",
+      "explanation": "This is essentially a generic complaint that could apply to nearly any flawed argument and does not specify the particular error here—namely, the RH_01 correlation-to-causation leap from pre/post changes to melatonin as the cause.",
+      "skill_gap": "Difficulty matching abstract flaw descriptions to the stimulus; reliance on nonspecific critique rather than identifying the precise logical gap."
+    },
+    {
+      "text": "bolsters its position by invoking general medical knowledge about circadian stabilization and then dismissing potential objections as mere \"artifacts\" without detailed discussion",
+      "is_correct": false,
+      "trap_type": "Describes argumentative technique, not flaw",
+      "explanation": "Pointing out that the argument appeals to background information and uses dismissive language describes rhetorical style, not the logical mistake. The core issue is not tone but the invalid causal inference from association (RH_01).",
+      "skill_gap": "Confusing persuasive language or presentation with the underlying logical structure being tested."
+    },
+    {
+      "text": "fails to consider that the causal relationship could run in the opposite direction, namely that improved glycemic control might have led participants to begin taking melatonin",
+      "is_correct": false,
+      "trap_type": "Accurate criticism that isn't the PRIMARY flaw",
+      "explanation": "Reverse causation is conceivable in some observational settings, but the stimulus frames melatonin initiation before the three-month follow-up, making reverse causation less central. The primary flaw is still the broader RH_01 error: assuming causation from a temporal association without adequately excluding confounders, measurement error, or regression to the mean.",
+      "skill_gap": "Over-fixation on one alternative causal story (reverse causation) while missing the more general correlation-to-causation problem."
+    }
+  ],
+  "metadata": {
+    "question_type": "Flaw in Reasoning",
+    "family": "Structure Family",
+    "primary_skill_id": "RH_01",
+    "primary_skill_name": "Causality vs. Correlation",
+    "secondary_skills": [
+      "S_01",
+      "ABS_02"
+    ],
+    "difficulty": "CHALLENGING",
+    "topic": "Medicine",
+    "word_count": 88,
+    "validation_method": "The correct answer must accurately describe the SP..."
+  }
+}

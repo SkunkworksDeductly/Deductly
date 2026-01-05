@@ -1,23 +1,31 @@
 """
 Database connection management for Deductly
-Provides centralized database access with proper error handling
+PostgreSQL backend (psycopg3)
 """
-import sqlite3
 import os
-from typing import Optional
 from contextlib import contextmanager
+import psycopg
+from psycopg.rows import dict_row
+from dotenv import load_dotenv
+from pathlib import Path
 
-# Configuration
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DEFAULT_DB_PATH = os.path.join(BASE_DIR, 'data', 'test_study_plan.db')
+load_dotenv(Path(__file__).resolve().parent.parent.parent / '.env')
 
-# Allow override via environment variable (useful for testing)
-DB_PATH = os.getenv('DEDUCTLY_DB_PATH', DEFAULT_DB_PATH)
+
+# PostgreSQL configuration
+DATABASE_URL = os.getenv('DATABASE_URL')  # Full connection string (for Render, etc.)
+
+PG_CONFIG = {
+    'dbname': os.getenv('PG_DATABASE', 'deductly'),
+    'user': os.getenv('PG_USER', 'aniru'),
+    'password': os.getenv('PG_PASSWORD', ''),
+    'host': os.getenv('PG_HOST', 'localhost'),
+    'port': os.getenv('PG_PORT', '5432'),
+}
 
 
 class DatabaseConnection:
-    """Singleton database connection manager"""
-
+    """Singleton PostgreSQL connection manager"""
     _instance = None
     _connection = None
 
@@ -26,18 +34,26 @@ class DatabaseConnection:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def get_connection(self) -> sqlite3.Connection:
+    def get_connection(self):
         """Get or create database connection"""
-        if self._connection is None:
-            self._connection = sqlite3.connect(DB_PATH, check_same_thread=False)
-            self._connection.row_factory = sqlite3.Row
-            # Enable foreign keys
-            self._connection.execute("PRAGMA foreign_keys = ON")
+        if self._connection is None or self._connection.closed:
+            if DATABASE_URL:
+                self._connection = psycopg.connect(
+                    DATABASE_URL,
+                    autocommit=False,
+                    row_factory=dict_row
+                )
+            else:
+                self._connection = psycopg.connect(
+                    **PG_CONFIG,
+                    autocommit=False,
+                    row_factory=dict_row
+                )
         return self._connection
 
     def close(self):
         """Close database connection"""
-        if self._connection:
+        if self._connection and not self._connection.closed:
             self._connection.close()
             self._connection = None
 
@@ -46,17 +62,12 @@ class DatabaseConnection:
 _db = DatabaseConnection()
 
 
-def get_db_connection() -> sqlite3.Connection:
+def get_db_connection():
     """
     Get database connection.
-    
+
     Returns:
-        sqlite3.Connection: Database connection with Row factory
-        
-    Example:
-        >>> conn = get_db_connection()
-        >>> cursor = conn.cursor()
-        >>> cursor.execute("SELECT * FROM skills")
+        psycopg connection object
     """
     return _db.get_connection()
 
@@ -65,15 +76,11 @@ def get_db_connection() -> sqlite3.Connection:
 def get_db_cursor():
     """
     Context manager for database operations.
+    Uses dict_row for dict-like row access.
     Automatically commits on success, rolls back on error.
-    
-    Example:
-        >>> with get_db_cursor() as cursor:
-        ...     cursor.execute("INSERT INTO skills ...")
-        ...     # Automatically committed
     """
     conn = get_db_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(row_factory=dict_row)
     try:
         yield cursor
         conn.commit()
@@ -87,13 +94,13 @@ def get_db_cursor():
 def execute_query(query: str, params: tuple = None) -> list:
     """
     Execute a SELECT query and return results.
-    
+
     Args:
-        query: SQL query string
+        query: SQL query string (use %s for placeholders)
         params: Query parameters (optional)
-        
+
     Returns:
-        List of Row objects
+        List of dict-like row objects
     """
     with get_db_cursor() as cursor:
         if params:
@@ -106,11 +113,11 @@ def execute_query(query: str, params: tuple = None) -> list:
 def execute_update(query: str, params: tuple = None) -> int:
     """
     Execute an INSERT/UPDATE/DELETE query.
-    
+
     Args:
-        query: SQL query string
+        query: SQL query string (use %s for placeholders)
         params: Query parameters (optional)
-        
+
     Returns:
         Number of affected rows
     """

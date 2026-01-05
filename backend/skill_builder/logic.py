@@ -4,7 +4,6 @@ Handles drill practice sessions and skill development
 """
 import json
 import os
-import sqlite3
 import uuid
 from utils import generate_id, generate_sequential_id
 from db import get_db_connection, get_db_cursor, execute_query
@@ -50,7 +49,7 @@ def create_drill_session(payload):
             INSERT INTO drills (
                 id, drill_id, user_id, question_count, timing,
                 difficulty, skills, drill_type, question_ids, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             pk_id,
             drill_id,
@@ -112,7 +111,7 @@ def submit_drill_answers(drill_id, user_id, answers, time_taken=None):
                 id, drill_id, user_id, total_questions, correct_answers,
                 incorrect_answers, skipped_questions, score_percentage,
                 time_taken, question_results, skill_performance
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             result_id,
             drill_id,
@@ -131,7 +130,7 @@ def submit_drill_answers(drill_id, user_id, answers, time_taken=None):
         cursor.execute("""
             UPDATE drills
             SET status = 'completed', completed_at = CURRENT_TIMESTAMP
-            WHERE drill_id = ?
+            WHERE drill_id = %s
         """, (drill_id,))
 
         conn.commit()
@@ -156,15 +155,15 @@ def _build_question_query(where_filters, exclude_ids=None):
     where_clause = ' AND '.join(where_filters)
 
     if exclude_ids:
-        id_placeholders = ','.join('?' * len(exclude_ids))
+        id_placeholders = ','.join(['%s'] * len(exclude_ids))
         where_clause = f"{where_clause} AND id NOT IN ({id_placeholders})"
 
     return f"""
         SELECT {fields}
         FROM questions
         WHERE {where_clause}
-        ORDER BY RANDOM()
-        LIMIT ?
+        ORDER BY random()
+        LIMIT %s
     """
 
 
@@ -192,18 +191,18 @@ def _fetch_questions(difficulties, skills, question_count):
         cursor = conn.cursor()
 
         # Build primary query filters
-        filters = ['domain = ?']
+        filters = ['LOWER(domain) = %s']
         params = ['lsat']
 
         if difficulties:
-            placeholders = ','.join('?' * len(difficulties))
-            filters.append(f'difficulty_level IN ({placeholders})')
-            params.extend(difficulties)
+            placeholders = ','.join(['%s'] * len(difficulties))
+            filters.append(f'LOWER(difficulty_level) IN ({placeholders})')
+            params.extend([d.lower() for d in difficulties])
 
         if skills:
-            placeholders = ','.join('?' * len(skills))
-            filters.append(f'question_type IN ({placeholders})')
-            params.extend(skills)
+            placeholders = ','.join(['%s'] * len(skills))
+            filters.append(f'LOWER(question_type) IN ({placeholders})')
+            params.extend([s.lower() for s in skills])
 
         # Execute primary query
         query = _build_question_query(filters)
@@ -215,7 +214,7 @@ def _fetch_questions(difficulties, skills, question_count):
             selected_ids = [row['id'] for row in rows]
 
             # Build fallback query with ID exclusion
-            fallback_query = _build_question_query(['domain = ?'], exclude_ids=selected_ids)
+            fallback_query = _build_question_query(['LOWER(domain) = %s'], exclude_ids=selected_ids)
             fallback_params = ['lsat']
             if selected_ids:
                 fallback_params.extend(selected_ids)
@@ -243,7 +242,7 @@ def start_drill(drill_id):
         cursor.execute("""
             UPDATE drills
             SET status = 'in_progress', started_at = CURRENT_TIMESTAMP
-            WHERE drill_id = ? AND status = 'generated'
+            WHERE drill_id = %s AND status = 'generated'
         """, (drill_id,))
         conn.commit()
 
@@ -257,16 +256,17 @@ def get_user_drill_history(user_id, limit=50):
     """Retrieve drill history for a user."""
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        rows = cursor.execute("""
+        cursor.execute("""
             SELECT d.drill_id, d.question_count, d.timing, d.difficulty,
                    d.skills, d.drill_type, d.status, d.created_at, d.completed_at,
                    dr.score_percentage, dr.correct_answers, dr.total_questions
             FROM drills d
             LEFT JOIN drill_results dr ON d.drill_id = dr.drill_id
-            WHERE d.user_id = ?
+            WHERE d.user_id = %s
             ORDER BY d.created_at DESC
-            LIMIT ?
-        """, (user_id, limit)).fetchall()
+            LIMIT %s
+        """, (user_id, limit))
+        rows = cursor.fetchall()
 
         drills = []
         for row in rows:
@@ -296,13 +296,14 @@ def get_drill_by_id(drill_id, include_questions=False):
     """Retrieve a specific drill by ID, optionally with full question data."""
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        row = cursor.execute("""
+        cursor.execute("""
             SELECT drill_id, user_id, question_count, timing, difficulty,
                    skills, drill_type, question_ids, status, created_at, completed_at,
                    current_question_index, user_answers, user_highlights
             FROM drills
-            WHERE drill_id = ?
-        """, (drill_id,)).fetchone()
+            WHERE drill_id = %s
+        """, (drill_id,))
+        row = cursor.fetchone()
 
         if not row:
             return None
@@ -327,14 +328,15 @@ def get_drill_by_id(drill_id, include_questions=False):
         # Include full question data if requested
         if include_questions and drill_data['question_ids']:
             question_ids = drill_data['question_ids']
-            placeholders = ','.join('?' * len(question_ids))
+            placeholders = ','.join(['%s'] * len(question_ids))
             fields = ', '.join(QUESTION_SELECT_FIELDS)
 
-            question_rows = cursor.execute(f"""
+            cursor.execute(f"""
                 SELECT {fields}
                 FROM questions
                 WHERE id IN ({placeholders})
-            """, question_ids).fetchall()
+            """, question_ids)
+            question_rows = cursor.fetchall()
 
             # Maintain original order
             questions_by_id = {row['id']: _transform_question_row(row) for row in question_rows}
@@ -347,12 +349,13 @@ def get_drill_result(drill_id, user_id):
     """Retrieve results for a specific drill with full question details."""
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        row = cursor.execute("""
+        cursor.execute("""
             SELECT dr.*, d.question_count, d.timing, d.difficulty, d.skills, d.drill_type, d.user_highlights
             FROM drill_results dr
             JOIN drills d ON dr.drill_id = d.drill_id
-            WHERE dr.drill_id = ? AND dr.user_id = ?
-        """, (drill_id, user_id)).fetchone()
+            WHERE dr.drill_id = %s AND dr.user_id = %s
+        """, (drill_id, user_id))
+        row = cursor.fetchone()
 
         if not row:
             return None
@@ -363,14 +366,15 @@ def get_drill_result(drill_id, user_id):
         # Fetch full question data for each question_id
         if question_results:
             question_ids = [q['question_id'] for q in question_results]
-            placeholders = ','.join('?' * len(question_ids))
+            placeholders = ','.join(['%s'] * len(question_ids))
             fields = ', '.join(QUESTION_SELECT_FIELDS)
 
-            question_rows = cursor.execute(f"""
+            cursor.execute(f"""
                 SELECT {fields}
                 FROM questions
                 WHERE id IN ({placeholders})
-            """, question_ids).fetchall()
+            """, question_ids)
+            question_rows = cursor.fetchall()
 
             # Create lookup map
             questions_map = {row['id']: _transform_question_row(row) for row in question_rows}
@@ -427,14 +431,14 @@ def save_drill_progress(drill_id, user_id, current_question_index, user_answers,
         # Update drill with current progress
         cursor.execute("""
             UPDATE drills
-            SET current_question_index = ?,
-                user_answers = ?,
-                user_highlights = ?,
+            SET current_question_index = %s,
+                user_answers = %s,
+                user_highlights = %s,
                 status = CASE
                     WHEN status = 'generated' THEN 'in_progress'
                     ELSE status
                 END
-            WHERE drill_id = ? AND user_id = ?
+            WHERE drill_id = %s AND user_id = %s
         """, (
             current_question_index,
             json.dumps(user_answers),

@@ -58,90 +58,98 @@ const Analytics = () => {
   }, [mastery])
 
   return (
-    <div className='px-4 py-8'>
-      <h1 className='text-text-primary tracking-light text-[32px] font-bold leading-tight text-left pb-3'>
-        Analytics
-      </h1>
+    <div className='min-h-screen px-4 py-12'>
+      <div className='max-w-6xl mx-auto'>
+        <h1 className='font-serif text-text-primary text-5xl font-normal leading-tight text-left pb-8 tracking-tight'>
+          Analytics
+        </h1>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-        {/* Ability Card */}
-        <section className='rounded-2xl border border-border-light bg-white p-6 text-text-primary shadow-md'>
-          <div className='flex items-center justify-between'>
-            <h2 className='text-xl font-semibold'>Current Ability (IRT)</h2>
-          </div>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+          {/* Ability Card */}
+          <section className='rounded-3xl border border-border-default bg-gradient-to-br from-bg-secondary/90 to-bg-tertiary/95 p-8 text-text-primary shadow-xl backdrop-blur-xl'>
+            <div className='flex items-center justify-between mb-6'>
+              <h2 className='font-serif text-2xl font-normal tracking-tight'>Current Ability (IRT)</h2>
+            </div>
 
-          {loading && !ability ? (
-            <p className='text-text-secondary mt-3'>Loading ability estimate...</p>
-          ) : hasAbility ? (
-            <div className='mt-4 flex items-center gap-8'>
-              <div>
-                <p className='text-sm text-text-secondary uppercase tracking-wide'>Ability θ</p>
-                <p className='text-3xl font-bold mt-1'>{ability.ability_theta?.toFixed(2)}</p>
+            {loading && !ability ? (
+              <div className='flex items-center gap-3 mt-4'>
+                <div className='w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin'></div>
+                <p className='text-text-secondary'>Loading ability estimate...</p>
               </div>
-              {typeof ability.standard_error !== 'undefined' && (
+            ) : hasAbility ? (
+              <div className='mt-6 flex items-center gap-12'>
                 <div>
-                  <p className='text-sm text-text-secondary uppercase tracking-wide'>Std. Error</p>
-                  <p className='text-xl font-semibold mt-1'>{ability.standard_error?.toFixed(2)}</p>
+                  <p className='text-[11px] text-text-tertiary uppercase tracking-wider mb-2'>Ability θ</p>
+                  <p className='font-serif text-5xl font-normal text-text-primary'>{ability.ability_theta?.toFixed(2)}</p>
                 </div>
-              )}
-            </div>
-          ) : (
-            <div className='mt-4'>
-              <p className='text-text-secondary'>No Data Yet!</p>
-              <button
-                type='button'
-                className='mt-3 px-4 py-2 rounded-lg bg-button-primary hover:bg-button-primary-hover transition text-white'
-                onClick={() => navigate('/diagnostics')}
-              >
-                Take Diagnostic
-              </button>
-              {errors.ability && (
-                <p className='text-xs text-red-500 mt-2'>{errors.ability}</p>
-              )}
-            </div>
-          )}
-        </section>
-
-        {/* Mastery Vector Card */}
-        <section className='rounded-2xl border border-border-light bg-white p-6 text-text-primary shadow-md'>
-          <div className='flex items-center justify-between'>
-            <h2 className='text-xl font-semibold'>Mastery Vector (GLMM)</h2>
-          </div>
-
-          {loading && !mastery ? (
-            <p className='text-text-secondary mt-3'>Loading mastery profile...</p>
-          ) : hasMastery ? (
-            <div className='mt-4 max-h-64 overflow-auto pr-1'>
-              <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
-                {mastery.skills.slice(0, 10).map((s, idx) => (
-                  <div key={idx} className='border border-border-light rounded-lg p-3'>
-                    <p className='text-sm text-text-secondary'>{s.skill_name || s.skill_id || `Skill ${idx + 1}`}</p>
-                    {typeof s.mastery_probability !== 'undefined' && (
-                      <p className='text-lg font-semibold mt-1'>{(s.mastery_probability * 100).toFixed(0)}%</p>
-                    )}
+                {typeof ability.standard_error !== 'undefined' && (
+                  <div>
+                    <p className='text-[11px] text-text-tertiary uppercase tracking-wider mb-2'>Std. Error</p>
+                    <p className='font-serif text-3xl font-normal text-text-secondary'>{ability.standard_error?.toFixed(2)}</p>
                   </div>
-                ))}
+                )}
               </div>
-              {mastery.skills.length > 10 && (
-                <p className='text-xs text-text-secondary mt-3'>Showing first 10 skills</p>
-              )}
+            ) : (
+              <div className='mt-6'>
+                <p className='text-text-secondary mb-4'>No Data Yet!</p>
+                <button
+                  type='button'
+                  className='px-6 py-3 rounded-xl bg-gradient-to-r from-brand-primary to-brand-secondary hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all duration-300 text-white font-semibold shadow-lg transform hover:-translate-y-0.5'
+                  onClick={() => navigate('/diagnostics')}
+                >
+                  Take Diagnostic
+                </button>
+                {errors.ability && (
+                  <p className='text-xs text-danger mt-3'>{errors.ability}</p>
+                )}
+              </div>
+            )}
+          </section>
+
+          {/* Mastery Vector Card */}
+          <section className='rounded-3xl border border-border-default bg-gradient-to-br from-bg-secondary/90 to-bg-tertiary/95 p-8 text-text-primary shadow-xl backdrop-blur-xl'>
+            <div className='flex items-center justify-between mb-6'>
+              <h2 className='font-serif text-2xl font-normal tracking-tight'>Mastery Vector (GLMM)</h2>
             </div>
-          ) : (
-            <div className='mt-4'>
-              <p className='text-text-secondary'>No Data Yet!</p>
-              <button
-                type='button'
-                className='mt-3 px-4 py-2 rounded-lg bg-button-primary hover:bg-button-primary-hover transition text-white'
-                onClick={() => navigate('/diagnostics')}
-              >
-                Take Diagnostic
-              </button>
-              {errors.mastery && (
-                <p className='text-xs text-red-500 mt-2'>{errors.mastery}</p>
-              )}
-            </div>
-          )}
-        </section>
+
+            {loading && !mastery ? (
+              <div className='flex items-center gap-3 mt-4'>
+                <div className='w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin'></div>
+                <p className='text-text-secondary'>Loading mastery profile...</p>
+              </div>
+            ) : hasMastery ? (
+              <div className='mt-6 max-h-80 overflow-auto pr-2 custom-scrollbar'>
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                  {mastery.skills.slice(0, 10).map((s, idx) => (
+                    <div key={idx} className='border border-border-subtle rounded-2xl p-4 bg-bg-primary/30 backdrop-blur-sm hover:border-border-hover transition-all duration-200'>
+                      <p className='text-[11px] text-text-tertiary uppercase tracking-wider mb-2'>{s.skill_name || s.skill_id || `Skill ${idx + 1}`}</p>
+                      {typeof s.mastery_probability !== 'undefined' && (
+                        <p className='font-serif text-2xl font-normal text-text-primary'>{(s.mastery_probability * 100).toFixed(0)}%</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {mastery.skills.length > 10 && (
+                  <p className='text-xs text-text-tertiary mt-4'>Showing first 10 skills</p>
+                )}
+              </div>
+            ) : (
+              <div className='mt-6'>
+                <p className='text-text-secondary mb-4'>No Data Yet!</p>
+                <button
+                  type='button'
+                  className='px-6 py-3 rounded-xl bg-gradient-to-r from-brand-primary to-brand-secondary hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all duration-300 text-white font-semibold shadow-lg transform hover:-translate-y-0.5'
+                  onClick={() => navigate('/diagnostics')}
+                >
+                  Take Diagnostic
+                </button>
+                {errors.mastery && (
+                  <p className='text-xs text-danger mt-3'>{errors.mastery}</p>
+                )}
+              </div>
+            )}
+          </section>
+        </div>
       </div>
     </div>
   )

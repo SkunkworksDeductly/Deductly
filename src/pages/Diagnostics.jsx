@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDrill } from '../contexts/DrillContext'
 import { useAuth } from '../contexts/AuthContext'
+import { Card } from '../components/ui/Card'
+import { Button } from '../components/ui/Button'
 
 const Diagnostics = () => {
   const navigate = useNavigate()
@@ -55,50 +57,75 @@ const Diagnostics = () => {
   }
 
   return (
-    <div className="py-10">
-      <div className="max-w-4xl mx-auto px-4 space-y-8">
-        <section className="rounded-2xl border border-border-default bg-surface-primary p-8 shadow-md">
-          <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">LSAT Diagnostic</h1>
-          <p className="text-text-secondary text-lg mb-6">
+    <div className="py-16 px-4">
+      <div className="max-w-4xl mx-auto space-y-8">
+        {/* Main Card */}
+        <Card variant="elevated" className="p-10 md:p-12">
+          <h1 className="font-display text-4xl md:text-5xl text-primary mb-6 tracking-tight">
+            LSAT Diagnostic
+          </h1>
+          <p className="text-secondary text-lg mb-8 leading-relaxed">
             Kick off your prep with a focused 5-question diagnostic that mirrors the LSAT's logical reasoning workload.
             You'll get a clear read on your baseline and the skills to sharpen next.
           </p>
-          <div className="grid gap-4 md:grid-cols-3 text-sm text-text-secondary">
-            <div className="rounded-xl border border-border-default bg-accent-info-bg p-4">
-              <p className="text-text-primary font-semibold mb-2">Why take it</p>
-              <p>Surface strengths and blind spots so your study plan targets the right mix of skills.</p>
+
+          {/* Info Grid */}
+          <div className="grid gap-6 md:grid-cols-3 mb-8">
+            <div className="rounded-2xl bg-brand-primary/10 border border-brand-primary/20 p-6">
+              <p className="text-brand-primary font-semibold mb-3 text-sm uppercase tracking-wider">Why take it</p>
+              <p className="text-secondary text-sm leading-relaxed">
+                Surface strengths and blind spots so your study plan targets the right mix of skills.
+              </p>
             </div>
-            <div className="rounded-xl border border-border-default bg-accent-info-bg p-4">
-              <p className="text-text-primary font-semibold mb-2">What to expect</p>
-              <p>5 official-style LSAT questions spanning core reasoning skills, delivered one at a time.</p>
+            <div className="rounded-2xl bg-brand-primary/10 border border-brand-primary/20 p-6">
+              <p className="text-brand-primary font-semibold mb-3 text-sm uppercase tracking-wider">What to expect</p>
+              <p className="text-secondary text-sm leading-relaxed">
+                5 official-style LSAT questions spanning core reasoning skills, delivered one at a time.
+              </p>
             </div>
-            <div className="rounded-xl border border-border-default bg-accent-info-bg p-4">
-              <p className="text-text-primary font-semibold mb-2">How it works</p>
-              <p>Navigate forward and back between questions and review performance the moment you finish.</p>
+            <div className="rounded-2xl bg-brand-primary/10 border border-brand-primary/20 p-6">
+              <p className="text-brand-primary font-semibold mb-3 text-sm uppercase tracking-wider">How it works</p>
+              <p className="text-secondary text-sm leading-relaxed">
+                Navigate forward and back between questions and review performance the moment you finish.
+              </p>
             </div>
           </div>
+
+          {/* Error Message */}
           {errorMessage && (
-            <div className="mt-6 rounded-lg bg-status-error-bg border border-status-error-border px-4 py-3 text-sm text-status-error-text">
-              {errorMessage}
+            <div className="mb-8 rounded-2xl bg-danger/15 border border-danger/30 px-6 py-4">
+              <p className="text-danger text-sm">{errorMessage}</p>
             </div>
           )}
-          <button
-            type="button"
-            className="mt-8 inline-flex items-center justify-center rounded-lg bg-button-primary px-6 py-3 font-semibold text-white transition hover:bg-button-primary-hover disabled:cursor-not-allowed disabled:opacity-70 shadow-sm"
+
+          {/* Start Button */}
+          <Button
             onClick={handleStartDiagnostic}
             disabled={isStarting}
+            size="lg"
+            className="w-full md:w-auto"
           >
             {isStarting ? 'Starting...' : 'Start Diagnostic'}
-          </button>
-        </section>
+          </Button>
+        </Card>
 
-        <section className="rounded-2xl border border-border-default bg-status-info-bg p-6 text-text-secondary shadow-sm">
-          <h2 className="text-xl font-semibold text-text-primary mb-3">PACE TIP</h2>
-          <p className="text-sm">
-            Plan for about 10 minutes end-to-end. You can pause between questions, but
-            giving yourself steady pressure will make the insights more actionable.
-          </p>
-        </section>
+        {/* Tip Card */}
+        <Card className="bg-brand-primary/5 border-brand-primary/15">
+          <div className="flex items-start gap-4">
+            <div className="bg-brand-primary/20 rounded-full p-3 flex-shrink-0">
+              <svg className="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="font-display text-xl text-primary mb-2 tracking-tight">PACE TIP</h2>
+              <p className="text-secondary text-sm leading-relaxed">
+                Plan for about 10 minutes end-to-end. You can pause between questions, but
+                giving yourself steady pressure will make the insights more actionable.
+              </p>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
   )

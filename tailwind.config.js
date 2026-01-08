@@ -22,12 +22,24 @@ export default {
           secondary: "#8b5cf6",
           tertiary: "#a78bfa",
         },
+        // Light-mode landing page text colors
+        text: {
+          primary: "#111827",
+          secondary: "#4B5563",
+          tertiary: "#9CA3AF",
+        },
+        // Button colors for landing page
+        button: {
+          primary: "#F87171",
+          "primary-hover": "#EF4444",
+        },
         success: "#22c55e",
         warning: "#eab308",
         danger: "#ef4444",
         border: {
           subtle: "rgba(255, 255, 255, 0.06)",
           DEFAULT: "rgba(255, 255, 255, 0.08)",
+          default: "#E5E7EB",
           hover: "rgba(255, 255, 255, 0.15)",
           active: "rgba(99, 102, 241, 0.3)",
         }

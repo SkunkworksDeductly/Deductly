@@ -1,13 +1,16 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 import firebase_admin
 from firebase_admin import credentials
+from firebase_admin import auth as firebase_auth
+from uuid import uuid4
 
 # Import blueprints from each layer
 from insights.routes import insights_bp
-from personalization.routes import personalization_bp
+# Use adaptive routes (includes all legacy routes + adaptive features)
+from personalization.routes_adaptive import personalization_bp
 from skill_builder.routes import skill_builder_bp
 
 # Load .env from parent directory (root of project)
@@ -28,13 +31,18 @@ if not firebase_admin._apps:
         print(f"Warning: Firebase Admin SDK initialization failed: {e}")
 
 app = Flask(__name__)
-CORS(app,
+# CORS: allow localhost dev origins plus Chrome extension pages.
+# Note: Some browsers send Origin: null for extension pages; include 'null' to be safe.
+CORS(
+    app,
     origins=[
-        'http://localhost:5173',  # Local development
-        'http://localhost:5174',  # Local development (alternate port)
-        'https://nikhilanand1998.github.io'  # GitHub Pages production
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'https://nikhilanand1998.github.io',
+        'chrome-extension://*',
+        'null'
     ],
-    allow_headers=['Content-Type', 'Authorization'],  # Explicitly allow Authorization header
+    allow_headers=['Content-Type', 'Authorization'],
     expose_headers=['Content-Type', 'Authorization'],
     supports_credentials=True
 )
@@ -112,3 +120,68 @@ def legacy_drill_submit():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
+
+# -----------------------------------------------
+# Attempts logging endpoint for Extension (DEV)
+# -----------------------------------------------
+
+@app.route('/api/question_attempts', methods=['POST'])
+def log_question_attempt():
+    """
+    Accepts structured metadata for a single question attempt from the Chrome extension.
+    Auth: Firebase ID token in Authorization: Bearer <token>.
+    Compliance: No question/passage/answer text accepted or persisted.
+    """
+    # Auth
+    auth_header = request.headers.get('Authorization', '')
+    if not auth_header.startswith('Bearer '):
+        return jsonify({ 'error': 'Missing Bearer token' }), 401
+    token = auth_header.split(' ', 1)[1].strip()
+
+    try:
+        decoded = firebase_auth.verify_id_token(token)
+        user_uid = decoded.get('uid')
+    except Exception as e:
+        return jsonify({ 'error': 'Invalid token', 'detail': str(e) }), 401
+
+    # Body
+    data = request.get_json(silent=True) or {}
+
+    # Minimal validation: required fields (metadata only)
+    required_fields = [
+        'source', 'test_code', 'section_code', 'question_code', 'question_uid',
+        'user_choice', 'time_spent_sec', 'timestamp_client', 'extension_version'
+    ]
+    missing = [k for k in required_fields if k not in data]
+    if missing:
+        return jsonify({ 'error': 'Missing fields', 'fields': missing }), 400
+
+    # Enforce compliance: reject if suspicious text fields present
+    forbidden_fields = ['question_text', 'passage_text', 'answers_text', 'answer_text']
+    present_forbidden = [k for k in forbidden_fields if k in data]
+    if present_forbidden:
+        return jsonify({ 'error': 'Forbidden fields present', 'fields': present_forbidden }), 400
+
+    # Construct a sanitized attempt record (not persisted in v1 dev)
+    attempt_id = str(uuid4())
+    attempt = {
+        'attempt_id': attempt_id,
+        'user_id': user_uid,
+        'source': data.get('source'),
+        'test_code': data.get('test_code'),
+        'section_code': data.get('section_code'),
+        'question_code': data.get('question_code'),
+        'question_uid': data.get('question_uid'),
+        'user_choice': data.get('user_choice'),
+        'time_spent_sec': data.get('time_spent_sec'),
+        'timestamp_client': data.get('timestamp_client'),
+        'extension_version': data.get('extension_version'),
+    }
+
+    # DEV: Print to server logs for visibility
+    try:
+        print('[attempt]', attempt)
+    except Exception:
+        pass
+
+    return jsonify({ 'status': 'ok', 'attempt_id': attempt_id }), 200

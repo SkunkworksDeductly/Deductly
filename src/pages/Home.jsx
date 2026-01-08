@@ -1,5 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Card } from '../components/ui/Card'
+import { Button } from '../components/ui/Button'
+import { Badge } from '../components/ui/Badge'
 
 const Home = () => {
   const tiers = [
@@ -49,140 +52,176 @@ const Home = () => {
   ]
 
   return (
-    <div className="flex flex-col gap-16 px-4 py-10 text-text-primary">
-      <section className="flex flex-col gap-8 rounded-3xl bg-gradient-to-br from-brand-primary/60 via-brand-accent to-brand-secondary/40 px-6 py-12 md:px-12 lg:py-16 border border-border-default shadow-lg">
-        <div className="max-w-2xl">
-          <p className="text-sm uppercase tracking-[0.3em] text-text-secondary">LSAT mastery, simplified</p>
-          <h1 className="mt-4 text-4xl font-bold leading-tight md:text-5xl text-text-primary">
-            Personalized prep that adapts to the way you learn.
-          </h1>
-          <p className="mt-4 text-base text-text-secondary md:text-lg">
-            Deductly brings your diagnostics, study plans, and practice drills together so every study session
-            builds confidence for test day.
-          </p>
-        </div>
+    <div className="flex flex-col gap-24 py-16 px-4">
+      {/* Hero Section */}
+      <section className="relative">
+        <Card variant="featured" className="overflow-hidden p-12 md:p-16">
+          {/* Ambient background glow */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-brand-primary/10 rounded-full blur-3xl -z-10" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-secondary/10 rounded-full blur-3xl -z-10" />
 
-        <div className="flex flex-wrap gap-4">
-          <Link
-            to="/signup"
-            className="flex items-center justify-center rounded-lg bg-button-primary px-6 py-3 text-base font-semibold tracking-wide text-white transition hover:bg-button-primary-hover shadow-md"
-          >
-            Create your account
-          </Link>
-          <Link
-            to="/dashboard"
-            className="flex items-center justify-center rounded-lg border-2 border-brand-primary px-6 py-3 text-base font-semibold tracking-wide text-brand-primary transition hover:bg-surface-active"
-          >
-            Explore the platform
-          </Link>
-        </div>
+          <div className="max-w-3xl relative z-10">
+            <p className="text-xs uppercase tracking-[0.3em] text-muted mb-6">LSAT mastery, simplified</p>
+            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl text-primary leading-[1.1] mb-6 tracking-tight">
+              Personalized prep that adapts to the way you learn.
+            </h1>
+            <p className="text-secondary text-lg md:text-xl mb-10 leading-relaxed max-w-2xl">
+              Deductly brings your diagnostics, study plans, and practice drills together so every study session
+              builds confidence for test day.
+            </p>
+
+            <div className="flex flex-wrap gap-4">
+              <Link to="/signup">
+                <Button size="lg">
+                  Create your account
+                </Button>
+              </Link>
+              <Link to="/dashboard">
+                <Button variant="secondary" size="lg">
+                  Explore the platform
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </Card>
       </section>
 
-      <section className="grid gap-10 lg:grid-cols-2">
-        <div className="flex flex-col gap-6">
-          <h2 className="text-3xl font-bold leading-tight md:text-4xl">Why students choose Deductly</h2>
-          <p className="text-base text-text-secondary">
-            From adaptive drills to actionable insights, Deductly gives you the structure of a tutor with the
-            flexibility of an on-demand study partner.
-          </p>
-          <div className="flex flex-col gap-4">
-            <div className="rounded-2xl border border-border-default bg-surface-primary p-5 shadow-sm">
-              <p className="text-lg font-semibold text-text-primary">Adaptive Practice</p>
-              <p className="mt-2 text-sm text-text-secondary">
+      {/* Features Section */}
+      <section className="grid gap-16 lg:grid-cols-2 max-w-7xl mx-auto">
+        {/* Left Column - Text Content */}
+        <div className="flex flex-col gap-8">
+          <div>
+            <h2 className="font-display text-4xl md:text-5xl text-primary mb-6 tracking-tight leading-tight">
+              Why students choose Deductly
+            </h2>
+            <p className="text-secondary text-lg leading-relaxed">
+              From adaptive drills to actionable insights, Deductly gives you the structure of a tutor with the
+              flexibility of an on-demand study partner.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-6">
+            <Card variant="interactive">
+              <p className="font-display text-2xl text-primary mb-3 tracking-tight">Adaptive Practice</p>
+              <p className="text-secondary leading-relaxed">
                 Smart drills surface the exact logic games, arguments, and reading passages you need next.
               </p>
-            </div>
-            <div className="rounded-2xl border border-border-default bg-surface-primary p-5 shadow-sm">
-              <p className="text-lg font-semibold text-text-primary">Guided Study Plans</p>
-              <p className="mt-2 text-sm text-text-secondary">
+            </Card>
+
+            <Card variant="interactive">
+              <p className="font-display text-2xl text-primary mb-3 tracking-tight">Guided Study Plans</p>
+              <p className="text-secondary leading-relaxed">
                 Diagnose strengths, focus your schedule, and stay accountable with weekly milestones.
               </p>
-            </div>
-            <div className="rounded-2xl border border-border-default bg-surface-primary p-5 shadow-sm">
-              <p className="text-lg font-semibold text-text-primary">Insights that Matter</p>
-              <p className="mt-2 text-sm text-text-secondary">
+            </Card>
+
+            <Card variant="interactive">
+              <p className="font-display text-2xl text-primary mb-3 tracking-tight">Insights that Matter</p>
+              <p className="text-secondary leading-relaxed">
                 Score trends, section timing, and accuracy breakdowns help you adjust faster between practice tests.
               </p>
-            </div>
+            </Card>
           </div>
         </div>
 
-        <div className="rounded-3xl border border-border-default bg-accent-info-bg p-8 shadow-sm">
-          <p className="text-sm uppercase tracking-[0.3em] text-text-secondary">Trusted by test takers</p>
-          <h3 className="mt-4 text-2xl font-semibold md:text-3xl text-text-primary">Built by tutors, refined by students</h3>
-          <p className="mt-4 text-base text-text-secondary">
-            We partnered with top scorers and veteran instructors to craft drills and analytics that leave guesswork
-            behind. Every release is shaped by real feedback from students who raised their scores 10+ points.
-          </p>
-          <div className="mt-6 flex flex-col gap-4">
-            <div className="flex items-center gap-4">
-              <div className="rounded-full bg-surface-active p-3">
-                <svg className="size-5 text-brand-primary" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M2 11.5A4.5 4.5 0 016.5 7h7A4.5 4.5 0 0118 11.5V16h-2v-4.5A2.5 2.5 0 0013.5 9h-7A2.5 2.5 0 004 11.5V16H2v-4.5z" />
-                  <path d="M5.5 4A4.5 4.5 0 0110 8.5 4.5 4.5 0 015.5 13 4.5 4.5 0 011 8.5 4.5 4.5 0 015.5 4zM14.5 1A3.5 3.5 0 1111 4.5 3.5 3.5 0 0114.5 1z" />
-                </svg>
+        {/* Right Column - Trust Card */}
+        <div>
+          <Card className="bg-brand-primary/5 border-brand-primary/20 h-full flex flex-col">
+            <p className="text-xs uppercase tracking-[0.3em] text-muted mb-6">Trusted by test takers</p>
+            <h3 className="font-display text-3xl md:text-4xl text-primary mb-6 tracking-tight leading-tight">
+              Built by tutors, refined by students
+            </h3>
+            <p className="text-secondary leading-relaxed mb-10 flex-1">
+              We partnered with top scorers and veteran instructors to craft drills and analytics that leave guesswork
+              behind. Every release is shaped by real feedback from students who raised their scores 10+ points.
+            </p>
+
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center gap-5">
+                <div className="bg-brand-primary/15 rounded-2xl p-4 flex-shrink-0">
+                  <svg className="w-7 h-7 text-brand-primary" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-primary font-semibold text-lg mb-1">4.8 / 5 instructor rating</p>
+                  <p className="text-secondary text-sm">Based on 500+ post-session surveys</p>
+                </div>
               </div>
-              <div>
-                <p className="text-base font-semibold text-text-primary">4.8 / 5 instructor rating</p>
-                <p className="text-sm text-text-secondary">Based on 500+ post-session surveys</p>
+
+              <div className="flex items-center gap-5">
+                <div className="bg-success/15 rounded-2xl p-4 flex-shrink-0">
+                  <svg className="w-7 h-7 text-success" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-primary font-semibold text-lg mb-1">12 point average improvement</p>
+                  <p className="text-secondary text-sm">Across first three practice exams on the platform</p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="rounded-full bg-surface-active p-3">
-                <svg className="size-5 text-brand-primary" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M11 17a1 1 0 102 0V4h3a1 1 0 100-2H4a1 1 0 000 2h3v13a1 1 0 102 0V4h2v13z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-base font-semibold text-text-primary">12 point average improvement</p>
-                <p className="text-sm text-text-secondary">Across first three practice exams on the platform</p>
-              </div>
-            </div>
-          </div>
+          </Card>
         </div>
       </section>
 
-      <section className="flex flex-col gap-8">
-        <div className="text-center">
-          <p className="text-sm uppercase tracking-[0.3em] text-text-secondary">Choose your plan</p>
-          <h2 className="mt-3 text-3xl font-bold md:text-4xl">Subscription tiers for every stage</h2>
-          <p className="mt-3 text-base text-text-secondary md:text-lg">
+      {/* Pricing Section */}
+      <section className="flex flex-col gap-12 max-w-7xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto">
+          <p className="text-xs uppercase tracking-[0.3em] text-muted mb-4">Choose your plan</p>
+          <h2 className="font-display text-4xl md:text-5xl text-primary mb-6 tracking-tight">
+            Subscription tiers for every stage
+          </h2>
+          <p className="text-secondary text-lg leading-relaxed">
             Start for free and upgrade when you are ready for deeper personalization and support.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-6 justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {tiers.map((tier) => (
-            <div
+            <Card
               key={tier.name}
-              className={`flex flex-col gap-5 rounded-3xl border bg-surface-primary p-6 text-left shadow-md w-full md:w-80 ${
-                tier.highlight ? 'ring-2 ring-button-primary border-button-primary' : 'border-border-default'
-              }`}
+              variant={tier.highlight ? "featured" : "default"}
+              className={`flex flex-col ${tier.highlight ? 'border-brand-primary/40 transform scale-105' : ''}`}
             >
-              <div className="h-6">
+              {/* Highlight Badge */}
+              <div className="h-8 mb-4">
                 {tier.highlight && (
-                  <span className="inline-flex w-fit items-center rounded-full bg-button-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                  <Badge variant="default" className="bg-brand-primary text-white border-0">
                     {tier.highlight}
-                  </span>
+                  </Badge>
                 )}
               </div>
-              <div>
-                <p className="text-lg font-semibold text-text-primary">{tier.name}</p>
-                <p className="mt-2 text-2xl font-bold text-text-primary">{tier.price}</p>
-                <p className="mt-2 text-sm text-text-secondary">{tier.description}</p>
+
+              {/* Tier Info */}
+              <div className="mb-8">
+                <p className="text-xl font-semibold text-primary mb-3">{tier.name}</p>
+                <p className="font-display text-5xl text-primary mb-4 tracking-tight">{tier.price}</p>
+                <p className="text-secondary leading-relaxed">{tier.description}</p>
               </div>
-              <ul className="flex flex-1 list-disc flex-col gap-2 pl-4 text-sm text-text-secondary marker:text-button-primary">
+
+              {/* Features List */}
+              <ul className="flex-1 flex flex-col gap-3 mb-8">
                 {tier.features.map((feature) => (
-                  <li key={feature}>{feature}</li>
+                  <li key={feature} className="flex items-start gap-3 text-secondary">
+                    <svg className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="leading-relaxed">{feature}</span>
+                  </li>
                 ))}
               </ul>
-              <Link
-                to={tier.url}
-                className="flex items-center justify-center rounded-lg bg-button-primary px-4 py-2 text-sm font-semibold tracking-wide text-white transition hover:bg-button-primary-hover shadow-sm"
-              >
-                {tier.cta}
+
+              {/* CTA Button */}
+              <Link to={tier.url} className="mt-auto">
+                <Button
+                  variant={tier.highlight ? "primary" : "secondary"}
+                  className="w-full"
+                >
+                  {tier.cta}
+                </Button>
               </Link>
-            </div>
+            </Card>
           ))}
         </div>
       </section>

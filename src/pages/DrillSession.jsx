@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDrill } from '../contexts/DrillContext'
 import { useAuth } from '../contexts/AuthContext'
-import { useHighlights } from '../hooks/useHighlights'
-import HighlightableText from '../components/HighlightableText'
+import { renderTextWithHighlights } from '../utils/highlightRenderer'
+import { getChoiceText } from '../utils/answerChoiceUtils'
 
 const letterFromIndex = (index) => String.fromCharCode(65 + index)
 
@@ -12,12 +12,6 @@ const indexFromLetter = (letter) => {
   const normalized = letter.trim().toUpperCase()
   const code = normalized.charCodeAt(0) - 65
   return code >= 0 && code < 26 ? code : null
-}
-
-const stripChoicePrefix = (choice) => {
-  if (typeof choice !== 'string') return ''
-  const match = choice.match(/^[A-Z]\)\s*(.*)$/)
-  return match ? match[1] : choice
 }
 
 const DrillSession = () => {
@@ -355,11 +349,11 @@ const DrillSession = () => {
                 {normalizedOptions.map((option, optionIndex) => {
                   const isSelected = selectedAnswers[currentQuestionIndex] === optionIndex
                   const optionLetter = letterFromIndex(optionIndex)
-                  const optionText = stripChoicePrefix(option)
+                  const optionText = getChoiceText(option)
 
                   return (
                     <button
-                      key={`${option}-${optionIndex}`}
+                      key={`choice-${optionIndex}-${option?.letter || ''}`}
                       type="button"
                       className={`text-left px-4 py-3 rounded-lg transition border ${
                         isSelected

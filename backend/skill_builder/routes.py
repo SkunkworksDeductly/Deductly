@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from .logic import (
     create_drill_session, submit_drill_answers, start_drill,
     get_user_drill_history, get_drill_by_id, get_drill_result,
@@ -9,6 +9,7 @@ from .curriculum_logic import (
 )
 import firebase_admin
 from firebase_admin import auth as firebase_auth
+import requests
 
 skill_builder_bp = Blueprint('skill_builder', __name__, url_prefix='/api/skill-builder')
 
@@ -29,6 +30,63 @@ def get_user_id_from_token():
         return decoded_token['uid']
     except Exception:
         return None
+
+
+def _update_insights(user_id, answers):
+    """
+    Update user ability estimates and skill mastery via insights endpoints.
+
+    Args:
+        user_id: The user's unique identifier
+        answers: List of answer dictionaries with question_id and is_correct fields
+    """
+    # Transform answers into the format expected by insights endpoints
+    new_evidence = [
+        {
+            'question_id': answer.get('question_id'),
+            'is_correct': answer.get('is_correct', False)
+        }
+        for answer in answers
+        if answer.get('question_id') is not None
+    ]
+
+    # Skip if no valid evidence
+    if not new_evidence:
+        print(f"No valid evidence to update insights for user {user_id}")
+        return
+
+    # Get the base URL from the app config or construct it
+    # Since we're in the same Flask app, we can use localhost
+    base_url = 'http://localhost:5001/api/insights'
+
+    try:
+        # Update IRT ability estimates
+        irt_response = requests.post(
+            f'{base_url}/online/irt/update/{user_id}',
+            json={'new_evidence': new_evidence},
+            timeout=5
+        )
+        if irt_response.status_code == 200:
+            print(f"Successfully updated IRT estimates for user {user_id}")
+        else:
+            print(f"Failed to update IRT estimates: {irt_response.status_code} - {irt_response.text}")
+    except Exception as e:
+        print(f"Error updating IRT estimates for user {user_id}: {e}")
+
+    try:
+        # Update GLMM skill mastery
+        glmm_response = requests.post(
+            f'{base_url}/online/glmm/update/{user_id}',
+            json={'new_evidence': new_evidence},
+            timeout=5
+        )
+        if glmm_response.status_code == 200:
+            print(f"Successfully updated GLMM mastery for user {user_id}")
+        else:
+            print(f"Failed to update GLMM mastery: {glmm_response.status_code} - {glmm_response.text}")
+    except Exception as e:
+        print(f"Error updating GLMM mastery for user {user_id}: {e}")
+
 
 @skill_builder_bp.route('/drill', methods=['POST'])
 def drill():
@@ -73,6 +131,10 @@ def submit():
 
     try:
         result = submit_drill_answers(drill_id, user_id, answers, time_taken)
+
+        # Call insights endpoints to update user estimates and mastery
+        _update_insights(user_id, answers)
+
         return jsonify(result)
     except Exception as e:
         print(f"Error submitting drill: {e}")

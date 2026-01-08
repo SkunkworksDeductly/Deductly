@@ -76,11 +76,24 @@ class ApiService {
 
   // Insights API
   async getAbilityEstimate(userId) {
-    return this.get(`/insights/ability/${userId}`)
+    // Hit IRT endpoint and normalize shape to { ability_theta, ... }
+    const resp = await this.get(`/insights/irt/${userId}`)
+    if (resp && typeof resp === 'object') {
+      // Prefer nested ability_estimate if present
+      if (resp.ability_estimate && typeof resp.ability_estimate === 'object') {
+        return resp.ability_estimate
+      }
+      // Fallback: some implementations may return the estimate at top level
+      if (typeof resp.ability_theta !== 'undefined') {
+        return resp
+      }
+    }
+    return null
   }
 
   async getSkillMastery(userId) {
-    return this.get(`/insights/mastery/${userId}`)
+    // Hit GLMM endpoint which returns { user_id, model, skills: [...], last_updated }
+    return this.get(`/insights/glmm/${userId}`)
   }
 }
 

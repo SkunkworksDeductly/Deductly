@@ -14,11 +14,13 @@ import DrillBuilder from './pages/DrillBuilder'
 import DrillSession from './pages/DrillSession'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import DesignDemo from './pages/DesignDemo'
 import DiagnosticSummary from './pages/DiagnosticSummary'
 import DrillSummary from './pages/DrillSummary'
 import DrillResults from './pages/DrillResults'
 import Curriculum from './pages/Curriculum'
 import VideoDetail from './pages/VideoDetail'
+import Analytics from './pages/Analytics'
 
 const routerBaseName = import.meta.env.BASE_URL.replace(/\/+$/, '')
 
@@ -32,37 +34,40 @@ function App() {
             <Route path="/" element={<PublicLanding />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/design-demo" element={<DesignDemo />} />
 
             {/* Protected routes */}
             <Route path="/*" element={
               <PrivateRoute>
-              <div className="relative flex h-auto min-h-screen w-full flex-col bg-surface-secondary">
-                <div className="layout-container flex h-full grow flex-col">
-                  <div className="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
-                    <div className="layout-content-container flex flex-col max-w-[1200px] flex-1">
-                      <Header />
+                <div className="relative flex h-auto min-h-screen w-full flex-col">
+                  <div className="layout-container flex h-full grow flex-col">
+                    <div className="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
+                      <div className="layout-content-container flex flex-col max-w-[1200px] flex-1">
+                        <Header />
 
-                      <main className="flex-1">
-                        <Routes>
-                          <Route path="dashboard" element={<Landing />} />
-                          <Route path="diagnostics" element={<Diagnostics />} />
-                          <Route path="diagnostics/session" element={<DrillSession />} />
-                          <Route path="diagnostics/summary" element={<DiagnosticSummary />} />
-                          <Route path="study-plan" element={<StudyPlan />} />
-                          <Route path="curriculum" element={<Curriculum />} />
-                          <Route path="curriculum/:videoId" element={<VideoDetail />} />
-                          <Route path="drill" element={<DrillBuilder />} />
-                          <Route path="drill/session" element={<DrillSession />} />
-                          <Route path="drill/summary" element={<DrillSummary />} />
-                          <Route path="drill/results/:drillId" element={<DrillResults />} />
-                        </Routes>
-                      </main>
+                        <main className="flex-1">
+                          <Routes>
+                            <Route index element={<Home />} />
+                            <Route path="dashboard" element={<Landing />} />
+                            <Route path="diagnostics" element={<Diagnostics />} />
+                            <Route path="diagnostics/session" element={<DrillSession />} />
+                            <Route path="diagnostics/summary" element={<DiagnosticSummary />} />
+                            <Route path="study-plan" element={<StudyPlan />} />
+                            <Route path="curriculum" element={<Curriculum />} />
+                            <Route path="curriculum/:videoId" element={<VideoDetail />} />
+                            <Route path="drill" element={<DrillBuilder />} />
+                            <Route path="drill/session" element={<DrillSession />} />
+                            <Route path="drill/summary" element={<DrillSummary />} />
+                            <Route path="drill/results/:drillId" element={<DrillResults />} />
+                            <Route path="analytics" element={<Analytics />} />
+                          </Routes>
+                        </main>
 
-                      <Footer />
+                        <Footer />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
               </PrivateRoute>
             } />
           </Routes>

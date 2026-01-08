@@ -43,20 +43,22 @@ const SingleSelectDropdown = ({
 
   return (
     <div className="relative space-y-2" ref={containerRef}>
-      <label className="text-sm font-medium text-text-secondary">{label}</label>
+      <label className="text-[11px] font-medium text-text-tertiary uppercase tracking-wider">{label}</label>
       <button
         type="button"
-        className="w-full rounded-lg px-3 py-2 text-left text-text-primary flex items-center justify-between bg-white border border-border-light hover:bg-surface-hover transition"
+        className="w-full rounded-xl px-4 py-3 text-left text-text-primary flex items-center justify-between bg-bg-secondary border border-border-default hover:border-border-hover transition-all duration-200"
         onClick={() => setIsOpen((prev) => !prev)}
       >
         <span className={`truncate text-sm ${selectedOption ? 'text-text-primary' : 'text-text-secondary'}`}>
           {summary}
         </span>
-        <span className="ml-3 text-text-secondary text-xs">v</span>
+        <svg className={`w-4 h-4 text-text-tertiary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 z-20 mt-2 w-full rounded-xl bg-white border border-border-light shadow-lg">
+        <div className="absolute left-0 z-20 mt-2 w-full rounded-xl bg-bg-secondary border border-border-default shadow-xl backdrop-blur-xl">
           <div className="py-2">
             {options.map((option) => {
               const value = getOptionValue(option)
@@ -67,10 +69,10 @@ const SingleSelectDropdown = ({
                 <button
                   key={value}
                   type="button"
-                  className={`w-full px-3 py-2 text-left text-sm flex items-center justify-between transition ${
+                  className={`w-full px-4 py-2.5 text-left text-sm flex items-center justify-between transition-all duration-150 ${
                     isActive
-                      ? 'bg-primary/20 text-primary font-medium'
-                      : 'text-text-primary hover:bg-surface-hover'
+                      ? 'bg-brand-primary/20 text-brand-primary font-medium border-l-2 border-brand-primary'
+                      : 'text-text-primary hover:bg-bg-tertiary'
                   }`}
                   onClick={() => {
                     onChange(value)
@@ -78,13 +80,13 @@ const SingleSelectDropdown = ({
                   }}
                 >
                   <span>{labelText}</span>
-                  {isActive && <span className="text-primary text-xs font-semibold">selected</span>}
+                  {isActive && <span className="text-brand-primary text-xs font-semibold">✓</span>}
                 </button>
               )
             })}
 
             {options.length === 0 && (
-              <div className="px-3 py-2 text-sm text-text-secondary">No options</div>
+              <div className="px-4 py-2.5 text-sm text-text-secondary">No options</div>
             )}
           </div>
         </div>
@@ -130,23 +132,25 @@ const MultiSelectDropdown = ({
 
   return (
     <div className="relative space-y-2" ref={containerRef}>
-      <label className="text-sm font-medium text-text-secondary">{label}</label>
+      <label className="text-[11px] font-medium text-text-tertiary uppercase tracking-wider">{label}</label>
       <button
         type="button"
-        className="w-full rounded-lg px-3 py-2 text-left text-text-primary flex items-center justify-between bg-white border border-border-light hover:bg-surface-hover transition"
+        className="w-full rounded-xl px-4 py-3 text-left text-text-primary flex items-center justify-between bg-bg-secondary border border-border-default hover:border-border-hover transition-all duration-200"
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        <span className="truncate text-sm">{summary}</span>
-        <span className="ml-3 text-text-secondary text-xs">v</span>
+        <span className="truncate text-sm text-text-secondary">{summary}</span>
+        <svg className={`w-4 h-4 text-text-tertiary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 z-20 mt-2 w-full rounded-xl bg-white border border-border-light shadow-lg">
+        <div className="absolute left-0 z-20 mt-2 w-full rounded-xl bg-bg-secondary border border-border-default shadow-xl backdrop-blur-xl">
           <div className="max-h-64 overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-border-light py-2 px-3 flex gap-2">
+            <div className="sticky top-0 bg-bg-secondary border-b border-border-subtle py-2 px-4 flex gap-2">
               <button
                 type="button"
-                className={`text-xs font-semibold text-primary hover:text-primary/80 transition ${showClear ? 'flex-1 text-left' : 'w-full text-left'}`}
+                className={`text-xs font-semibold text-brand-primary hover:text-brand-secondary transition ${showClear ? 'flex-1 text-left' : 'w-full text-left'}`}
                 onClick={() => onChange(options)}
               >
                 Select All
@@ -154,7 +158,7 @@ const MultiSelectDropdown = ({
               {showClear && (
                 <button
                   type="button"
-                  className="flex-1 text-xs font-semibold text-primary hover:text-primary/80 transition text-right"
+                  className="flex-1 text-xs font-semibold text-brand-primary hover:text-brand-secondary transition text-right"
                   onClick={() => onChange([])}
                 >
                   Clear
@@ -168,10 +172,10 @@ const MultiSelectDropdown = ({
                   <button
                     key={option}
                     type="button"
-                    className={`w-full px-3 py-2 text-left text-sm flex items-center gap-3 transition ${
+                    className={`w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 transition-all duration-150 ${
                       isActive
-                        ? 'bg-primary/20 text-primary font-medium'
-                        : 'text-text-primary hover:bg-surface-hover'
+                        ? 'bg-brand-primary/20 text-brand-primary font-medium border-l-2 border-brand-primary'
+                        : 'text-text-primary hover:bg-bg-tertiary'
                     }`}
                     onClick={() => toggleOption(option)}
                   >
@@ -179,14 +183,14 @@ const MultiSelectDropdown = ({
                       type="checkbox"
                       checked={isActive}
                       onChange={() => {}}
-                      className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary pointer-events-none"
+                      className="w-4 h-4 rounded border-border-default bg-bg-primary text-brand-primary focus:ring-brand-primary focus:ring-offset-0 pointer-events-none"
                     />
                     <span>{option}</span>
                   </button>
                 )
               })}
               {options.length === 0 && (
-                <div className="px-3 py-2 text-sm text-text-secondary">No options</div>
+                <div className="px-4 py-2.5 text-sm text-text-secondary">No options</div>
               )}
             </div>
           </div>
@@ -220,7 +224,8 @@ const DrillBuilder = () => {
         question_count: drillConfig.questionCount,
         difficulties: drillConfig.difficulties,
         skills: drillConfig.skills,
-        time_percentage: drillConfig.timePercentage
+        time_percentage: drillConfig.timePercentage,
+        drill_type: 'practice'
       }
 
       const headers = await getAuthHeaders()
@@ -259,12 +264,12 @@ const DrillBuilder = () => {
   }
 
   return (
-    <div className="py-10">
-      <div className="max-w-6xl mx-auto px-4 space-y-8">
-        <div className="rounded-2xl border border-border-light bg-white p-8 shadow-md">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">Build Your LSAT Drill</h1>
-            <p className="text-text-secondary max-w-3xl">
+    <div className="min-h-screen py-12 px-4">
+      <div className="max-w-6xl mx-auto space-y-8">
+        <div className="rounded-3xl border border-border-default bg-gradient-to-br from-bg-secondary/90 to-bg-tertiary/95 p-10 shadow-xl backdrop-blur-xl">
+          <div className="mb-8">
+            <h1 className="font-serif text-4xl md:text-5xl font-normal text-text-primary mb-3 tracking-tight">Build Your LSAT Drill</h1>
+            <p className="text-text-secondary text-base max-w-3xl leading-relaxed">
               Customize a focused practice set by choosing the question mix that matches your study goals.
               Pick the number of questions, dial in the difficulty, and highlight the reasoning skills you want to sharpen.
             </p>
@@ -321,46 +326,47 @@ const DrillBuilder = () => {
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-xl border border-border-light bg-accent-lavender/20 p-5 space-y-4">
-                <h3 className="text-lg font-semibold text-text-primary">Drill Summary</h3>
-                <div className="space-y-2 text-sm text-text-secondary">
-                  <p>
-                    <span className="font-semibold text-text-primary">Questions:</span> {drillConfig.questionCount}
-                  </p>
-                  <p>
-                    <span className="font-semibold text-text-primary">Difficulty mix:</span>{' '}
-                    {[...drillConfig.difficulties]
+              <div className="rounded-2xl border border-border-default bg-bg-primary/40 p-6 space-y-5 backdrop-blur-sm">
+                <h3 className="text-xl font-medium text-text-primary">Drill Summary</h3>
+                <div className="space-y-3 text-sm text-text-secondary">
+                  <div className="flex justify-between items-center py-2 border-b border-border-subtle">
+                    <span className="text-[11px] uppercase tracking-wider text-text-tertiary">Questions</span>
+                    <span className="text-base font-medium text-text-primary">{drillConfig.questionCount}</span>
+                  </div>
+                  <div className="flex justify-between items-start py-2 border-b border-border-subtle">
+                    <span className="text-[11px] uppercase tracking-wider text-text-tertiary">Difficulty mix</span>
+                    <span className="text-base font-medium text-text-primary text-right">{[...drillConfig.difficulties]
                       .sort((a, b) => {
                         const order = { 'Easy': 1, 'Medium': 2, 'Hard': 3, 'Challenging': 4 }
                         return order[a] - order[b]
                       })
-                      .join(', ')}
-                  </p>
-                  <p>
-                    <span className="font-semibold text-text-primary">Timing:</span>{' '}
-                    {
+                      .join(', ')}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-border-subtle">
+                    <span className="text-[11px] uppercase tracking-wider text-text-tertiary">Timing</span>
+                    <span className="text-base font-medium text-text-primary">{
                       DRILL_TIME_OPTIONS.find((option) => option.value === drillConfig.timePercentage)?.label
                       || `${drillConfig.timePercentage}%`
-                    }
-                  </p>
-                  <p>
-                    <span className="font-semibold text-text-primary">Skills:</span>{' '}
-                    {drillConfig.skills.length > 0 ? drillConfig.skills.join(', ') : 'Any available'}
-                  </p>
+                    }</span>
+                  </div>
+                  <div className="flex justify-between items-start py-2">
+                    <span className="text-[11px] uppercase tracking-wider text-text-tertiary">Skills</span>
+                    <span className="text-base font-medium text-text-primary text-right">{drillConfig.skills.length > 0 ? drillConfig.skills.join(', ') : 'Any available'}</span>
+                  </div>
                 </div>
                 {errorMessage && (
-                  <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                  <div className="text-sm text-danger bg-danger/10 border border-danger/30 rounded-xl px-4 py-3">
                     {errorMessage}
                   </div>
                 )}
                 {drillConfig.difficulties.length === 0 && (
-                  <div className="text-sm text-text-secondary bg-status-info-bg border border-border-light rounded-lg px-3 py-2">
+                  <div className="text-sm text-text-secondary bg-bg-tertiary/50 border border-border-subtle rounded-xl px-4 py-3">
                     Please select at least one difficulty level to continue
                   </div>
                 )}
                 <button
                   type="button"
-                  className="w-full py-2.5 bg-button-primary hover:bg-button-primary-hover rounded-lg text-white font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
+                  className="w-full py-3.5 bg-gradient-to-r from-brand-primary to-brand-secondary hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] rounded-xl text-white font-semibold transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed shadow-lg transform hover:-translate-y-0.5"
                   onClick={startDrillSession}
                   disabled={isLoading || drillConfig.difficulties.length === 0}
                 >
@@ -368,7 +374,7 @@ const DrillBuilder = () => {
                 </button>
                 <button
                   type="button"
-                  className="w-full py-2 bg-white border border-border-light hover:bg-stone-50 rounded-lg text-text-secondary text-sm transition"
+                  className="w-full py-2.5 bg-transparent border border-border-default hover:bg-bg-tertiary rounded-xl text-text-secondary text-sm transition-all duration-200"
                   onClick={handleResetConfiguration}
                   disabled={isLoading}
                 >
@@ -379,23 +385,38 @@ const DrillBuilder = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border-light bg-white p-8 text-text-primary shadow-md">
-          <h2 className="text-2xl font-semibold mb-3">Ready when you are</h2>
-          <p className="text-text-secondary max-w-2xl">
+        <div className="rounded-3xl border border-border-default bg-gradient-to-br from-bg-secondary/90 to-bg-tertiary/95 p-10 shadow-xl backdrop-blur-xl">
+          <h2 className="font-serif text-3xl font-normal mb-4 text-text-primary tracking-tight">Ready when you are</h2>
+          <p className="text-text-secondary max-w-2xl text-base leading-relaxed">
             Choose your drill configuration above and tap <span className="text-text-primary font-semibold">Generate Drill</span> to pull a fresh set of questions from the Deductly skill library.
           </p>
-          <div className="mt-6 grid gap-4 md:grid-cols-3 text-sm text-text-secondary">
-            <div className="rounded-xl border border-border-light bg-accent-lavender/10 p-4">
-              <p className="text-text-primary font-semibold">Adaptive mix</p>
-              <p className="mt-2">We'll fill any gaps in your request with similar questions so every drill reaches your requested length.</p>
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            <div className="rounded-2xl border border-border-subtle bg-bg-primary/30 p-6 backdrop-blur-sm">
+              <div className="w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </div>
+              <p className="text-text-primary font-semibold mb-2 text-base">Adaptive mix</p>
+              <p className="text-sm text-text-secondary leading-relaxed">We'll fill any gaps in your request with similar questions so every drill reaches your requested length.</p>
             </div>
-            <div className="rounded-xl border border-border-light bg-accent-lavender/10 p-4">
-              <p className="text-text-primary font-semibold">Real LSAT content</p>
-              <p className="mt-2">Questions map directly to LSAT reasoning skills so you always know what you're sharpening.</p>
+            <div className="rounded-2xl border border-border-subtle bg-bg-primary/30 p-6 backdrop-blur-sm">
+              <div className="w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <p className="text-text-primary font-semibold mb-2 text-base">Real LSAT content</p>
+              <p className="text-sm text-text-secondary leading-relaxed">Questions map directly to LSAT reasoning skills so you always know what you're sharpening.</p>
             </div>
-            <div className="rounded-xl border border-border-light bg-accent-lavender/10 p-4">
-              <p className="text-text-primary font-semibold">Flexible pacing</p>
-              <p className="mt-2">Dial the timer from tight to untimed to mirror your practice strategy.</p>
+            <div className="rounded-2xl border border-border-subtle bg-bg-primary/30 p-6 backdrop-blur-sm">
+              <div className="w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <p className="text-text-primary font-semibold mb-2 text-base">Flexible pacing</p>
+              <p className="text-sm text-text-secondary leading-relaxed">Dial the timer from tight to untimed to mirror your practice strategy.</p>
             </div>
           </div>
         </div>

@@ -2,21 +2,15 @@
 Business logic for Personalization layer
 Handles personalized study plans and adaptive learning recommendations
 """
-import sqlite3
 import os
 import json
+from utils import generate_id, generate_sequential_id
+from db import get_db_connection, get_db_cursor, execute_query
 from datetime import datetime, timedelta, date
 
 from skill_builder.logic import create_drill_session
 
-# Import ID generator
-import sys
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.id_generator import generate_id
 
-# Path to data files
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DB_PATH = os.path.join(BASE_DIR, 'data', 'deductly.db')
 
 # Sample data (will be replaced with database queries)
 sample_study_plans = [
@@ -38,11 +32,6 @@ sample_study_plans = [
     }
 ]
 
-def get_db_connection():
-    """Create a database connection"""
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
 
 def get_all_study_plans():
     """Retrieve all study plans"""
@@ -122,11 +111,12 @@ def has_completed_diagnostic(user_id):
     """Check if user has completed a diagnostic test."""
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        row = cursor.execute("""
+        cursor.execute("""
             SELECT COUNT(*) FROM drill_results dr
             JOIN drills d ON dr.drill_id = d.drill_id
-            WHERE d.user_id = ? AND d.drill_type = 'diagnostic'
-        """, (user_id,)).fetchone()
+            WHERE d.user_id = %s AND d.drill_type = 'diagnostic'
+        """, (user_id,))
+        row = cursor.fetchone()
         return row[0] > 0
 
 
@@ -134,9 +124,10 @@ def has_study_plan(user_id):
     """Check if user already has a study plan."""
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        row = cursor.execute("""
-            SELECT COUNT(*) FROM study_plans WHERE user_id = ?
-        """, (user_id,)).fetchone()
+        cursor.execute("""
+            SELECT COUNT(*) FROM study_plans WHERE user_id = %s
+        """, (user_id,))
+        row = cursor.fetchone()
         return row[0] > 0
 
 
@@ -146,19 +137,21 @@ def get_user_study_plan(user_id):
         cursor = conn.cursor()
 
         # Get study plan
-        plan_row = cursor.execute("""
-            SELECT * FROM study_plans WHERE user_id = ?
-        """, (user_id,)).fetchone()
+        cursor.execute("""
+            SELECT * FROM study_plans WHERE user_id = %s
+        """, (user_id,))
+        plan_row = cursor.fetchone()
 
         if not plan_row:
             return None
 
         # Get all tasks
-        task_rows = cursor.execute("""
+        cursor.execute("""
             SELECT * FROM study_plan_tasks
-            WHERE study_plan_id = ?
+            WHERE study_plan_id = %s
             ORDER BY week_number ASC, task_order ASC
-        """, (plan_row['id'],)).fetchall()
+        """, (plan_row['id'],))
+        task_rows = cursor.fetchall()
 
         # Calculate progress
         total_tasks = len(task_rows)
@@ -225,8 +218,8 @@ def link_drill_to_task(task_id, drill_id):
         cursor = conn.cursor()
         cursor.execute("""
             UPDATE study_plan_tasks
-            SET drill_id = ?, status = 'in_progress'
-            WHERE id = ?
+            SET drill_id = %s, status = 'in_progress'
+            WHERE id = %s
         """, (drill_id, task_id))
         conn.commit()
         return cursor.rowcount > 0
@@ -238,8 +231,8 @@ def mark_task_completed(task_id, drill_id):
         cursor = conn.cursor()
         cursor.execute("""
             UPDATE study_plan_tasks
-            SET status = 'completed', drill_id = ?, completed_at = CURRENT_TIMESTAMP
-            WHERE id = ?
+            SET status = 'completed', drill_id = %s, completed_at = CURRENT_TIMESTAMP
+            WHERE id = %s
         """, (drill_id, task_id))
         conn.commit()
         return cursor.rowcount > 0
@@ -262,7 +255,8 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
     # Get available videos from database
     conn = get_db_connection()
     cursor = conn.cursor()
-    video_rows = cursor.execute("SELECT id, title FROM videos ORDER BY category, difficulty").fetchall()
+    cursor.execute("SELECT id, title FROM videos ORDER BY category, difficulty")
+    video_rows = cursor.fetchall()
     videos = {row['id']: row['title'] for row in video_rows}
     video_ids = list(videos.keys())
     conn.close()
@@ -344,7 +338,7 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
         # Create study plan
         cursor.execute("""
             INSERT INTO study_plans (id, user_id, diagnostic_drill_id, total_weeks, start_date)
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s)
         """, (study_plan_id, user_id, diagnostic_drill_id, total_weeks, start_date.isoformat()))
 
         # Create tasks for each week
@@ -363,7 +357,7 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
                             INSERT INTO study_plan_tasks (
                                 id, study_plan_id, week_number, task_order,
                                 task_type, title, estimated_minutes, task_config, video_id
-                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """, (
                             task_id,
                             study_plan_id,
@@ -390,7 +384,7 @@ def generate_study_plan_from_diagnostic(user_id, diagnostic_drill_id):
                         INSERT INTO study_plan_tasks (
                             id, study_plan_id, week_number, task_order,
                             task_type, title, estimated_minutes, task_config
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                     """, (
                         task_id,
                         study_plan_id,

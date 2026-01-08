@@ -7,6 +7,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import Landing from './pages/Landing'
+import PublicLanding from './pages/PublicLanding'
 import Diagnostics from './pages/Diagnostics'
 import StudyPlan from './pages/StudyPlan'
 import DrillBuilder from './pages/DrillBuilder'
@@ -30,6 +31,7 @@ function App() {
         <Router basename={routerBaseName}>
           <Routes>
             {/* Public routes */}
+            <Route path="/" element={<PublicLanding />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/design-demo" element={<DesignDemo />} />

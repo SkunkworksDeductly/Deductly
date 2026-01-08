@@ -27,7 +27,12 @@ const DrillSession = () => {
     resetSession
   } = useDrill()
 
+  const { getQuestionHighlights, setQuestionHighlights } = useHighlights()
+
   const startTimeRef = useRef(null)
+  const hasRestoredProgressRef = useRef(false)
+  const drillIdRef = useRef(null)
+
   const questions = Array.isArray(drillSession?.questions) ? drillSession.questions : []
   const fallbackPath = location.pathname.startsWith('/diagnostics') ? '/diagnostics' : '/drill'
   const isDiagnosticSession = drillSession?.origin === 'diagnostic'
@@ -39,26 +44,38 @@ const DrillSession = () => {
       return
     }
 
+    // Check if this is a new drill (different drill_id)
+    const isNewDrill = drillIdRef.current !== drillSession.drill_id
+    if (isNewDrill) {
+      drillIdRef.current = drillSession.drill_id
+      hasRestoredProgressRef.current = false
+    }
+
     // Set start time when drill session loads
     if (!startTimeRef.current) {
       startTimeRef.current = Date.now()
     }
 
-    // Restore saved progress if available
-    if (drillSession.current_question_index !== undefined && drillSession.current_question_index > 0) {
-      setCurrentQuestionIndex(drillSession.current_question_index)
-    } else {
-      setCurrentQuestionIndex(0)
-    }
+    // Only restore progress once per drill session
+    if (!hasRestoredProgressRef.current) {
+      hasRestoredProgressRef.current = true
 
-    // Restore saved answers if available
-    if (drillSession.user_answers && Object.keys(drillSession.user_answers).length > 0) {
-      // Convert string keys to numbers for selectedAnswers state
-      const restoredAnswers = {}
-      Object.keys(drillSession.user_answers).forEach(key => {
-        restoredAnswers[parseInt(key)] = drillSession.user_answers[key]
-      })
-      setSelectedAnswers(restoredAnswers)
+      // Restore saved progress if available
+      if (drillSession.current_question_index !== undefined && drillSession.current_question_index > 0) {
+        setCurrentQuestionIndex(drillSession.current_question_index)
+      } else {
+        setCurrentQuestionIndex(0)
+      }
+
+      // Restore saved answers if available
+      if (drillSession.user_answers && Object.keys(drillSession.user_answers).length > 0) {
+        // Convert string keys to numbers for selectedAnswers state
+        const restoredAnswers = {}
+        Object.keys(drillSession.user_answers).forEach(key => {
+          restoredAnswers[parseInt(key)] = drillSession.user_answers[key]
+        })
+        setSelectedAnswers(restoredAnswers)
+      }
     }
   }, [drillSession, navigate, setCurrentQuestionIndex, setSelectedAnswers, fallbackPath])
 
@@ -95,10 +112,16 @@ const DrillSession = () => {
     : []
 
   // Get highlights for current question
-  const userHighlights = drillSession?.user_highlights || {}
   const currentQuestionHighlights = currentQuestionData?.id
-    ? (userHighlights[currentQuestionData.id] || [])
+    ? getQuestionHighlights(currentQuestionData.id)
     : []
+
+  // Handler for when highlights change
+  const handleHighlightChange = (newHighlights) => {
+    if (currentQuestionData?.id) {
+      setQuestionHighlights(currentQuestionData.id, newHighlights)
+    }
+  }
 
   const handleAnswerSelect = (optionIndex) => {
     setSelectedAnswers((prev) => ({
@@ -259,7 +282,8 @@ const DrillSession = () => {
           headers,
           body: JSON.stringify({
             current_question_index: currentQuestionIndex,
-            user_answers: answersForBackend
+            user_answers: answersForBackend,
+            user_highlights: drillSession.user_highlights || {}
           })
         })
 
@@ -304,11 +328,19 @@ const DrillSession = () => {
                   </span>
                 </div>
                 <p className="text-text-primary text-lg leading-relaxed">
-                  {renderTextWithHighlights(currentQuestionData.question_text, currentQuestionHighlights)}
+                  <HighlightableText
+                    text={currentQuestionData.question_text}
+                    highlights={currentQuestionHighlights}
+                    onHighlightChange={handleHighlightChange}
+                  />
                 </p>
                 {currentQuestionData.passage_text && (
                   <div className="bg-accent-info-bg rounded-xl border border-border-default p-4 text-sm text-text-secondary leading-relaxed">
-                    {renderTextWithHighlights(currentQuestionData.passage_text, currentQuestionHighlights)}
+                    <HighlightableText
+                      text={currentQuestionData.passage_text}
+                      highlights={currentQuestionHighlights}
+                      onHighlightChange={handleHighlightChange}
+                    />
                   </div>
                 )}
               </div>

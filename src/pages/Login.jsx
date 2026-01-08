@@ -39,8 +39,35 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface-secondary py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen bg-surface-secondary">
+      {/* Navigation */}
+      <nav className="bg-white border-b border-border-default">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-button-primary to-button-primary-hover rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <span className="text-xl font-semibold text-text-primary">Deductly</span>
+            </Link>
+
+            {/* Sign Up Link */}
+            <Link
+              to="/signup"
+              className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+            >
+              Don't have an account? <span className="text-button-primary font-semibold">Sign Up</span>
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Login Form */}
+      <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-text-primary">
             Sign in to your account
@@ -148,6 +175,7 @@ export default function Login() {
             </div>
           </div>
         </form>
+        </div>
       </div>
     </div>
   )

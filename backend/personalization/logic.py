@@ -117,7 +117,7 @@ def has_completed_diagnostic(user_id):
             WHERE d.user_id = %s AND d.drill_type = 'diagnostic'
         """, (user_id,))
         row = cursor.fetchone()
-        return row[0] > 0
+        return row['count'] > 0
 
 
 def has_study_plan(user_id):
@@ -128,7 +128,7 @@ def has_study_plan(user_id):
             SELECT COUNT(*) FROM study_plans WHERE user_id = %s
         """, (user_id,))
         row = cursor.fetchone()
-        return row[0] > 0
+        return row['count'] > 0
 
 
 def get_user_study_plan(user_id):

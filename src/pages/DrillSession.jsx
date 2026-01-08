@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDrill } from '../contexts/DrillContext'
 import { useAuth } from '../contexts/AuthContext'
-import { renderTextWithHighlights } from '../utils/highlightRenderer'
+import { useHighlights } from '../hooks/useHighlights'
+import HighlightableText from '../components/HighlightableText'
 import { getChoiceText } from '../utils/answerChoiceUtils'
 
 const letterFromIndex = (index) => String.fromCharCode(65 + index)

@@ -22,11 +22,11 @@ export default {
           secondary: "#8b5cf6",
           tertiary: "#a78bfa",
         },
-        // Light-mode landing page text colors
+        // Text colors for dark mode app pages
         text: {
-          primary: "#111827",
-          secondary: "#4B5563",
-          tertiary: "#9CA3AF",
+          primary: "#F9FAFB",
+          secondary: "rgba(255, 255, 255, 0.7)",
+          tertiary: "rgba(255, 255, 255, 0.5)",
         },
         // Button colors for landing page
         button: {

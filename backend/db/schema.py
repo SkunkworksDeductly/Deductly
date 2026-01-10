@@ -228,6 +228,27 @@ CREATE TABLE IF NOT EXISTS question_elo_ratings (
     num_updates INTEGER DEFAULT 0,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+-- ============================================================================
+-- User Question History Table
+-- Tracks which questions each user has answered for exclusion from future drills
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS user_question_history (
+    id VARCHAR(50) PRIMARY KEY,
+    user_id VARCHAR(100) NOT NULL,
+    question_id VARCHAR(50) NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
+    drill_id VARCHAR(50) NOT NULL,
+    is_correct BOOLEAN NOT NULL,
+    answered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    attempt_count INTEGER DEFAULT 1,
+    last_correct BOOLEAN,
+    UNIQUE(user_id, question_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_uqh_user_id ON user_question_history(user_id);
+CREATE INDEX IF NOT EXISTS idx_uqh_user_correct ON user_question_history(user_id, is_correct);
+CREATE INDEX IF NOT EXISTS idx_uqh_user_last_correct ON user_question_history(user_id, last_correct);
 """
 
 
@@ -236,7 +257,7 @@ def create_all_tables(conn):
     Create all tables in the database.
 
     Args:
-        conn: psycopg2 database connection
+        conn: psycopg database connection
     """
     cursor = conn.cursor()
     # Split by semicolon and execute each statement
@@ -254,10 +275,11 @@ def drop_all_tables(conn):
     Drop all tables (use with caution!)
 
     Args:
-        conn: psycopg2 database connection
+        conn: psycopg database connection
     """
     # Order matters: children before parents (reverse of creation order)
     tables = [
+        'user_question_history',
         'question_elo_ratings',
         'user_elo_ratings',
         'item_difficulties',

@@ -20,18 +20,133 @@ QUESTION_SELECT_FIELDS = [
     'difficulty_level', 'question_type', 'passage_text'
 ]
 
+# Exclusion mode constants
+EXCLUSION_MODE_NONE = 'none'
+EXCLUSION_MODE_ALL_SEEN = 'all_seen'
+EXCLUSION_MODE_CORRECT_ONLY = 'correct_only'
+VALID_EXCLUSION_MODES = {EXCLUSION_MODE_NONE, EXCLUSION_MODE_ALL_SEEN, EXCLUSION_MODE_CORRECT_ONLY}
+
+
+def get_user_answered_questions(user_id, exclusion_mode='all_seen'):
+    """
+    Retrieve question IDs that should be excluded based on exclusion mode.
+
+    Args:
+        user_id: The user's unique identifier
+        exclusion_mode: One of 'none', 'all_seen', 'correct_only'
+
+    Returns:
+        Set of question_ids to exclude
+    """
+    if exclusion_mode == EXCLUSION_MODE_NONE or not user_id or user_id == 'anonymous':
+        return set()
+
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+
+        if exclusion_mode == EXCLUSION_MODE_ALL_SEEN:
+            cursor.execute("""
+                SELECT question_id FROM user_question_history
+                WHERE user_id = %s
+            """, (user_id,))
+        elif exclusion_mode == EXCLUSION_MODE_CORRECT_ONLY:
+            cursor.execute("""
+                SELECT question_id FROM user_question_history
+                WHERE user_id = %s AND last_correct = TRUE
+            """, (user_id,))
+        else:
+            return set()
+
+        rows = cursor.fetchall()
+        return {row['question_id'] for row in rows}
+
+
+def record_question_history(user_id, drill_id, answers):
+    """
+    Record user question history after drill completion.
+    Uses UPSERT to update existing entries or insert new ones.
+
+    Args:
+        user_id: The user's unique identifier
+        drill_id: The drill's unique identifier
+        answers: List of dicts with question_id and is_correct
+    """
+    if not answers or not user_id or user_id == 'anonymous':
+        return
+
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+
+        for answer in answers:
+            question_id = answer.get('question_id')
+            is_correct = answer.get('is_correct', False)
+
+            if not question_id:
+                continue
+
+            # Generate ID for new records
+            history_id = generate_id('uqh')
+
+            # UPSERT: Insert new or update existing
+            cursor.execute("""
+                INSERT INTO user_question_history
+                    (id, user_id, question_id, drill_id, is_correct, last_correct, attempt_count, answered_at)
+                VALUES (%s, %s, %s, %s, %s, %s, 1, CURRENT_TIMESTAMP)
+                ON CONFLICT (user_id, question_id) DO UPDATE SET
+                    drill_id = EXCLUDED.drill_id,
+                    is_correct = user_question_history.is_correct OR EXCLUDED.is_correct,
+                    last_correct = EXCLUDED.last_correct,
+                    attempt_count = user_question_history.attempt_count + 1,
+                    answered_at = CURRENT_TIMESTAMP
+            """, (history_id, user_id, question_id, drill_id, is_correct, is_correct))
+
+        conn.commit()
+
+
+def get_user_question_stats(user_id):
+    """
+    Get statistics about user's question history.
+
+    Returns:
+        Dict with total_seen, total_correct, total_incorrect counts
+    """
+    if not user_id or user_id == 'anonymous':
+        return {'total_seen': 0, 'total_correct': 0, 'total_incorrect': 0}
+
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT
+                COUNT(*) as total_seen,
+                SUM(CASE WHEN last_correct THEN 1 ELSE 0 END) as total_correct,
+                SUM(CASE WHEN NOT last_correct THEN 1 ELSE 0 END) as total_incorrect
+            FROM user_question_history
+            WHERE user_id = %s
+        """, (user_id,))
+
+        row = cursor.fetchone()
+        return {
+            'total_seen': row['total_seen'] or 0,
+            'total_correct': int(row['total_correct'] or 0),
+            'total_incorrect': int(row['total_incorrect'] or 0)
+        }
 
 
 def create_drill_session(payload):
-    """Generate a drill session using LSAT questions from SQLite and save to DB."""
+    """Generate a drill session using LSAT questions from PostgreSQL and save to DB."""
     user_id = payload.get('user_id', 'anonymous')
     question_count = payload.get('question_count', 5)
     difficulties = payload.get('difficulties', ['Medium'])
     skills = payload.get('skills', [])
     time_percentage = payload.get('time_percentage', 100)
     drill_type = payload.get('drill_type', 'practice')
+    exclusion_mode = payload.get('exclusion_mode', EXCLUSION_MODE_ALL_SEEN)  # Default: exclude seen
 
-    questions = _fetch_questions(difficulties, skills, question_count)
+    # Get questions to exclude based on user history
+    exclude_question_ids = get_user_answered_questions(user_id, exclusion_mode)
+
+    questions = _fetch_questions(difficulties, skills, question_count, exclude_question_ids)
     time_limit_seconds = _compute_time_limit(question_count, time_percentage)
 
     # Save drill to database
@@ -135,6 +250,9 @@ def submit_drill_answers(drill_id, user_id, answers, time_taken=None):
 
         conn.commit()
 
+    # Record question history for future exclusion
+    record_question_history(user_id, drill_id, answers)
+
     return {
         'drill_id': drill_id,
         'session_id': drill_id,  # Keep for backwards compatibility
@@ -185,8 +303,17 @@ def _transform_question_row(row):
     }
 
 
-def _fetch_questions(difficulties, skills, question_count):
-    """Pull questions from SQLite for the requested filters."""
+def _fetch_questions(difficulties, skills, question_count, exclude_question_ids=None):
+    """Pull questions from PostgreSQL for the requested filters.
+
+    Args:
+        difficulties: List of difficulty levels to include
+        skills: List of skill types to include
+        question_count: Number of questions to fetch
+        exclude_question_ids: Set of question IDs to exclude (from user history)
+    """
+    exclude_question_ids = exclude_question_ids or set()
+
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
@@ -204,6 +331,12 @@ def _fetch_questions(difficulties, skills, question_count):
             filters.append(f'LOWER(question_type) IN ({placeholders})')
             params.extend([s.lower() for s in skills])
 
+        # Add exclusion for user history
+        if exclude_question_ids:
+            placeholders = ','.join(['%s'] * len(exclude_question_ids))
+            filters.append(f'id NOT IN ({placeholders})')
+            params.extend(list(exclude_question_ids))
+
         # Execute primary query
         query = _build_question_query(filters)
         rows = cursor.execute(query, [*params, question_count]).fetchall()
@@ -213,11 +346,14 @@ def _fetch_questions(difficulties, skills, question_count):
             remaining = question_count - len(rows)
             selected_ids = [row['id'] for row in rows]
 
-            # Build fallback query with ID exclusion
-            fallback_query = _build_question_query(['LOWER(domain) = %s'], exclude_ids=selected_ids)
+            # Combine already selected with user history exclusions
+            all_exclude_ids = set(selected_ids) | exclude_question_ids
+
+            # Build fallback query with combined exclusion
+            fallback_query = _build_question_query(['LOWER(domain) = %s'], exclude_ids=list(all_exclude_ids))
             fallback_params = ['lsat']
-            if selected_ids:
-                fallback_params.extend(selected_ids)
+            if all_exclude_ids:
+                fallback_params.extend(list(all_exclude_ids))
             fallback_params.append(remaining)
 
             fallback_rows = cursor.execute(fallback_query, fallback_params).fetchall()

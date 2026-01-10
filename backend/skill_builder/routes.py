@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request, current_app
 from .logic import (
     create_drill_session, submit_drill_answers, start_drill,
     get_user_drill_history, get_drill_by_id, get_drill_result,
-    save_drill_progress
+    save_drill_progress, get_user_question_stats, VALID_EXCLUSION_MODES
 )
 from .curriculum_logic import (
     get_all_videos, get_video_by_id, get_related_videos, mark_video_complete, mark_video_incomplete
@@ -34,7 +34,7 @@ def get_user_id_from_token():
 
 def _update_insights(user_id, answers):
     """
-    Update user ability estimates and skill mastery via insights endpoints.
+    Update user ability estimates and skill ratings via insights endpoints.
 
     Args:
         user_id: The user's unique identifier
@@ -74,18 +74,18 @@ def _update_insights(user_id, answers):
         print(f"Error updating IRT estimates for user {user_id}: {e}")
 
     try:
-        # Update GLMM skill mastery
-        glmm_response = requests.post(
-            f'{base_url}/online/glmm/update/{user_id}',
+        # Update Elo skill ratings
+        elo_response = requests.post(
+            f'{base_url}/online/elo/update/{user_id}',
             json={'new_evidence': new_evidence},
             timeout=5
         )
-        if glmm_response.status_code == 200:
-            print(f"Successfully updated GLMM mastery for user {user_id}")
+        if elo_response.status_code == 200:
+            print(f"Successfully updated Elo ratings for user {user_id}")
         else:
-            print(f"Failed to update GLMM mastery: {glmm_response.status_code} - {glmm_response.text}")
+            print(f"Failed to update Elo ratings: {elo_response.status_code} - {elo_response.text}")
     except Exception as e:
-        print(f"Error updating GLMM mastery for user {user_id}: {e}")
+        print(f"Error updating Elo ratings for user {user_id}: {e}")
 
 
 @skill_builder_bp.route('/drill', methods=['POST'])
@@ -97,6 +97,13 @@ def drill():
     user_id = get_user_id_from_token()
     if not user_id:
         user_id = payload.get('user_id', 'anonymous')
+
+    # Validate exclusion_mode if provided
+    exclusion_mode = payload.get('exclusion_mode')
+    if exclusion_mode is not None and exclusion_mode not in VALID_EXCLUSION_MODES:
+        return jsonify({
+            'error': f'Invalid exclusion_mode. Must be one of: {", ".join(VALID_EXCLUSION_MODES)}'
+        }), 400
 
     payload['user_id'] = user_id
     result = create_drill_session(payload)
@@ -161,6 +168,21 @@ def drill_history():
     return jsonify({
         'drills': drills,
         'count': len(drills)
+    })
+
+
+@skill_builder_bp.route('/questions/history', methods=['GET'])
+def question_history():
+    """Get user's question history statistics."""
+    # Extract user_id from Firebase auth token or fallback to query param
+    user_id = get_user_id_from_token()
+    if not user_id:
+        user_id = request.args.get('user_id', 'anonymous')
+
+    stats = get_user_question_stats(user_id)
+    return jsonify({
+        'user_id': user_id,
+        'question_stats': stats
     })
 
 @skill_builder_bp.route('/drills/<drill_id>', methods=['GET'])

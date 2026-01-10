@@ -225,7 +225,8 @@ const DrillBuilder = () => {
         difficulties: drillConfig.difficulties,
         skills: drillConfig.skills,
         time_percentage: drillConfig.timePercentage,
-        drill_type: 'practice'
+        drill_type: 'practice',
+        exclusion_mode: drillConfig.allowRepeatedQuestions ? 'none' : 'all_seen'
       }
 
       const headers = await getAuthHeaders()
@@ -323,6 +324,35 @@ const DrillBuilder = () => {
                   setDrillConfig((prev) => ({ ...prev, skills: values }))
                 }}
               />
+
+              <div className="space-y-2">
+                <label className="text-[11px] font-medium text-text-tertiary uppercase tracking-wider">Question Selection</label>
+                <button
+                  type="button"
+                  onClick={() => setDrillConfig((prev) => ({ ...prev, allowRepeatedQuestions: !prev.allowRepeatedQuestions }))}
+                  className={`w-full rounded-xl px-4 py-3 text-left flex items-center justify-between border transition-all duration-200 ${
+                    drillConfig.allowRepeatedQuestions
+                      ? 'bg-brand-primary/10 border-brand-primary/30'
+                      : 'bg-bg-secondary border-border-default hover:border-border-hover'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-6 rounded-full transition-all duration-200 relative ${
+                      drillConfig.allowRepeatedQuestions ? 'bg-brand-primary' : 'bg-bg-tertiary border border-border-default'
+                    }`}>
+                      <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-200 ${
+                        drillConfig.allowRepeatedQuestions ? 'left-5' : 'left-1'
+                      }`} />
+                    </div>
+                    <span className="text-sm text-text-primary">Allow repeated questions</span>
+                  </div>
+                </button>
+                <p className="text-xs text-text-tertiary px-1">
+                  {drillConfig.allowRepeatedQuestions
+                    ? 'Questions you have already answered may appear again'
+                    : 'Only new questions you haven\'t seen before'}
+                </p>
+              </div>
             </div>
 
             <div className="space-y-6">

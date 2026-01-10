@@ -9,7 +9,8 @@ const createDefaultConfig = () => ({
   questionCount: DRILL_QUESTION_COUNTS[0],
   difficulties: ['Medium'],
   skills: [],
-  timePercentage: 100
+  timePercentage: 100,
+  allowRepeatedQuestions: false  // Default: exclude previously seen questions
 })
 
 export const useDrill = () => useContext(DrillContext)

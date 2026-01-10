@@ -5,7 +5,8 @@ from typing import List, Dict, Optional
 
 # --- Parameters ---
 DEFAULT_RATING = 1500.0
-BASE_K_USER = 40.0
+BASE_K_USER = 64.0          # Increased from 40 for faster learning
+K_FLOOR_USER = 16.0         # Minimum K-factor to prevent stagnation
 BASE_K_QUESTION = 20.0
 ELO_SCALE = 400.0
 DELTA_BOUND = 100.0
@@ -14,31 +15,31 @@ DELTA_BOUND = 100.0
 
 @dataclass
 class Skill:
-    id: int
+    id: str
     name: str
 
 @dataclass
 class UserSkillRating:
-    user_id: int
-    skill_id: int
+    user_id: str
+    skill_id: str
     rating: float = DEFAULT_RATING
     num_updates: int = 0
     last_updated_at: datetime = field(default_factory=datetime.utcnow)
 
 @dataclass
 class QuestionSkill:
-    skill_id: int
+    skill_id: str
     weight: float
 
 @dataclass
 class Question:
-    id: int
+    id: str
     difficulty_elo_base: float
     skills: List[QuestionSkill]
 
 @dataclass
 class QuestionRating:
-    question_id: int
+    question_id: str
     rating_delta: float = 0.0
     num_updates: int = 0
     last_updated_at: datetime = field(default_factory=datetime.utcnow)
@@ -49,9 +50,16 @@ def expected_score(user_rating: float, question_difficulty: float) -> float:
     """Probability of correct response given user rating and question difficulty."""
     return 1.0 / (1.0 + 10.0 ** ((question_difficulty - user_rating) / ELO_SCALE))
 
-def adaptive_k(base_k: float, num_updates: int) -> float:
-    """K-factor that decays with experience."""
-    return base_k / math.sqrt(num_updates + 1)
+def adaptive_k(base_k: float, num_updates: int, k_floor: float = K_FLOOR_USER) -> float:
+    """K-factor that decays with experience, but never below the floor.
+
+    For a learning platform, we use a gentler decay than traditional ELO:
+    - New users start with high K for rapid calibration
+    - K decays but never below the floor (16) to ensure continued responsiveness
+    - This prevents the "stuck" feeling where progress seems invisible
+    """
+    decayed_k = base_k / math.sqrt(num_updates + 1)
+    return max(decayed_k, k_floor)
 
 def clamp(value: float, low: float, high: float) -> float:
     return max(low, min(high, value))
@@ -161,61 +169,57 @@ def update_elo(
 
 if __name__ == "__main__":
     print("--- Deductly Elo System: Worked Example ---\n")
-    
+
     # Setup from context file:
     # - Student has ratings: Flaw = 1500, Assumption = 1450
     # - Question difficulty: D_q = 1520
     # - Question skill weights: Flaw = 0.6, Assumption = 0.4
     # - Student has 10 prior updates on Flaw, 5 on Assumption
     # - Student answers correctly (S = 1)
-    
+
     # Define Skills
-    skill_flaw = Skill(id=1, name="Flaw")
-    skill_assumption = Skill(id=2, name="Assumption")
-    
+    skill_flaw = Skill(id="LR-06", name="Flaw")
+    skill_assumption = Skill(id="LR-03", name="Assumption")
+
     # Define User Ratings
-    user_id = 123
+    user_id = "user-123"
     user_ratings = {
         skill_flaw.id: UserSkillRating(
-            user_id=user_id, 
-            skill_id=skill_flaw.id, 
-            rating=1500.0, 
+            user_id=user_id,
+            skill_id=skill_flaw.id,
+            rating=1500.0,
             num_updates=10
         ),
         skill_assumption.id: UserSkillRating(
-            user_id=user_id, 
-            skill_id=skill_assumption.id, 
-            rating=1450.0, 
+            user_id=user_id,
+            skill_id=skill_assumption.id,
+            rating=1450.0,
             num_updates=5
         )
     }
-    
+
     # Define Question
     question = Question(
-        id=999,
+        id="q-999",
         difficulty_elo_base=1520.0,
         skills=[
             QuestionSkill(skill_id=skill_flaw.id, weight=0.6),
             QuestionSkill(skill_id=skill_assumption.id, weight=0.4)
         ]
     )
-    
+
     # Define Question Rating (starts at 0 delta)
-    # Assuming num_q_updates is not specified in the example setup for the START, 
-    # but the example calculation uses K_q = 20 / sqrt(num_q_updates + 1).
-    # Let's assume 0 previous updates for the question to match a fresh state, 
-    # or we can follow the logic if it implies something else.
-    # The example says "K_q = 20 / sqrt(num_q_updates + 1)". 
-    # Let's assume num_updates=0 for the question initially.
+    # Note: Question updates are disabled in production (Rasch IRT handles difficulty)
+    # This example shows the full algorithm for demonstration purposes
     question_rating = QuestionRating(question_id=question.id, num_updates=0)
-    
+
     print(f"Initial State:")
     print(f"  User Flaw Rating: {user_ratings[skill_flaw.id].rating} (Updates: {user_ratings[skill_flaw.id].num_updates})")
     print(f"  User Assumption Rating: {user_ratings[skill_assumption.id].rating} (Updates: {user_ratings[skill_assumption.id].num_updates})")
     print(f"  Question Base Difficulty: {question.difficulty_elo_base}")
     print(f"  Question Delta: {question_rating.rating_delta}")
     print("-" * 30)
-    
+
     # Perform Update
     print("\nProcessing Correct Answer...\n")
     result = update_elo(
@@ -223,9 +227,9 @@ if __name__ == "__main__":
         question=question,
         question_rating=question_rating,
         is_correct=True,
-        update_question=True
+        update_question=True  # Enabled for demo; disabled in production
     )
-    
+
     # Output Results
     print("-" * 30)
     print("Results:")
@@ -235,13 +239,13 @@ if __name__ == "__main__":
     print(f"  Surprise (Delta):      {result['delta']:.3f} (Expected: ~0.557)")
     print("\nSkill Updates:")
     for update in result['skill_updates']:
-        skill_name = "Flaw" if update['skill_id'] == 1 else "Assumption"
+        skill_name = "Flaw" if update['skill_id'] == "LR-06" else "Assumption"
         print(f"  {skill_name}:")
         print(f"    Old: {update['old']:.2f}")
         print(f"    New: {update['new']:.2f}")
         print(f"    Change: +{update['update_amount']:.2f}")
         print(f"    K-Factor: {update['k_factor']:.2f}")
-        
+
     print("\nQuestion Update:")
     print(f"  New Delta: {result['question_update']['new_delta']:.3f}")
     print(f"  Effective Difficulty: {question.difficulty_elo_base + result['question_update']['new_delta']:.2f}")

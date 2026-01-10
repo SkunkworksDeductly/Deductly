@@ -92,8 +92,24 @@ class ApiService {
   }
 
   async getSkillMastery(userId) {
-    // Hit GLMM endpoint which returns { user_id, model, skills: [...], last_updated }
-    return this.get(`/insights/glmm/${userId}`)
+    // Hit Elo endpoint which returns { user_id, model_name, ratings: [...] }
+    // Each rating has: skill_id, skill_name, rating, num_updates, last_updated
+    const resp = await this.get(`/insights/elo/${userId}`)
+    if (resp && resp.ratings) {
+      // Transform to match expected format with skill_name and mastery info
+      return {
+        user_id: resp.user_id,
+        model: resp.model_name,
+        skills: resp.ratings.map(r => ({
+          skill_id: r.skill_id,
+          skill_name: r.skill_name || r.skill_id, // Use skill_name from backend, fallback to skill_id
+          rating: r.rating,
+          num_updates: r.num_updates,
+          last_updated: r.last_updated
+        }))
+      }
+    }
+    return resp
   }
 }
 

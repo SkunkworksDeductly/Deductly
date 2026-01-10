@@ -15,7 +15,6 @@ from .elo_system import (
     UserSkillRating,
     Question,
     QuestionSkill,
-    QuestionRating,
     update_elo,
     DEFAULT_RATING,
     ELO_SCALE
@@ -24,7 +23,51 @@ from .elo_system import (
 
 
 
-skill_taxonomy = [('LR-01', 'Identify Conclusion'), ('LR-02', 'Identify Premises'), ('LR-03', 'Identify Assumptions'), ('LR-04', 'Strengthen Argument'), ('LR-05', 'Weaken Argument'), ('LR-06', 'Identify Flaw'), ('LR-07', 'Necessary Conditions'), ('LR-08', 'Sufficient Conditions'), ('LR-09', 'Conditional Logic'), ('LR-10', 'Must Be True/Inference'), ('LR-11', 'Resolve Paradox'), ('LR-12', 'Parallel Reasoning'), ('LR-13', 'Parallel Flaw'), ('LR-14', 'Method of Reasoning'), ('LR-15', 'Role of Statement'), ('LR-16', 'Principle - Identify'), ('LR-17', 'Principle - Apply'), ('LR-18', 'Evaluate Argument'), ('RC-01', 'Main Point/Primary Purpose'), ('RC-02', 'Passage Structure/Organization'), ('RC-03', "Author's Attitude/Tone"), ('RC-04', "Author's Purpose"), ('RC-05', 'Specific Detail Retrieval'), ('RC-06', 'Explicit Information'), ('RC-07', 'Inference'), ('RC-08', 'Must Be True'), ('RC-09', 'Strengthen/Support'), ('RC-10', 'Weaken/Challenge'), ('RC-11', 'Analogous Reasoning'), ('RC-12', 'Function of Paragraph/Section'), ('RC-13', 'Comparative Analysis'), ('RC-14', 'Point of Agreement/Disagreement'), ('RC-15', 'Identify Argument'), ('RC-16', 'Evaluate Evidence'), ('RC-17', 'Vocabulary in Context')]
+# Skill Taxonomy v2.1 - Updated from lsat_lr_skill_taxonomy_v2.txt and lsat_rc_skill_taxonomy_v2.txt
+skill_taxonomy = [
+    # LOGICAL REASONING - Domain I: Structural Decomposition
+    ('S_01', 'Main Conclusion ID'),
+    ('S_02', 'Role Identification'),
+    ('S_03', 'Disagreement Isolation'),
+    ('S_04', 'Intermediate Conclusion Recognition'),
+    # LOGICAL REASONING - Domain II: Formal & Deductive Logic
+    ('FL_01', 'Conditional Translation'),
+    ('FL_02', 'Contrapositive Operations'),
+    ('FL_03', 'Chain/Transitive Deduction'),
+    ('FL_04', 'Quantifier Scope'),
+    ('FL_05', 'Quantifier Intersection'),
+    ('FL_06', 'Modal Precision'),
+    ('FL_07', 'Conditional Fallacies'),
+    # LOGICAL REASONING - Domain III: Rhetorical & Inductive Evaluation
+    ('RH_01', 'Causality vs. Correlation'),
+    ('RH_02', 'Alternative Explanations'),
+    ('RH_03', 'Sufficiency Gaps'),
+    ('RH_04', 'Necessity Gaps'),
+    ('RH_05', 'Sampling Validity'),
+    ('RH_06', 'Ad Hominem / Source Attacks'),
+    ('RH_07', 'Evidential Weight Assessment'),
+    ('RH_08', 'Scope Shift Recognition'),
+    # LOGICAL REASONING - Domain IV: Systemic Abstraction
+    ('ABS_01', 'Structural Matching'),
+    ('ABS_02', 'Flaw Matching'),
+    ('ABS_03', 'Principle Application'),
+    # READING COMPREHENSION - Domain I: Macro-Structural
+    ('RC_01', 'Global Thesis ID'),
+    ('RC_02', 'Authorial Purpose'),
+    ('RC_03', 'Passage Architecture'),
+    # READING COMPREHENSION - Domain II: Micro-Syntactic
+    ('RC_04', 'Detail Retrieval'),
+    ('RC_05', 'Logical Function'),
+    # READING COMPREHENSION - Domain III: Inferential Synthesis
+    ('RC_06', 'Viewpoint Tracking'),
+    ('RC_07', 'Inference'),
+    ('RC_08', 'Tone/Attitude'),
+    ('RC_09', 'Analogy/Application'),
+    ('RC_10', 'New Info Impact'),
+    # READING COMPREHENSION - Domain IV: Comparative Dynamics
+    ('RC_11', 'Comparative Relationship'),
+    ('RC_12', 'Cross-Reference / Agreement'),
+]
 
 
 def transform_response_payload(responses: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -409,159 +452,131 @@ def irt_b_to_elo(b_value: float) -> float:
     return 1500.0 + (b_value * 200.0)
 
 
-def fetch_user_elo_ratings(user_id: str) -> Dict[int, UserSkillRating]:
+def fetch_user_elo_ratings(user_id: str) -> Dict[str, UserSkillRating]:
     """
     Fetch all skill ratings for a user.
-    Returns a dict mapping skill_id (int) -> UserSkillRating.
+    Returns a dict mapping skill_id (str, e.g., 'LR-01') -> UserSkillRating.
     """
     ratings = {}
     query = "SELECT skill_id, rating, num_updates FROM user_elo_ratings WHERE user_id = %s"
-    
+
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_id,))
         rows = cursor.fetchall()
-        
+
         for row in rows:
-            # skill_id in DB is string (e.g., 'LR-01'), but Elo system uses int IDs if possible.
-            # However, our system uses string IDs. We need to map or adapt.
-            # The elo_system.py uses int IDs in the dataclasses. 
-            # Let's assume we can hash the string ID to int or just use the string if the dataclass allows.
-            # Checking elo_system.py: `skill_id: int`. 
-            # We should probably map our string IDs to ints or modify elo_system to accept strings.
-            # For now, let's assume we map string IDs to a stable hash or index.
-            # Actually, `skill_taxonomy` is a list of tuples. We can use the index in `skill_taxonomy` + 1 as the ID.
-            
-            skill_str_id = row['skill_id']
-            skill_int_id = _get_skill_int_id(skill_str_id)
-            
-            ratings[skill_int_id] = UserSkillRating(
-                user_id=user_id, # This expects int in dataclass but we pass str? 
-                # elo_system.py: `user_id: int`. We need to be careful.
-                # Let's override/ignore the type hint or fix elo_system.
-                # Python doesn't enforce types at runtime, so passing str is fine if logic doesn't do math on it.
-                skill_id=skill_int_id,
+            skill_id = row['skill_id']
+            ratings[skill_id] = UserSkillRating(
+                user_id=user_id,
+                skill_id=skill_id,
                 rating=row['rating'],
                 num_updates=row['num_updates']
             )
-            # Fix user_id type mismatch in object if needed, but likely fine.
-            ratings[skill_int_id].user_id = user_id 
 
     return ratings
 
 
-def _get_skill_int_id(skill_str_id: str) -> int:
-    """Helper to map string skill ID to int index."""
-    for idx, (tax_id, _) in enumerate(skill_taxonomy):
-        if tax_id == skill_str_id:
-            return idx + 1
-    return 0 # Unknown
+def fetch_skill_names() -> Dict[str, str]:
+    """
+    Fetch all skill names from the database.
+    Returns a dict mapping skill id (e.g., 'skill-j5y9by') -> skill_name (e.g., 'Main Conclusion ID').
+    """
+    query = "SELECT id, skill_name FROM skills"
+    skill_names = {}
 
+    with get_db_cursor() as cursor:
+        cursor.execute(query)
+        rows = cursor.fetchall()
 
-def _get_skill_str_id(skill_int_id: int) -> str:
-    """Helper to map int skill ID back to string."""
-    if 1 <= skill_int_id <= len(skill_taxonomy):
-        return skill_taxonomy[skill_int_id - 1][0]
-    return "UNKNOWN"
+        for row in rows:
+            skill_names[row['id']] = row['skill_name']
+
+    return skill_names
 
 
 def fetch_question_elo_data(question_id: str):
     """
-    Fetch Question object and its QuestionRating.
+    Fetch Question object for Elo calculations.
+    Returns (Question, None) - QuestionRating is not used since question updates are disabled.
     """
-    # 1. Fetch Question Details (Difficulty, Skills)
-    # We need to join with question_skills
     query_q = "SELECT b, difficulty_elo_base FROM questions WHERE id = %s"
     query_s = "SELECT skill_id, skill_type, weight FROM question_skills WHERE question_id = %s"
-    
+
     with get_db_cursor() as cursor:
         cursor.execute(query_q, (question_id,))
         row_q = cursor.fetchone()
-        
+
         if not row_q:
             raise ValueError(f"Question {question_id} not found")
-            
-        # Determine base difficulty
+
+        # Determine base difficulty from Rasch b-value or explicit Elo base
         if row_q['difficulty_elo_base'] is not None:
             base_diff = row_q['difficulty_elo_base']
         elif row_q['b'] is not None:
             base_diff = irt_b_to_elo(row_q['b'])
         else:
-            base_diff = 1500.0 # Default
-            
-        # Fetch skills
+            base_diff = 1500.0  # Default
+
+        # Fetch skills for this question
         cursor.execute(query_s, (question_id,))
         rows_s = cursor.fetchall()
-        
+
         q_skills = []
-        
-        # If no weights stored, apply heuristic
-        # Heuristic: Primary sum = 0.7, Secondary sum = 0.3
-        primaries = [r for r in rows_s if r['skill_type'] == 'primary']
-        secondaries = [r for r in rows_s if r['skill_type'] == 'secondary']
-        
-        # If we have weights in DB, use them. If all weights are 1.0 (default) or NULL, apply heuristic?
-        # Let's assume if 'weight' column exists and is populated, we use it.
-        # But since we are just adding the column, it might be default 1.0.
-        # Let's apply heuristic if weights look like defaults (all 1.0) or if we want to enforce it.
-        # For safety, let's calculate weights if they seem unset.
-        
-        use_heuristic = True
-        if rows_s and any(r['weight'] != 1.0 for r in rows_s):
-            use_heuristic = False
-            
-        if use_heuristic:
-            w_p = 0.7 / len(primaries) if primaries else 0
-            w_s = 0.3 / len(secondaries) if secondaries else 0
-            
-            for r in primaries:
-                q_skills.append(QuestionSkill(skill_id=_get_skill_int_id(r['skill_id']), weight=w_p))
-            for r in secondaries:
-                q_skills.append(QuestionSkill(skill_id=_get_skill_int_id(r['skill_id']), weight=w_s))
-                
-            # If no primaries but secondaries, or vice versa, normalize?
-            # If only primaries, w_p = 1.0 / len.
-            if not secondaries and primaries:
-                for qs in q_skills: qs.weight = 1.0 / len(primaries)
-            elif not primaries and secondaries:
-                for qs in q_skills: qs.weight = 1.0 / len(secondaries)
-                
+
+        # Apply weight heuristic if weights look like defaults (all 1.0)
+        # Heuristic: Primary skills share 70%, Secondary skills share 30%
+        use_heuristic = not rows_s or all(r['weight'] == 1.0 or r['weight'] is None for r in rows_s)
+
+        if use_heuristic and rows_s:
+            primaries = [r for r in rows_s if r['skill_type'] == 'primary']
+            secondaries = [r for r in rows_s if r['skill_type'] == 'secondary']
+
+            if primaries and secondaries:
+                # Both types: 70% to primaries, 30% to secondaries
+                w_p = 0.7 / len(primaries)
+                w_s = 0.3 / len(secondaries)
+                for r in primaries:
+                    q_skills.append(QuestionSkill(skill_id=r['skill_id'], weight=w_p))
+                for r in secondaries:
+                    q_skills.append(QuestionSkill(skill_id=r['skill_id'], weight=w_s))
+            elif primaries:
+                # Only primaries: split evenly
+                w = 1.0 / len(primaries)
+                for r in primaries:
+                    q_skills.append(QuestionSkill(skill_id=r['skill_id'], weight=w))
+            elif secondaries:
+                # Only secondaries: split evenly
+                w = 1.0 / len(secondaries)
+                for r in secondaries:
+                    q_skills.append(QuestionSkill(skill_id=r['skill_id'], weight=w))
         else:
+            # Use explicit weights from database
             for r in rows_s:
                 q_skills.append(QuestionSkill(
-                    skill_id=_get_skill_int_id(r['skill_id']), 
-                    weight=r['weight']
+                    skill_id=r['skill_id'],
+                    weight=r['weight'] if r['weight'] else 1.0
                 ))
 
-        # Create Question object
-        # Question ID in dataclass is int, we have str. 
-        # We'll use a hash or just 0 since we don't strictly need it for the math, 
-        # but let's try to be consistent.
+        # Normalize weights to ensure they sum to 1.0
+        if q_skills:
+            total_weight = sum(qs.weight for qs in q_skills)
+            if total_weight > 0:
+                for qs in q_skills:
+                    qs.weight /= total_weight
+
+        # Create Question object with string ID
         q_obj = Question(
-            id=hash(question_id) % 1000000, # Mock int ID
+            id=question_id,
             difficulty_elo_base=base_diff,
             skills=q_skills
         )
-        
-        # 2. Fetch Question Rating (Delta)
-        query_qr = "SELECT rating_delta, num_updates FROM question_elo_ratings WHERE question_id = %s"
-        cursor.execute(query_qr, (question_id,))
-        row_qr = cursor.fetchone()
-        
-        qr_obj = None
-        if row_qr:
-            qr_obj = QuestionRating(
-                question_id=q_obj.id,
-                rating_delta=row_qr['rating_delta'],
-                num_updates=row_qr['num_updates']
-            )
-            
-        return q_obj, qr_obj
+
+        # QuestionRating is not used (question updates disabled - Rasch IRT handles difficulty)
+        return q_obj, None
 
 
 def persist_user_elo_rating(rating: UserSkillRating) -> None:
     """Upsert user skill rating."""
-    skill_str_id = _get_skill_str_id(rating.skill_id)
-    
     query = """
         INSERT INTO user_elo_ratings (id, user_id, skill_id, rating, num_updates, last_updated)
         VALUES (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
@@ -570,18 +585,14 @@ def persist_user_elo_rating(rating: UserSkillRating) -> None:
             num_updates = excluded.num_updates,
             last_updated = CURRENT_TIMESTAMP
     """
-    # Generate ID if inserting
-    # We can't easily know if it's insert or update without checking, 
-    # but ON CONFLICT handles the data. The 'id' field is required for insert.
-    # We can generate a deterministic ID or random.
     rec_id = generate_id("UER")
-    
+
     with get_db_cursor() as cursor:
         cursor.execute(query, (
-            rec_id, 
-            rating.user_id, 
-            skill_str_id, 
-            rating.rating, 
+            rec_id,
+            rating.user_id,
+            rating.skill_id,  # Now using string ID directly
+            rating.rating,
             rating.num_updates
         ))
 

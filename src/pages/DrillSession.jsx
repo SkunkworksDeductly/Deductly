@@ -1,10 +1,13 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react'
+import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDrill } from '../contexts/DrillContext'
 import { useAuth } from '../contexts/AuthContext'
 import { useHighlights } from '../hooks/useHighlights'
 import HighlightableText from '../components/HighlightableText'
+import DrillTimer from '../components/DrillTimer'
 import { getChoiceText } from '../utils/answerChoiceUtils'
+import { cn } from '../utils'
+import { Button } from '../components/ui/Button' // Assuming standard Button component available or we style manually
 
 const letterFromIndex = (index) => String.fromCharCode(65 + index)
 
@@ -21,6 +24,7 @@ const DrillSession = () => {
   const { currentUser, getAuthHeaders } = useAuth()
   const {
     drillSession,
+    setDrillSession,
     selectedAnswers,
     setSelectedAnswers,
     currentQuestionIndex,
@@ -33,6 +37,7 @@ const DrillSession = () => {
   const startTimeRef = useRef(null)
   const hasRestoredProgressRef = useRef(false)
   const drillIdRef = useRef(null)
+  const autoSubmittedRef = useRef(false)
 
   const questions = Array.isArray(drillSession?.questions) ? drillSession.questions : []
   const fallbackPath = location.pathname.startsWith('/diagnostics') ? '/diagnostics' : '/drill'
@@ -50,6 +55,7 @@ const DrillSession = () => {
     if (isNewDrill) {
       drillIdRef.current = drillSession.drill_id
       hasRestoredProgressRef.current = false
+      autoSubmittedRef.current = false
     }
 
     // Set start time when drill session loads
@@ -80,6 +86,40 @@ const DrillSession = () => {
     }
   }, [drillSession, navigate, setCurrentQuestionIndex, setSelectedAnswers, fallbackPath])
 
+  // Start the drill on the backend to record started_at timestamp
+  useEffect(() => {
+    if (!drillSession?.drill_id) return
+
+    // Only start if drill hasn't been started yet
+    if (drillSession.status === 'generated' || !drillSession.started_at) {
+      const startDrill = async () => {
+        try {
+          const headers = await getAuthHeaders()
+          const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'
+
+          const response = await fetch(`${apiBaseUrl}/skill-builder/drill/${drillSession.drill_id}/start`, {
+            method: 'POST',
+            headers
+          })
+
+          if (response.ok) {
+            const result = await response.json()
+            // Update drill session with started_at timestamp
+            setDrillSession(prev => ({
+              ...prev,
+              started_at: result.started_at,
+              status: 'in_progress'
+            }))
+          }
+        } catch (error) {
+          console.error('Error starting drill:', error)
+        }
+      }
+
+      startDrill()
+    }
+  }, [drillSession?.drill_id, drillSession?.status, drillSession?.started_at, getAuthHeaders, setDrillSession])
+
   const currentQuestionData = useMemo(() => {
     if (questions.length === 0) return null
     return questions[currentQuestionIndex] || null
@@ -95,15 +135,8 @@ const DrillSession = () => {
 
   if (!drillSession) {
     return (
-      <div className="py-10">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="rounded-2xl border border-border-default bg-surface-primary p-6 text-text-secondary shadow-md">
-            <p className="text-lg font-semibold text-text-primary">No drill found</p>
-            <p className="mt-2 text-sm text-text-secondary">
-              We couldn&rsquo;t find an active drill session. Redirecting you back to the practice builder.
-            </p>
-          </div>
-        </div>
+      <div className="flex h-screen items-center justify-center bg-background-light dark:bg-background-dark">
+        <div className="animate-pulse text-text-secondary">Redirecting...</div>
       </div>
     )
   }
@@ -196,32 +229,16 @@ const DrillSession = () => {
         })
       })
 
-      if (!response.ok) {
-        console.error('Failed to submit drill to backend')
-      } else {
-        const result = await response.json()
-        console.log('Drill submitted successfully:', result)
-
+      if (response.ok) {
         // If this drill is from a study plan task, mark task as completed
         if (task_id) {
-          try {
-            const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
-            const taskResponse = await fetch(`${apiBaseUrl}/personalization/study-plan/task/${task_id}/complete`, {
-              method: 'POST',
-              headers,
-              body: JSON.stringify({
-                drill_id: drillSession.drill_id || drillSession.session_id
-              })
-            })
-
-            if (taskResponse.ok) {
-              console.log('Task marked as completed')
-            } else {
-              console.error('Failed to mark task as completed')
-            }
-          } catch (taskError) {
-            console.error('Error marking task as completed:', taskError)
-          }
+          // Task completion logic handled silently
+          const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
+          fetch(`${apiBaseUrl}/personalization/study-plan/task/${task_id}/complete`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ drill_id: drillSession.drill_id || drillSession.session_id })
+          }).catch(console.error)
         }
       }
     } catch (error) {
@@ -287,8 +304,6 @@ const DrillSession = () => {
             user_highlights: drillSession.user_highlights || {}
           })
         })
-
-        console.log('Progress saved on exit')
       } catch (error) {
         console.error('Error saving progress on exit:', error)
       }
@@ -299,132 +314,184 @@ const DrillSession = () => {
     navigate(exitPath)
   }
 
-  return (
-    <div className="py-10">
-      <div className="max-w-5xl mx-auto px-4 space-y-6">
-        <div className="rounded-2xl border border-border-default bg-surface-primary p-8 shadow-md">
-          <header className="space-y-4 mb-6">
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-wide text-text-secondary">
-                  Session | {drillSession.created_at ? new Date(drillSession.created_at).toLocaleString() : 'just now'}
-                </p>
-                <h2 className="text-2xl font-semibold text-text-primary mt-1">Adaptive LSAT Drill</h2>
-              </div>
-              <div className="text-sm text-text-secondary bg-accent-info-bg rounded-lg border border-border-default px-4 py-2 whitespace-nowrap">
-                Question {questions.length > 0 ? currentQuestionIndex + 1 : 0} of {questions.length}
-              </div>
-            </div>
-          </header>
+  // Handler for when timer expires - auto-submit the drill
+  const handleTimeExpired = () => {
+    // Prevent multiple auto-submits
+    if (autoSubmittedRef.current) return
+    autoSubmittedRef.current = true
 
+    handleSubmit()
+  }
+
+  return (
+    <div className="flex-1 flex flex-col h-screen bg-background-light dark:bg-background-dark overflow-hidden">
+      {/* Session Header */}
+      <header className="h-20 border-b border-sand-dark/30 dark:border-white/5 flex items-center justify-between px-6 lg:px-10 shrink-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-10">
+        <div className="flex items-center gap-6">
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-terracotta">Drill Session</span>
+            <span className="font-slab font-semibold text-text-main dark:text-white capitalize">
+              {currentQuestionData?.question_type || 'Practice'}
+            </span>
+          </div>
+          <div className="h-8 w-px bg-sand-dark/50 hidden md:block"></div>
+          <div className="flex items-center gap-2 hidden md:flex">
+            <span className="text-xs font-bold text-text-main/40 dark:text-white/40 uppercase tracking-widest">Question</span>
+            <span className="text-lg font-slab font-bold text-text-main dark:text-white">
+              {questions.length > 0 ? currentQuestionIndex + 1 : 0} of {questions.length}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 lg:gap-8">
+          <div className="flex items-center gap-3 bg-white dark:bg-white/5 px-4 py-2 rounded-full border border-sand-dark/30 dark:border-white/10 shadow-soft">
+            <span className="material-symbols-outlined text-sage text-lg">timer</span>
+            {/* Custom Timer Styling */}
+            <div className="text-sm font-slab font-bold tracking-widest text-text-main dark:text-white">
+              <DrillTimer
+                timeLimitSeconds={drillSession.time_limit_seconds}
+                startedAt={drillSession.started_at}
+                onTimeExpired={handleTimeExpired}
+                className="text-inherit"
+              />
+            </div>
+          </div>
+
+          <button
+            onClick={handleExit}
+            className="w-10 h-10 flex items-center justify-center rounded-full border border-sand-dark/30 hover:bg-terracotta-soft/50 hover:border-terracotta transition-all text-text-main/40 hover:text-terracotta"
+            title="Exit Drill"
+          >
+            <span className="material-symbols-outlined text-xl">close</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Main Scrollable Content */}
+      <div className="flex-1 overflow-y-auto no-scrollbar p-6 lg:p-16">
+        <div className="max-w-5xl mx-auto flex flex-col gap-12">
           {currentQuestionData ? (
             <>
-              <div className="space-y-4 mb-6">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-surface-active text-brand-primary">
-                    {currentQuestionData.question_type}
-                  </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-accent-warning-bg text-button-primary">
-                    Difficulty: {currentQuestionData.difficulty_level}
-                  </span>
-                </div>
-                <p className="text-text-primary text-lg leading-relaxed">
-                  <HighlightableText
-                    text={currentQuestionData.question_text}
-                    highlights={currentQuestionHighlights}
-                    onHighlightChange={handleHighlightChange}
-                  />
-                </p>
-                {currentQuestionData.passage_text && (
-                  <div className="bg-accent-info-bg rounded-xl border border-border-default p-4 text-sm text-text-secondary leading-relaxed">
+              {/* Stimulus Card - Only if passage exists */}
+              {currentQuestionData.passage_text && (
+                <section className="bg-white dark:bg-white/5 rounded-[2.5rem] p-8 md:p-12 shadow-soft border border-sand-dark/20 dark:border-white/5 relative overflow-hidden group">
+                  <div className="absolute -right-24 -top-24 w-64 h-64 bg-sage-soft/30 dark:bg-sage/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000"></div>
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-6">
+                      <span className="w-1.5 h-1.5 rounded-full bg-sage"></span>
+                      <span className="text-xs font-bold uppercase tracking-[0.2em] text-sage">Stimulus</span>
+                    </div>
+                    <div className="text-xl md:text-2xl font-light text-text-main dark:text-sand leading-relaxed font-serif">
+                      <HighlightableText
+                        text={currentQuestionData.passage_text}
+                        highlights={currentQuestionHighlights}
+                        onHighlightChange={handleHighlightChange}
+                      />
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* Question & Answers */}
+              <section className="space-y-10">
+                <div className="max-w-4xl">
+                  <h3 className="text-2xl md:text-3xl font-slab font-semibold text-text-main dark:text-white leading-tight">
                     <HighlightableText
-                      text={currentQuestionData.passage_text}
+                      text={currentQuestionData.question_text}
                       highlights={currentQuestionHighlights}
                       onHighlightChange={handleHighlightChange}
                     />
-                  </div>
-                )}
-              </div>
-
-              <div className="grid gap-3 mb-8">
-                {normalizedOptions.map((option, optionIndex) => {
-                  const isSelected = selectedAnswers[currentQuestionIndex] === optionIndex
-                  const optionLetter = letterFromIndex(optionIndex)
-                  const optionText = getChoiceText(option)
-
-                  return (
-                    <button
-                      key={`choice-${optionIndex}-${option?.letter || ''}`}
-                      type="button"
-                      className={`text-left px-4 py-3 rounded-lg transition border ${
-                        isSelected
-                          ? 'bg-surface-active text-text-primary border-border-active shadow-sm font-medium'
-                          : 'bg-surface-primary text-text-primary border-border-default hover:bg-surface-hover'
-                      }`}
-                      onClick={() => handleAnswerSelect(optionIndex)}
-                    >
-                      <span className="font-medium text-text-primary">{optionLetter}.</span>{' '}
-                      <span className="text-sm">{optionText}</span>
-                    </button>
-                  )
-                })}
-                {normalizedOptions.length === 0 && (
-                  <div className="px-4 py-3 rounded-lg border border-border-default bg-status-error-bg text-sm text-status-error-text">
-                    We could not load answer choices for this question. Try generating a new drill.
-                  </div>
-                )}
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                  <button
-                    type="button"
-                    className="px-4 py-2 bg-button-secondary border border-border-default hover:bg-surface-hover rounded-lg text-text-secondary transition"
-                    onClick={handleExit}
-                  >
-                    Exit Drill
-                  </button>
-                  <div className="flex items-center gap-3 justify-end">
-                    {currentQuestionIndex > 0 && (
-                      <button
-                        type="button"
-                        className="px-4 py-2 bg-button-secondary border border-border-default hover:bg-surface-hover rounded-lg text-text-primary transition"
-                        onClick={handlePrevious}
-                      >
-                        Previous
-                      </button>
-                    )}
-                    {currentQuestionIndex < questions.length - 1 && (
-                      <button
-                        type="button"
-                        className="px-4 py-2 bg-button-primary hover:bg-button-primary-hover rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
-                        onClick={handleNext}
-                        disabled={normalizedOptions.length === 0}
-                      >
-                        Next
-                      </button>
-                    )}
-                  </div>
-                  {currentQuestionIndex === questions.length - 1 && questions.length > 0 && (
-                    <button
-                      type="button"
-                      className="px-4 py-2 bg-button-success hover:bg-button-success-hover rounded-lg text-white transition disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
-                      onClick={handleSubmit}
-                      disabled={normalizedOptions.length === 0}
-                    >
-                      Submit Drill
-                    </button>
-                  )}
+                  </h3>
                 </div>
-              </div>
+
+                <div className="grid grid-cols-1 gap-4 max-w-4xl">
+                  {normalizedOptions.map((option, idx) => {
+                    const isSelected = selectedAnswers[currentQuestionIndex] === idx
+                    const letter = letterFromIndex(idx)
+                    const text = getChoiceText(option)
+
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => handleAnswerSelect(idx)}
+                        className={cn(
+                          "group flex items-start gap-6 p-6 rounded-2xl border transition-all text-left",
+                          isSelected
+                            ? "border-terracotta bg-terracotta-soft/30 shadow-soft"
+                            : "border-sand-dark/40 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-terracotta hover:bg-white dark:hover:bg-white/10"
+                        )}
+                      >
+                        <span className={cn(
+                          "size-10 shrink-0 rounded-full border flex items-center justify-center font-slab font-bold text-lg transition-colors",
+                          isSelected
+                            ? "bg-terracotta border-terracotta text-white"
+                            : "border-sand-dark/60 dark:border-white/20 text-text-main/50 dark:text-white/50 group-hover:bg-terracotta group-hover:text-white group-hover:border-terracotta"
+                        )}>
+                          {letter}
+                        </span>
+                        <span className={cn(
+                          "text-lg pt-1.5 leading-relaxed",
+                          isSelected ? "text-text-main dark:text-white font-medium" : "text-text-main/80 dark:text-sand/80"
+                        )}>
+                          {text}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </section>
             </>
           ) : (
-            <div className="text-text-secondary text-center py-10">
-              We couldn't load this question. Please return to the builder and generate a new drill.
+            <div className="text-center py-20 text-text-secondary opacity-50">
+              Loading question... if stuck, please exit and try again.
             </div>
           )}
         </div>
       </div>
+
+      {/* Footer Controls */}
+      <footer className="mt-auto px-6 lg:px-10 py-6 border-t border-sand-dark/30 dark:border-white/5 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <button
+            onClick={handlePrevious}
+            disabled={currentQuestionIndex === 0}
+            className="flex items-center gap-3 text-text-main/40 hover:text-text-main disabled:opacity-20 disabled:hover:text-text-main/40 transition-colors font-bold uppercase tracking-widest text-xs"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+            Previous
+          </button>
+
+          {/* Question Dots - Hidden on small screens, shown on large (limited count) */}
+          <div className="hidden lg:flex gap-2">
+            {questions.map((_, idx) => (
+              <div
+                key={idx}
+                className={cn(
+                  "w-2 h-2 rounded-full transition-colors",
+                  idx === currentQuestionIndex ? "w-8 bg-terracotta" : selectedAnswers[idx] !== undefined ? "bg-sage" : "bg-sand-dark/50"
+                )}
+              />
+            ))}
+          </div>
+
+          {currentQuestionIndex === questions.length - 1 ? (
+            <button
+              onClick={handleSubmit}
+              disabled={questions.length === 0}
+              className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all flex items-center gap-3"
+            >
+              Submit Drill <span className="material-symbols-outlined text-sm">check_circle</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleNext}
+              className="bg-text-main dark:bg-white text-white dark:text-background-dark px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all flex items-center gap-3 group"
+            >
+              Next Question <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            </button>
+          )}
+        </div>
+      </footer>
     </div>
   )
 }

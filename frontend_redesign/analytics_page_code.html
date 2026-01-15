@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Deductly: Boutique Modernist Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5de619",
+                        "terracotta": "#E07A5F",
+                        "terracotta-soft": "#F8EBE8",
+                        "sand": "#F0EFE9",
+                        "sand-dark": "#DDDBCF",
+                        "sage": "#81B29A",
+                        "sage-light": "#CFE0D9",
+                        "sage-soft": "#EBF5F1",
+                        "text-main": "#252822",
+                        "background-light": "#FDFCF9",
+                        "background-dark": "#23261F",
+                    },
+                    fontFamily: {
+                        "sans": ["Schibsted Grotesk", "sans-serif"],
+                        "slab": ["Zilla Slab", "serif"],
+                        "display": ["Schibsted Grotesk", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "3xl": "3rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'soft-xl': '0 20px 40px -4px rgba(0, 0, 0, 0.08)',
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Schibsted Grotesk', sans-serif;
+        }
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Schibsted Grotesk', sans-serif;
+        }
+        .font-slab {
+            font-family: 'Zilla Slab', serif;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-sand overflow-hidden h-screen flex">
+<aside class="w-64 h-full bg-white dark:bg-white/5 border-r border-sand-dark/50 dark:border-white/10 flex flex-col justify-between py-10 transition-all duration-300 z-20">
+<div class="flex flex-col gap-12 px-6">
+<div class="flex items-center gap-4">
+<div class="size-10 shrink-0 text-terracotta bg-terracotta-soft dark:bg-white/10 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">spa</span>
+</div>
+<h2 class="text-sm font-black tracking-[0.2em] uppercase text-text-main dark:text-white opacity-80">
+                Deductly
+            </h2>
+</div>
+<nav class="flex flex-col gap-2 w-full">
+<a class="group flex items-center gap-4 py-3 px-4 w-full opacity-60 hover:opacity-100 transition-opacity text-text-main dark:text-white" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-sage transition-colors">grid_view</span>
+<span class="text-[11px] font-bold uppercase tracking-widest">Dashboard</span>
+</a>
+<a class="group flex items-center gap-4 py-3 px-4 w-full opacity-60 hover:opacity-100 transition-opacity text-text-main dark:text-white" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-sage transition-colors">auto_stories</span>
+<span class="text-[11px] font-bold uppercase tracking-widest">Lessons</span>
+</a>
+<a class="group flex items-center gap-4 py-3 px-4 w-full opacity-60 hover:opacity-100 transition-opacity text-text-main dark:text-white" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-sage transition-colors">quiz</span>
+<span class="text-[11px] font-bold uppercase tracking-widest">Practice</span>
+</a>
+<a class="group relative flex items-center gap-4 py-3 px-4 w-full bg-terracotta-soft/30 dark:bg-white/5 rounded-xl text-terracotta" href="#">
+<div class="absolute left-0 w-1 h-6 bg-terracotta rounded-r-full"></div>
+<span class="material-symbols-outlined text-2xl">analytics</span>
+<span class="text-[11px] font-bold uppercase tracking-widest">Analytics</span>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-6 px-6">
+<a class="flex items-center gap-4 py-3 px-4 text-text-main/50 hover:text-terracotta transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[11px] font-bold uppercase tracking-widest">Settings</span>
+</a>
+<div class="flex items-center gap-4 px-4">
+<div class="w-10 h-10 shrink-0 rounded-full overflow-hidden border border-sand-dark dark:border-white/20">
+<img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1iIG9-ts1oheWG8Trs9mJ9cuvNRrbTDXBzt4O7PxqzZPvIfL7zqJpsC_9ISVdcgb5vgg8d_efjzUoqSOaS6uUkCHUoqIj7ThnTUCHTlPojkTdDlmUjqRgzjtUtWf-h_F1JYVGt5JA31Dlf7kUIHyRX4Ajrv5GecDVnxN0n1G6kYGBtFkkWJeR9jpu_hOAVgjBG1kGtUuietZiJ9_cWYxMlchK-06dvF7g1utTFKj6tsO2iOwc2V7CiduDe2qbA4IVD9-y1kgmgYk"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="text-xs font-bold text-text-main dark:text-white truncate">Alex Doe</span>
+<span class="text-[10px] text-text-main/40 dark:text-white/40 uppercase tracking-tight">Pro Plan</span>
+</div>
+</div>
+</div>
+</aside>
+<main class="flex-1 overflow-y-auto no-scrollbar relative bg-background-light dark:bg-background-dark">
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-sage-soft/50 to-transparent dark:from-sage/5 rounded-bl-full -z-0 pointer-events-none"></div>
+<div class="max-w-7xl mx-auto p-8 md:p-12 lg:p-16 flex flex-col gap-12 relative z-10">
+<header class="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-sand-dark/30 dark:border-white/5 pb-8">
+<div class="space-y-2">
+<p class="text-sm font-bold uppercase tracking-widest text-terracotta font-sans">Performance Overview</p>
+<h1 class="text-4xl md:text-6xl font-black text-text-main dark:text-white leading-[0.9]">
+                    Detailed<br/>
+<span class="text-text-main/40 dark:text-white/40 font-medium tracking-tight">Analytics.</span>
+</h1>
+</div>
+<div class="flex items-center gap-4 mb-2">
+<div class="bg-white dark:bg-white/5 px-4 py-2 rounded-lg border border-sand-dark/30 dark:border-white/10 flex items-center gap-3">
+<span class="text-xs font-bold uppercase tracking-widest opacity-50">Timeframe:</span>
+<select class="bg-transparent border-none text-sm font-bold focus:ring-0 p-0 pr-6">
+<option>Last 30 Days</option>
+<option>All Time</option>
+</select>
+</div>
+</div>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+<div class="lg:col-span-8 bg-white dark:bg-white/5 rounded-[2rem] p-10 border border-sand-dark/20 dark:border-white/5 shadow-soft">
+<div class="flex justify-between items-center mb-12">
+<h3 class="text-xl font-bold">Score Progress</h3>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-sage"></span>
+<span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Actual</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-terracotta"></span>
+<span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Trend</span>
+</div>
+</div>
+</div>
+<div class="relative h-64 flex items-end justify-between gap-1 px-4">
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+<div class="w-full border-t border-sand-dark/30 dark:border-white/5"></div>
+<div class="w-full border-t border-sand-dark/30 dark:border-white/5"></div>
+<div class="w-full border-t border-sand-dark/30 dark:border-white/5"></div>
+<div class="w-full border-t border-sand-dark/30 dark:border-white/5"></div>
+</div>
+<svg class="absolute bottom-0 left-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+<path d="M0,80 Q25,75 50,40 T100,20" fill="none" stroke="#81B29A" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+<path d="M0,85 L20,70 L40,75 L60,45 L80,30 L100,10" fill="none" stroke="#E07A5F" stroke-dasharray="4 4" stroke-width="1.5" vector-effect="non-scaling-stroke"></path>
+</svg>
+<div class="flex justify-between w-full absolute -bottom-8 px-4 text-[10px] font-bold uppercase tracking-tighter opacity-40">
+<span>Week 1</span>
+<span>Week 2</span>
+<span>Week 3</span>
+<span>Week 4</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4 bg-terracotta text-white rounded-[2rem] p-10 flex flex-col justify-between shadow-xl shadow-terracotta/20 relative overflow-hidden group">
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+<div class="relative z-10">
+<p class="text-xs font-bold uppercase tracking-[0.2em] opacity-80 mb-2">Score Prediction</p>
+<h4 class="text-xs opacity-60 font-medium">Estimated for Oct 2024 Exam</h4>
+</div>
+<div class="relative z-10 py-8">
+<span class="text-8xl md:text-9xl font-slab font-bold leading-none">172</span>
+<div class="flex items-center gap-2 mt-4">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span class="text-sm font-bold">+4 from last week</span>
+</div>
+</div>
+<button class="w-full py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl font-bold text-xs uppercase tracking-widest transition-all border border-white/20">
+                    See Confidence Map
+                </button>
+</div>
+<div class="lg:col-span-6 bg-white dark:bg-white/5 rounded-[2rem] p-10 border border-sand-dark/20 dark:border-white/5 shadow-soft">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h3 class="text-xl font-bold">Section Mastery</h3>
+<p class="text-xs opacity-50 font-medium mt-1 uppercase tracking-wider">Skill balance across sections</p>
+</div>
+<span class="material-symbols-outlined text-sage">radar</span>
+</div>
+<div class="flex justify-center items-center py-4">
+<div class="relative w-64 h-64 border border-sand-dark/30 dark:border-white/10 rounded-full flex items-center justify-center">
+<div class="absolute inset-0 border border-sand-dark/20 dark:border-white/5 scale-75 rounded-full"></div>
+<div class="absolute inset-0 border border-sand-dark/20 dark:border-white/5 scale-50 rounded-full"></div>
+<svg class="w-48 h-48 drop-shadow-lg" viewBox="0 0 100 100">
+<polygon fill="rgba(129, 178, 154, 0.3)" points="50,10 85,35 75,85 25,85 15,35" stroke="#81B29A" stroke-width="1"></polygon>
+<circle cx="50" cy="10" fill="#81B29A" r="2"></circle>
+<circle cx="85" cy="35" fill="#81B29A" r="2"></circle>
+<circle cx="75" cy="85" fill="#81B29A" r="2"></circle>
+<circle cx="25" cy="85" fill="#81B29A" r="2"></circle>
+<circle cx="15" cy="35" fill="#81B29A" r="2"></circle>
+</svg>
+<span class="absolute -top-6 text-[10px] font-bold uppercase tracking-widest text-text-main/60">LR 1</span>
+<span class="absolute top-1/4 -right-10 text-[10px] font-bold uppercase tracking-widest text-text-main/60">Reading Comp</span>
+<span class="absolute -bottom-6 text-[10px] font-bold uppercase tracking-widest text-text-main/60">Logic Games</span>
+<span class="absolute top-1/4 -left-10 text-[10px] font-bold uppercase tracking-widest text-text-main/60">LR 2</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-6 bg-white dark:bg-white/5 rounded-[2rem] p-10 border border-sand-dark/20 dark:border-white/5 shadow-soft">
+<h3 class="text-xl font-bold mb-8">Performance Metrics</h3>
+<div class="space-y-6">
+<div class="flex items-center justify-between py-4 border-b border-sand dark:border-white/5">
+<div class="flex items-center gap-4">
+<div class="p-2 rounded-lg bg-sage-soft text-sage">
+<span class="material-symbols-outlined">timer</span>
+</div>
+<span class="text-sm font-bold">Average Response Time</span>
+</div>
+<span class="font-slab font-bold text-lg">1:28 <span class="text-xs font-sans text-sage ml-1">-12s</span></span>
+</div>
+<div class="flex items-center justify-between py-4 border-b border-sand dark:border-white/5">
+<div class="flex items-center gap-4">
+<div class="p-2 rounded-lg bg-terracotta-soft text-terracotta">
+<span class="material-symbols-outlined">error</span>
+</div>
+<span class="text-sm font-bold">Accuracy (Overall)</span>
+</div>
+<span class="font-slab font-bold text-lg">84% <span class="text-xs font-sans text-terracotta ml-1">+2%</span></span>
+</div>
+<div class="flex items-center justify-between py-4">
+<div class="flex items-center gap-4">
+<div class="p-2 rounded-lg bg-sage-soft text-sage">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<span class="text-sm font-bold">Question Persistence</span>
+</div>
+<span class="font-slab font-bold text-lg">High <span class="text-xs font-sans text-sage ml-1">Steady</span></span>
+</div>
+</div>
+<div class="mt-8 bg-sand-dark/20 p-6 rounded-2xl flex items-center gap-4">
+<span class="material-symbols-outlined text-terracotta">lightbulb</span>
+<p class="text-xs font-medium leading-relaxed">Focus on "Parallel Flaw" questions this week to boost your Logical Reasoning score by a projected 2 points.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+</body></html>

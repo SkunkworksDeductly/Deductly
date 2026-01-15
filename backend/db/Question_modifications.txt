@@ -1,0 +1,121 @@
+{
+  "stimulus": "Archaeological interpretations necessarily rely on analogies drawn from contemporary societies, yet such analogies presuppose that human behavioral patterns remain fundamentally constant across millennia. This presupposition is itself unprovable through archaeological evidence alone, since any attempt to verify it would require the very analogical reasoning it seeks to justify. Nevertheless, archaeological research continues to yield productive insights. This suggests that the validity of analogical reasoning in archaeology should be evaluated not by its theoretical foundations but by the coherence of the interpretive framework it produces.",
+  "stem": "The claim that the presupposition of constant behavioral patterns cannot be proven through archaeological evidence alone plays which one of the following roles in the argument?",
+  "options": [
+    {
+      "text": "It provides the primary justification for the argument's main conclusion about how analogical reasoning should be evaluated.",
+      "is_correct": false,
+      "explanation": "Trap type: Overstates premise role. This choice correctly identifies the statement as a premise but overstates its role. The statement is not the 'primary justification' but rather establishes a problem that is then contrasted with the observation about productive insights.",
+      "tutor_explanation": "This choice is tempting because the statement does support the overall argument. However, look at the structure more carefully: the argument's main justification comes from the contrast between this theoretical problem and the practical success of archaeology. The statement about unprovability sets up the problem, but it's the observation about 'productive insights' that actually motivates the conclusion.",
+      "skill_tested": null,
+      "trap_type": "Overstates premise role",
+      "skill_gap": "Failure to distinguish degree of support among multiple premises"
+    },
+    {
+      "text": "It states a theoretical limitation that the argument uses to motivate an alternative evaluative criterion.",
+      "is_correct": true,
+      "explanation": "Correct. The statement identifies a circularity problem (theoretical limitation) in verifying analogical reasoning. This problem, contrasted with archaeology's practical success, supports the conclusion that we should evaluate analogical reasoning by interpretive coherence rather than theoretical foundations—an alternative evaluative criterion.",
+      "tutor_explanation": "This is correct because the statement serves a specific structural purpose: it establishes that we cannot prove the theoretical foundation of archaeological analogy. This limitation is then contrasted with the success of archaeological research, leading to the conclusion that we should evaluate analogical reasoning differently—by coherence of results rather than by theoretical justification. The statement sets up the problem that motivates the solution.",
+      "skill_tested": "Role Identification: recognizing that a statement establishes a problem that motivates the argument's proposed solution",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "It expresses the main point that the argument as a whole is designed to establish.",
+      "is_correct": false,
+      "explanation": "Trap type: Misidentifies premise as conclusion. The statement about unprovability is a premise, not any kind of conclusion. The main conclusion is about how analogical reasoning should be evaluated.",
+      "tutor_explanation": "The statement about unprovability describes a problem, but notice that the argument continues after this point. The phrase 'This suggests that...' near the end signals where the main conclusion appears. The unprovability claim is used to build toward something else—it's part of the argument's foundation, not its destination.",
+      "skill_tested": null,
+      "trap_type": "Misidentifies premise as conclusion",
+      "skill_gap": "Inability to identify structural position of conclusion"
+    },
+    {
+      "text": "It describes the methodology that archaeological research employs when drawing analogies from contemporary societies.",
+      "is_correct": false,
+      "explanation": "Trap type: Describes content rather than function. This choice focuses on what the statement is about (archaeological methodology) rather than its logical role in the argument's structure.",
+      "tutor_explanation": "This choice describes the topic of the statement rather than what the statement does in the argument. In 'Role of a Statement' questions, you need to identify how the statement functions logically—does it support something, conclude something, introduce a problem? Simply restating what the statement discusses doesn't capture its argumentative purpose.",
+      "skill_tested": null,
+      "trap_type": "Describes content rather than function",
+      "skill_gap": "Confusing subject matter with logical function"
+    },
+    {
+      "text": "It provides evidence that contradicts the argument's conclusion about evaluating analogical reasoning.",
+      "is_correct": false,
+      "explanation": "Trap type: Assigns impossible role. The statement supports the argument's direction rather than opposing it. The circularity problem motivates seeking an alternative criterion, which is exactly what the conclusion proposes.",
+      "tutor_explanation": "Consider the logical flow: the statement points out a problem with theoretical justification, and the conclusion offers an alternative approach (evaluate by coherence instead). These work together, not against each other. The statement helps build the case for the conclusion rather than undermining it. When a statement contributes to an argument's direction, it cannot simultaneously serve as evidence against that argument.",
+      "skill_tested": null,
+      "trap_type": "Assigns impossible role",
+      "skill_gap": "Misreading argumentative direction and support relationships"
+    }
+  ],
+  "metadata": {
+    "question_type": "Role of a Statement",
+    "family": "Structure Family",
+    "primary_skill_id": "S_02",
+    "primary_skill_name": "Role Identification",
+    "secondary_skills": [
+      "S_01"
+    ],
+    "difficulty": "MEDIUM",
+    "topic": "Archaeology",
+    "word_count": 94,
+    "validation_method": "Correct answer accurately identifies statement function as a premise that establishes a theoretical limitation motivating the argument's proposed alternative criterion"
+  }
+}
+
+
+{
+  "stimulus": "In a certain jurisdiction, any contract clause that waives statutory remedies is unenforceable. Any unenforceable clause cannot be used to support a damages award. Every clause that cannot support a damages award is excluded from judicial interpretation. However, some clauses that are excluded from judicial interpretation are still included in settlement negotiations.",
+  "stem": "On the assumption that the statements above are accurate, which one of the following is logically required?",
+  "options": [
+    {
+      "text": "Any contract clause that waives statutory remedies is excluded from judicial interpretation.",
+      "is_correct": true,
+      "explanation": "From the stimulus: waives statutory remedies -> unenforceable; unenforceable -> cannot support a damages award; cannot support a damages award -> excluded from judicial interpretation. By FL_03 (Chain/Transitive Deduction), linking these conditionals yields waives statutory remedies -> excluded from judicial interpretation, which must be true if the premises are true.",
+      "skill_tested": "FL_03"
+    },
+    {
+      "text": "Some contract clauses that waive statutory remedies are included in settlement negotiations.",
+      "is_correct": false,
+      "trap_type": "Possible but not certain (could be true, not must be true)",
+      "explanation": "The stimulus says only that some clauses excluded from judicial interpretation are included in settlement negotiations; it does not state that any of those excluded clauses waive statutory remedies. Since waiving statutory remedies is sufficient for exclusion but not necessary for it, this could be true but is not guaranteed.",
+      "skill_gap": "Assuming a subset of a group with a property (some excluded are negotiated) must include a particular subclass (those that waive remedies), reflecting weak control of conditional/quantifier interaction."
+    },
+    {
+      "text": "Any contract clause that is excluded from judicial interpretation waives statutory remedies.",
+      "is_correct": false,
+      "trap_type": "Reverses conditional direction",
+      "explanation": "The stimulus supports waives statutory remedies -> excluded from judicial interpretation, not the reverse. Exclusion can arise from other reasons besides waiving statutory remedies, so the reversed conditional is not entailed.",
+      "skill_gap": "Mistaking sufficient conditions for necessary conditions (a core conditional-reasoning error)."
+    },
+    {
+      "text": "All contract clauses that are excluded from judicial interpretation are included in settlement negotiations.",
+      "is_correct": false,
+      "trap_type": "Exceeds quantifier scope (Some → All)",
+      "explanation": "The stimulus states that some excluded clauses are included in settlement negotiations; it does not justify extending that to all excluded clauses. The move from an existential claim to a universal claim is invalid.",
+      "skill_gap": "Overgeneralizing from 'some' to 'all' and failing to track quantifier scope."
+    },
+    {
+      "text": "Because such clauses are unenforceable, a contract clause that waives statutory remedies is likely to be included in settlement negotiations.",
+      "is_correct": false,
+      "trap_type": "Introduces outside information",
+      "explanation": "Nothing in the stimulus connects unenforceability (or exclusion) to being likely included in settlement negotiations, nor does it introduce probability language. This option adds an unsupported causal/practical assumption about negotiation behavior.",
+      "skill_gap": "Importing real-world assumptions and probabilistic reasoning instead of deducing only what follows from the stated logical relationships."
+    }
+  ],
+  "metadata": {
+    "question_type": "Must Be True",
+    "family": "Prove Family",
+    "primary_skill_id": "FL_03",
+    "primary_skill_name": "Chain/Transitive Deduction",
+    "secondary_skills": [
+      "FL_01",
+      "FL_02",
+      "FL_04"
+    ],
+    "difficulty": "MEDIUM",
+    "topic": "Law",
+    "word_count": 58,
+    "validation_method": "The correct answer must be 100% guaranteed by the statements in the stimulus under every interpretation consistent with their literal meaning."
+  }
+}

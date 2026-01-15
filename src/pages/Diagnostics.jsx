@@ -1,55 +1,36 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useDrill } from '../contexts/DrillContext'
 import { useAuth } from '../contexts/AuthContext'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
+import { Badge } from '../components/ui/Badge'
+import api from '../services/api'
 
 const Diagnostics = () => {
   const navigate = useNavigate()
-  const { currentUser, getAuthHeaders } = useAuth()
-  const {
-    setDrillSession,
-    setSelectedAnswers,
-    setCurrentQuestionIndex,
-    resetSession
-  } = useDrill()
+  const { currentUser } = useAuth()
   const [isStarting, setIsStarting] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
-
-  useEffect(() => {
-    resetSession()
-  }, [resetSession])
 
   const handleStartDiagnostic = async () => {
     try {
       setErrorMessage(null)
       setIsStarting(true)
 
-      const headers = await getAuthHeaders()
+      // Start adaptive diagnostic session
+      const session = await api.startAdaptiveDiagnostic(currentUser?.uid)
 
-      const response = await fetch('/api/personalization/diagnostic', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          user_id: currentUser?.uid || 'anonymous'
-        })
+      // Navigate to adaptive session page with session data
+      navigate('/diagnostics/adaptive', {
+        state: {
+          sessionId: session.session_id,
+          question: session.question,
+          progress: session.progress,
+          resumed: session.resumed || false,
+        }
       })
-
-      if (!response.ok) {
-        const errorBody = await response.json().catch(() => ({}))
-        throw new Error(errorBody.error || 'Unable to start diagnostic right now.')
-      }
-
-      const session = await response.json()
-      setDrillSession({
-        ...session,
-        origin: 'diagnostic'
-      })
-      setSelectedAnswers({})
-      setCurrentQuestionIndex(0)
-      navigate('/diagnostics/session')
     } catch (error) {
+      console.error('Error starting diagnostic:', error)
       setErrorMessage(error.message || 'Something went wrong while starting the diagnostic.')
     } finally {
       setIsStarting(false)
@@ -57,75 +38,107 @@ const Diagnostics = () => {
   }
 
   return (
-    <div className="py-16 px-4">
-      <div className="max-w-4xl mx-auto space-y-8">
-        {/* Main Card */}
-        <Card variant="elevated" className="p-10 md:p-12">
-          <h1 className="font-display text-4xl md:text-5xl text-primary mb-6 tracking-tight">
-            LSAT Diagnostic
+    <div className="p-6 lg:p-12 max-w-[1600px] mx-auto space-y-12">
+      {/* Header */}
+      <header className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-sand-dark/30 dark:border-white/5 pb-8">
+        <div className="space-y-2">
+          <p className="text-sm font-bold uppercase tracking-widest text-terracotta font-sans">Assessment</p>
+          <h1 className="text-4xl md:text-5xl font-black text-text-main dark:text-white leading-[0.9]">
+            Diagnostic Center<br />
+            <span className="text-text-main/40 dark:text-white/40 font-medium tracking-tight">Establish Your Baseline.</span>
           </h1>
-          <p className="text-secondary text-lg mb-8 leading-relaxed">
-            Kick off your prep with a focused 5-question diagnostic that mirrors the LSAT's logical reasoning workload.
-            You'll get a clear read on your baseline and the skills to sharpen next.
-          </p>
+        </div>
+      </header>
 
-          {/* Info Grid */}
-          <div className="grid gap-6 md:grid-cols-3 mb-8">
-            <div className="rounded-2xl bg-brand-primary/10 border border-brand-primary/20 p-6">
-              <p className="text-brand-primary font-semibold mb-3 text-sm uppercase tracking-wider">Why take it</p>
-              <p className="text-secondary text-sm leading-relaxed">
-                Surface strengths and blind spots so your study plan targets the right mix of skills.
-              </p>
-            </div>
-            <div className="rounded-2xl bg-brand-primary/10 border border-brand-primary/20 p-6">
-              <p className="text-brand-primary font-semibold mb-3 text-sm uppercase tracking-wider">What to expect</p>
-              <p className="text-secondary text-sm leading-relaxed">
-                5 official-style LSAT questions spanning core reasoning skills, delivered one at a time.
-              </p>
-            </div>
-            <div className="rounded-2xl bg-brand-primary/10 border border-brand-primary/20 p-6">
-              <p className="text-brand-primary font-semibold mb-3 text-sm uppercase tracking-wider">How it works</p>
-              <p className="text-secondary text-sm leading-relaxed">
-                Navigate forward and back between questions and review performance the moment you finish.
-              </p>
-            </div>
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
+        <div className="lg:col-span-7 space-y-8">
+          <Card variant="flat" className="bg-white dark:bg-white/5 p-8 md:p-12 border border-sand-dark/30 dark:border-white/10">
+            <h2 className="text-3xl font-bold font-slab text-text-main dark:text-white mb-6">Logical Reasoning Assessment</h2>
+            <p className="text-lg text-text-main/70 dark:text-sand/70 mb-10 leading-relaxed max-w-2xl">
+              Take our adaptive 30-question diagnostic to generate your initial skill profile.
+              The engine adjusts difficulty in real-time to pinpoint your exact ability level across all LSAT reasoning types.
+            </p>
 
-          {/* Error Message */}
-          {errorMessage && (
-            <div className="mb-8 rounded-2xl bg-danger/15 border border-danger/30 px-6 py-4">
-              <p className="text-danger text-sm">{errorMessage}</p>
+            <div className="grid gap-6 md:grid-cols-3 mb-10">
+              <div className="p-4 rounded-2xl bg-sand/20 dark:bg-white/5 border border-sand-dark/20 space-y-2">
+                <span className="material-symbols-outlined text-sage text-2xl">auto_graph</span>
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-text-main dark:text-white">Adaptive</h3>
+                  <p className="text-xs text-text-main/60 dark:text-white/60 mt-1">Adjusts to your skill level live.</p>
+                </div>
+              </div>
+              <div className="p-4 rounded-2xl bg-sand/20 dark:bg-white/5 border border-sand-dark/20 space-y-2">
+                <span className="material-symbols-outlined text-terracotta text-2xl">psychology</span>
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-text-main dark:text-white">Comprehensive</h3>
+                  <p className="text-xs text-text-main/60 dark:text-white/60 mt-1">Covers all major logical patterns.</p>
+                </div>
+              </div>
+              <div className="p-4 rounded-2xl bg-sand/20 dark:bg-white/5 border border-sand-dark/20 space-y-2">
+                <span className="material-symbols-outlined text-text-main/60 dark:text-white/60 text-2xl">timer_off</span>
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-text-main dark:text-white">Untimed</h3>
+                  <p className="text-xs text-text-main/60 dark:text-white/60 mt-1">Focus on accuracy, not speed.</p>
+                </div>
+              </div>
             </div>
-          )}
 
-          {/* Start Button */}
-          <Button
-            onClick={handleStartDiagnostic}
-            disabled={isStarting}
-            size="lg"
-            className="w-full md:w-auto"
-          >
-            {isStarting ? 'Starting...' : 'Start Diagnostic'}
-          </Button>
-        </Card>
+            {errorMessage && (
+              <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm border border-red-200 dark:border-red-800/30 flex items-center gap-3">
+                <span className="material-symbols-outlined">error</span>
+                {errorMessage}
+              </div>
+            )}
 
-        {/* Tip Card */}
-        <Card className="bg-brand-primary/5 border-brand-primary/15">
-          <div className="flex items-start gap-4">
-            <div className="bg-brand-primary/20 rounded-full p-3 flex-shrink-0">
-              <svg className="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={handleStartDiagnostic}
+                disabled={isStarting}
+                className="bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
+              >
+                {isStarting ? (
+                  <span className="flex items-center gap-2">
+                    <span className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Initializing...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    Start Diagnostic <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                  </span>
+                )}
+              </Button>
             </div>
-            <div>
-              <h2 className="font-display text-xl text-primary mb-2 tracking-tight">PACE TIP</h2>
-              <p className="text-secondary text-sm leading-relaxed">
-                Plan for about 10 minutes end-to-end. You can pause between questions, but
-                giving yourself steady pressure will make the insights more actionable.
-              </p>
+          </Card>
+        </div>
+
+        <div className="lg:col-span-5 space-y-6">
+          <Card variant="default" className="p-8 bg-sand/30 dark:bg-white/5 border-none">
+            <div className="flex items-start gap-4">
+              <div className="bg-white dark:bg-white/10 p-3 rounded-full shadow-sm">
+                <span className="material-symbols-outlined text-terracotta">lightbulb</span>
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-bold text-text-main dark:text-white">Before You Begin</h3>
+                <ul className="space-y-3 text-sm text-text-main/70 dark:text-white/70">
+                  <li className="flex gap-3">
+                    <span className="size-1.5 rounded-full bg-sand-dark mt-2 shrink-0" />
+                    Set aside 45-60 minutes.
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="size-1.5 rounded-full bg-sand-dark mt-2 shrink-0" />
+                    Find a quiet environment.
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="size-1.5 rounded-full bg-sand-dark mt-2 shrink-0" />
+                    You can pause, but continuous is best.
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
     </div>
   )

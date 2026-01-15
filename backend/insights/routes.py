@@ -49,15 +49,19 @@ def recalibrate_model(model_name):
 
 @insights_bp.route('/online/irt/update/<user_id>', methods=['POST'])
 def update_user_estimates(user_id):
-    """Stub: perform online update of user estimates given new evidence."""
+    """Perform online update of user ability estimates given new evidence."""
     payload = request.get_json() or {}
 
-    irt_online_update(user_id, payload.get('new_evidence', []))
+    result = irt_online_update(user_id, payload.get('new_evidence', []))
 
     return jsonify({
         "model_name": "irt",
         "user_id": user_id,
-        "update_status": "success"
+        "update_status": "success",
+        "theta_old": result.get("theta_old"),
+        "theta_new": result.get("theta_new"),
+        "prior_var": result.get("prior_var"),
+        "n_responses": result.get("n_responses")
     })
 
 

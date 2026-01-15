@@ -1,0 +1,13 @@
+| Question type           | Count | Why it’s in the mix (based on your mapping)                               |
+| ----------------------- | ----: | ------------------------------------------------------------------------- |
+| Must Be True            | **3** | Primary FL_03 + FL_06; secondary FL_01/FL_02                              |
+| Most Strongly Supported | **3** | Primary RH_07 + FL_06                                                     |
+| Strengthen              | **2** | Primary RH_03 + RH_07 (efficient)                                         |
+| Weaken                  | **3** | Primary RH_04 (workhorse)                                                 |
+| Sufficient Assumption   | **3** | Primary FL_03 + RH_03; secondary FL_01/FL_02 + S_04                       |
+| Necessary Assumption    | **3** | Primary RH_04; secondary FL_01 + S_04                                     |
+| Main Point              | **2** | Primary S_01; secondary S_02/S_04                                         |
+| Method of Reasoning     | **1** | Primary S_01; secondary S_02/S_04                                         |
+| Role of a Statement     | **5** | Primary S_02 + S_04 (fastest way to stabilize both)                       |
+| Principle (Application) | **1** | Primary FL_01 (adds purity for translation)                               |
+| Parallel Reasoning      | **4** | Primary FL_01 + FL_02 + FL_03 (boosts contrapositive touches efficiently) |

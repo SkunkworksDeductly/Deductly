@@ -1,0 +1,520 @@
+{
+  "stimulus": "Many people assume that eating late at night leads to weight gain. However, recent studies indicate that total daily caloric intake, not meal timing, determines weight change. A person who consumes 2,000 calories spread throughout the day gains no less weight than one who eats the same amount primarily after 8 PM. Therefore, those trying to lose weight should focus on reducing overall consumption rather than avoiding evening meals. The real culprit behind late-night weight gain is likely the tendency to snack mindlessly while watching television, which increases total calories consumed.",
+  "stem": "The claim that total daily caloric intake, not meal timing, determines weight change plays which one of the following roles in the argument?",
+  "options": [
+    {
+      "text": "It is a premise that directly supports the argument's main recommendation.",
+      "is_correct": true,
+      "explanation": "This statement correctly identifies the role of the claim as a premise. The claim about caloric intake versus meal timing provides the factual foundation from which the author derives the main conclusion (that people should focus on reducing overall consumption). The role identification skill is properly tested as students must distinguish this premise from the conclusion it supports.",
+      "tutor_explanation": "To identify a statement's role, ask what it does in the argument. This claim about calories versus timing is presented as a research finding that the author uses to support the advice about focusing on overall consumption. Notice the word 'Therefore' comes after this claim, signaling that what follows is the conclusion drawn from it. Since this claim provides the basis for that conclusion, it functions as a premise.",
+      "skill_tested": "Role Identification - distinguishing premises from conclusions",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "It is the main conclusion that the argument is designed to establish.",
+      "is_correct": false,
+      "explanation": "This distractor misidentifies the premise as the main conclusion. The main conclusion is actually the recommendation about focusing on reducing overall consumption. Students who select this fail to track the argumentative flow and miss the conclusion indicator 'Therefore.'",
+      "tutor_explanation": "This is tempting because the claim about caloric intake sounds like an important point. However, look at the argument's structure: this claim is followed by 'Therefore,' which introduces what the author wants you to take away—the recommendation about focusing on overall consumption. The caloric intake claim is what supports that recommendation, not the recommendation itself.",
+      "skill_tested": null,
+      "trap_type": "Misidentifies premise as conclusion",
+      "skill_gap": "Failure to distinguish premises from conclusions"
+    },
+    {
+      "text": "It is a popular belief that the argument ultimately rejects.",
+      "is_correct": false,
+      "explanation": "This distractor confuses the target statement with adjacent text. The popular belief mentioned is that eating late at night leads to weight gain—this appears in the first sentence. The target statement is actually presented as a scientific finding that counters that popular belief.",
+      "tutor_explanation": "Be careful to identify exactly which statement the question asks about. The popular belief the argument rejects is in the first sentence: 'eating late at night leads to weight gain.' The claim about caloric intake versus meal timing is different—it's the scientific finding used to counter that popular belief, not the belief itself.",
+      "skill_tested": null,
+      "trap_type": "Confuses the target statement with adjacent text",
+      "skill_gap": "Confusing distinct statements within the passage"
+    },
+    {
+      "text": "It explains why people tend to gain weight from eating late at night.",
+      "is_correct": false,
+      "explanation": "This distractor describes the content of the statement rather than its function in the argument. It also partially confuses the target with the final sentence, which does explain the 'real culprit' behind late-night weight gain.",
+      "tutor_explanation": "Role questions ask about function—what a statement does in the argument—not what it says. This answer describes subject matter rather than argumentative role. Additionally, the claim about caloric intake versus timing doesn't explain why late-night eating causes weight gain; it actually suggests timing isn't the real factor at all.",
+      "skill_tested": null,
+      "trap_type": "Describes content rather than function",
+      "skill_gap": "Describing content instead of structural function"
+    },
+    {
+      "text": "It is a finding that contradicts the argument's main recommendation.",
+      "is_correct": false,
+      "explanation": "This distractor assigns an impossible role to the statement. The claim about caloric intake clearly supports the recommendation to focus on overall consumption—it does not contradict it. Selecting this shows failure to recognize how premises relate to conclusions.",
+      "tutor_explanation": "Consider how the pieces of the argument fit together. The claim that total calories matter more than timing directly supports telling people to focus on overall consumption. There's no contradiction here—the finding and recommendation align perfectly. If timing doesn't matter but total calories do, then logically you should focus on total calories.",
+      "skill_tested": null,
+      "trap_type": "Assigns impossible role (e.g., 'evidence against' when it supports)",
+      "skill_gap": "Misunderstanding support relationships"
+    }
+  ],
+  "metadata": {
+    "question_type": "Role of a Statement",
+    "family": "Structure Family",
+    "primary_skill_id": "S_02",
+    "primary_skill_name": "Role Identification",
+    "secondary_skills": [
+      "S_01"
+    ],
+    "difficulty": "EASY",
+    "topic": "Nutrition science",
+    "word_count": 98,
+    "validation_method": "Correct answer accurately identifies whether the statement functions as: main conclusion, intermediate conclusion, premise, background, counterargument, concession, or evidence"
+  }
+}
+
+{
+  "stimulus": "Many people assume that eating late at night leads to weight gain. However, recent studies indicate that total daily caloric intake, not meal timing, determines weight change. A person who consumes 2,000 calories spread throughout the day gains no less weight than one who eats the same amount primarily after 8 PM. Therefore, those trying to lose weight should focus on reducing overall consumption rather than avoiding evening meals. The real culprit behind late-night weight gain is likely the tendency to snack mindlessly while watching television, which increases total calories consumed.",
+  "stem": "The claim that total daily caloric intake, not meal timing, determines weight change plays which one of the following roles in the argument?",
+  "options": [
+    {
+      "text": "It is a premise that directly supports the argument's main recommendation.",
+      "is_correct": true,
+      "explanation": "This statement correctly identifies the role of the claim as a premise. The claim about caloric intake versus meal timing provides the factual foundation from which the author derives the main conclusion (that people should focus on reducing overall consumption). The role identification skill is properly tested as students must distinguish this premise from the conclusion it supports.",
+      "tutor_explanation": "To identify a statement's role, ask what it does in the argument. This claim about calories versus timing is presented as a research finding that the author uses to support the advice about focusing on overall consumption. Notice the word 'Therefore' comes after this claim, signaling that what follows is the conclusion drawn from it. Since this claim provides the basis for that conclusion, it functions as a premise.",
+      "skill_tested": "Role Identification - distinguishing premises from conclusions",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "It is the main conclusion that the argument is designed to establish.",
+      "is_correct": false,
+      "explanation": "This distractor misidentifies the premise as the main conclusion. The main conclusion is actually the recommendation about focusing on reducing overall consumption. Students who select this fail to track the argumentative flow and miss the conclusion indicator 'Therefore.'",
+      "tutor_explanation": "This is tempting because the claim about caloric intake sounds like an important point. However, look at the argument's structure: this claim is followed by 'Therefore,' which introduces what the author wants you to take away—the recommendation about focusing on overall consumption. The caloric intake claim is what supports that recommendation, not the recommendation itself.",
+      "skill_tested": null,
+      "trap_type": "Misidentifies premise as conclusion",
+      "skill_gap": "Failure to distinguish premises from conclusions"
+    },
+    {
+      "text": "It is a popular belief that the argument ultimately rejects.",
+      "is_correct": false,
+      "explanation": "This distractor confuses the target statement with adjacent text. The popular belief mentioned is that eating late at night leads to weight gain—this appears in the first sentence. The target statement is actually presented as a scientific finding that counters that popular belief.",
+      "tutor_explanation": "Be careful to identify exactly which statement the question asks about. The popular belief the argument rejects is in the first sentence: 'eating late at night leads to weight gain.' The claim about caloric intake versus meal timing is different—it's the scientific finding used to counter that popular belief, not the belief itself.",
+      "skill_tested": null,
+      "trap_type": "Confuses the target statement with adjacent text",
+      "skill_gap": "Confusing distinct statements within the passage"
+    },
+    {
+      "text": "It explains why people tend to gain weight from eating late at night.",
+      "is_correct": false,
+      "explanation": "This distractor describes the content of the statement rather than its function in the argument. It also partially confuses the target with the final sentence, which does explain the 'real culprit' behind late-night weight gain.",
+      "tutor_explanation": "Role questions ask about function—what a statement does in the argument—not what it says. This answer describes subject matter rather than argumentative role. Additionally, the claim about caloric intake versus timing doesn't explain why late-night eating causes weight gain; it actually suggests timing isn't the real factor at all.",
+      "skill_tested": null,
+      "trap_type": "Describes content rather than function",
+      "skill_gap": "Describing content instead of structural function"
+    },
+    {
+      "text": "It is a finding that contradicts the argument's main recommendation.",
+      "is_correct": false,
+      "explanation": "This distractor assigns an impossible role to the statement. The claim about caloric intake clearly supports the recommendation to focus on overall consumption—it does not contradict it. Selecting this shows failure to recognize how premises relate to conclusions.",
+      "tutor_explanation": "Consider how the pieces of the argument fit together. The claim that total calories matter more than timing directly supports telling people to focus on overall consumption. There's no contradiction here—the finding and recommendation align perfectly. If timing doesn't matter but total calories do, then logically you should focus on total calories.",
+      "skill_tested": null,
+      "trap_type": "Assigns impossible role (e.g., 'evidence against' when it supports)",
+      "skill_gap": "Misunderstanding support relationships"
+    }
+  ],
+  "metadata": {
+    "question_type": "Role of a Statement",
+    "family": "Structure Family",
+    "primary_skill_id": "S_02",
+    "primary_skill_name": "Role Identification",
+    "secondary_skills": [
+      "S_01"
+    ],
+    "difficulty": "EASY",
+    "topic": "Nutrition science",
+    "word_count": 98,
+    "validation_method": "Correct answer accurately identifies whether the statement functions as: main conclusion, intermediate conclusion, premise, background, counterargument, concession, or evidence"
+  }
+}
+
+{
+  "stimulus": "Archaeological interpretations necessarily rely on analogies drawn from contemporary societies, yet such analogies presuppose that human behavioral patterns remain fundamentally constant across millennia. This presupposition is itself unprovable through archaeological evidence alone, since any attempt to verify it would require the very analogical reasoning it seeks to justify. Nevertheless, archaeological research continues to yield productive insights. This suggests that the validity of analogical reasoning in archaeology should be evaluated not by its theoretical foundations but by the coherence of the interpretive framework it produces.",
+  "stem": "The claim that the presupposition of constant behavioral patterns cannot be proven through archaeological evidence alone plays which one of the following roles in the argument?",
+  "options": [
+    {
+      "text": "It provides the primary justification for the argument's main conclusion about how analogical reasoning should be evaluated.",
+      "is_correct": false,
+      "explanation": "Trap type: Misidentifies premise as conclusion. This choice correctly identifies the statement as a premise but overstates its role. The statement is not the 'primary justification' but rather establishes a problem that is then contrasted with the observation about productive insights.",
+      "tutor_explanation": "This choice is tempting because the statement does support the overall argument. However, look at the structure more carefully: the argument's main justification comes from the contrast between this theoretical problem and the practical success of archaeology. The statement about unprovability sets up the problem, but it's the observation about 'productive insights' that actually motivates the conclusion.",
+      "skill_tested": null,
+      "trap_type": "Misidentifies premise as conclusion",
+      "skill_gap": "Failure to distinguish degree of support among multiple premises"
+    },
+    {
+      "text": "It states a theoretical limitation that the argument uses to motivate an alternative evaluative criterion.",
+      "is_correct": true,
+      "explanation": "Correct. The statement identifies a circularity problem (theoretical limitation) in verifying analogical reasoning. This problem, contrasted with archaeology's practical success, supports the conclusion that we should evaluate analogical reasoning by interpretive coherence rather than theoretical foundations—an alternative evaluative criterion.",
+      "tutor_explanation": "This is correct because the statement serves a specific structural purpose: it establishes that we cannot prove the theoretical foundation of archaeological analogy. This limitation is then contrasted with the success of archaeological research, leading to the conclusion that we should evaluate analogical reasoning differently—by coherence of results rather than by theoretical justification. The statement sets up the problem that motivates the solution.",
+      "skill_tested": "Role Identification: recognizing that a statement establishes a problem that motivates the argument's proposed solution",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "It expresses the main point that the argument as a whole is designed to establish.",
+      "is_correct": false,
+      "explanation": "Trap type: Misidentifies intermediate conclusion as main. The statement about unprovability is a premise, not any kind of conclusion. The main conclusion is about how analogical reasoning should be evaluated.",
+      "tutor_explanation": "The statement about unprovability describes a problem, but notice that the argument continues after this point. The phrase 'This suggests that...' near the end signals where the main conclusion appears. The unprovability claim is used to build toward something else—it's part of the argument's foundation, not its destination.",
+      "skill_tested": null,
+      "trap_type": "Misidentifies intermediate conclusion as main",
+      "skill_gap": "Inability to identify structural position of conclusion"
+    },
+    {
+      "text": "It describes the methodology that archaeological research employs when drawing analogies from contemporary societies.",
+      "is_correct": false,
+      "explanation": "Trap type: Describes content rather than function. This choice focuses on what the statement is about (archaeological methodology) rather than its logical role in the argument's structure.",
+      "tutor_explanation": "This choice describes the topic of the statement rather than what the statement does in the argument. In 'Role of a Statement' questions, you need to identify how the statement functions logically—does it support something, conclude something, introduce a problem? Simply restating what the statement discusses doesn't capture its argumentative purpose.",
+      "skill_tested": null,
+      "trap_type": "Describes content rather than function",
+      "skill_gap": "Confusing subject matter with logical function"
+    },
+    {
+      "text": "It provides evidence that contradicts the argument's conclusion about evaluating analogical reasoning.",
+      "is_correct": false,
+      "explanation": "Trap type: Assigns impossible role. The statement supports the argument's direction rather than opposing it. The circularity problem motivates seeking an alternative criterion, which is exactly what the conclusion proposes.",
+      "tutor_explanation": "Consider the logical flow: the statement points out a problem with theoretical justification, and the conclusion offers an alternative approach (evaluate by coherence instead). These work together, not against each other. The statement helps build the case for the conclusion rather than undermining it. When a statement contributes to an argument's direction, it cannot simultaneously serve as evidence against that argument.",
+      "skill_tested": null,
+      "trap_type": "Assigns impossible role",
+      "skill_gap": "Misreading argumentative direction and support relationships"
+    }
+  ],
+  "metadata": {
+    "question_type": "Role of a Statement",
+    "family": "Structure Family",
+    "primary_skill_id": "S_02",
+    "primary_skill_name": "Role Identification",
+    "secondary_skills": [
+      "S_01"
+    ],
+    "difficulty": "MEDIUM",
+    "topic": "Archaeology",
+    "word_count": 94,
+    "validation_method": "Correct answer accurately identifies statement function as a premise that establishes a theoretical limitation motivating the argument's proposed alternative criterion"
+  }
+}
+
+{
+  "stimulus": "Archaeological interpretations necessarily rely on analogies drawn from contemporary societies, yet such analogies presuppose that human behavioral patterns remain fundamentally constant across millennia. This presupposition is itself unprovable through archaeological evidence alone, since any attempt to verify it would require the very analogical reasoning it seeks to justify. Nevertheless, archaeological research continues to yield productive insights. This suggests that the validity of analogical reasoning in archaeology should be evaluated not by its theoretical foundations but by the coherence of the interpretive framework it produces.",
+  "stem": "The claim that the presupposition of constant behavioral patterns cannot be proven through archaeological evidence alone plays which one of the following roles in the argument?",
+  "options": [
+    {
+      "text": "It provides the primary justification for the argument's main conclusion about how analogical reasoning should be evaluated.",
+      "is_correct": false,
+      "explanation": "Trap type: Overstates premise role. This choice correctly identifies the statement as a premise but overstates its role. The statement is not the 'primary justification' but rather establishes a problem that is then contrasted with the observation about productive insights.",
+      "tutor_explanation": "This choice is tempting because the statement does support the overall argument. However, look at the structure more carefully: the argument's main justification comes from the contrast between this theoretical problem and the practical success of archaeology. The statement about unprovability sets up the problem, but it's the observation about 'productive insights' that actually motivates the conclusion.",
+      "skill_tested": null,
+      "trap_type": "Overstates premise role",
+      "skill_gap": "Failure to distinguish degree of support among multiple premises"
+    },
+    {
+      "text": "It states a theoretical limitation that the argument uses to motivate an alternative evaluative criterion.",
+      "is_correct": true,
+      "explanation": "Correct. The statement identifies a circularity problem (theoretical limitation) in verifying analogical reasoning. This problem, contrasted with archaeology's practical success, supports the conclusion that we should evaluate analogical reasoning by interpretive coherence rather than theoretical foundations—an alternative evaluative criterion.",
+      "tutor_explanation": "This is correct because the statement serves a specific structural purpose: it establishes that we cannot prove the theoretical foundation of archaeological analogy. This limitation is then contrasted with the success of archaeological research, leading to the conclusion that we should evaluate analogical reasoning differently—by coherence of results rather than by theoretical justification. The statement sets up the problem that motivates the solution.",
+      "skill_tested": "Role Identification: recognizing that a statement establishes a problem that motivates the argument's proposed solution",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "It expresses the main point that the argument as a whole is designed to establish.",
+      "is_correct": false,
+      "explanation": "Trap type: Misidentifies premise as conclusion. The statement about unprovability is a premise, not any kind of conclusion. The main conclusion is about how analogical reasoning should be evaluated.",
+      "tutor_explanation": "The statement about unprovability describes a problem, but notice that the argument continues after this point. The phrase 'This suggests that...' near the end signals where the main conclusion appears. The unprovability claim is used to build toward something else—it's part of the argument's foundation, not its destination.",
+      "skill_tested": null,
+      "trap_type": "Misidentifies premise as conclusion",
+      "skill_gap": "Inability to identify structural position of conclusion"
+    },
+    {
+      "text": "It describes the methodology that archaeological research employs when drawing analogies from contemporary societies.",
+      "is_correct": false,
+      "explanation": "Trap type: Describes content rather than function. This choice focuses on what the statement is about (archaeological methodology) rather than its logical role in the argument's structure.",
+      "tutor_explanation": "This choice describes the topic of the statement rather than what the statement does in the argument. In 'Role of a Statement' questions, you need to identify how the statement functions logically—does it support something, conclude something, introduce a problem? Simply restating what the statement discusses doesn't capture its argumentative purpose.",
+      "skill_tested": null,
+      "trap_type": "Describes content rather than function",
+      "skill_gap": "Confusing subject matter with logical function"
+    },
+    {
+      "text": "It provides evidence that contradicts the argument's conclusion about evaluating analogical reasoning.",
+      "is_correct": false,
+      "explanation": "Trap type: Assigns impossible role. The statement supports the argument's direction rather than opposing it. The circularity problem motivates seeking an alternative criterion, which is exactly what the conclusion proposes.",
+      "tutor_explanation": "Consider the logical flow: the statement points out a problem with theoretical justification, and the conclusion offers an alternative approach (evaluate by coherence instead). These work together, not against each other. The statement helps build the case for the conclusion rather than undermining it. When a statement contributes to an argument's direction, it cannot simultaneously serve as evidence against that argument.",
+      "skill_tested": null,
+      "trap_type": "Assigns impossible role",
+      "skill_gap": "Misreading argumentative direction and support relationships"
+    }
+  ],
+  "metadata": {
+    "question_type": "Role of a Statement",
+    "family": "Structure Family",
+    "primary_skill_id": "S_02",
+    "primary_skill_name": "Role Identification",
+    "secondary_skills": [
+      "S_01"
+    ],
+    "difficulty": "MEDIUM",
+    "topic": "Archaeology",
+    "word_count": 94,
+    "validation_method": "Correct answer accurately identifies statement function as a premise that establishes a theoretical limitation motivating the argument's proposed alternative criterion"
+  }
+}
+
+{
+  "stimulus": "Some public health officials maintain that widespread antibiotic use in livestock poses minimal risk to human health because the antibiotics used differ from those prescribed to humans. This reasoning is flawed. Bacteria exposed to any antibiotic can develop resistance mechanisms that protect against structurally similar compounds—including those administered to humans. Furthermore, resistant bacteria readily transfer between animal and human populations through the food supply. The claim that livestock antibiotics differ from human medications thus provides false reassurance, obscuring rather than addressing the genuine threat that agricultural antibiotic practices pose to the efficacy of human medical treatments.",
+  "stem": "The claim that bacteria exposed to any antibiotic can develop resistance mechanisms that protect against structurally similar compounds plays which one of the following roles in the argument?",
+  "options": [
+    {
+      "text": "It serves as an intermediate conclusion that undermines a premise of the position being criticized.",
+      "is_correct": true,
+      "explanation": "This is correct. The claim about cross-resistance mechanisms functions as an intermediate conclusion (supported by the implicit premise about bacterial adaptation) that attacks the reasoning of the public health officials by showing why the 'different antibiotics' premise fails to support their conclusion about minimal risk.",
+      "tutor_explanation": "To find this answer, trace the argument's structure. The author says the officials' reasoning is 'flawed' and then provides THIS claim as the reason why their premise (different antibiotics = no risk) doesn't work. The claim about resistance mechanisms is supported by the biological reality of bacterial adaptation, making it an intermediate conclusion. It attacks the officials' premise by showing that 'different' antibiotics can still create cross-resistance, thus undermining the foundation of their argument.",
+      "skill_tested": "Role Identification - recognizing that a statement functions as an intermediate conclusion attacking an opponent's premise",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "It is the main conclusion that the argument is designed to establish.",
+      "is_correct": false,
+      "explanation": "Trap type: Misidentifies intermediate conclusion as main. The main conclusion is that agricultural antibiotic practices pose a genuine threat to human medical treatments—the resistance mechanism claim is evidence supporting this larger point, not the ultimate conclusion.",
+      "tutor_explanation": "This choice is tempting because the resistance mechanism claim is clearly important to the argument. However, look at the argument's ultimate goal: the author wants to establish that livestock antibiotics threaten human health. The cross-resistance claim is one step in that reasoning—it helps explain WHY there's a threat—but it's not the final point the author is trying to prove. The last sentence reveals the main conclusion about the 'genuine threat.'",
+      "skill_tested": null,
+      "trap_type": "Misidentifies intermediate conclusion as main",
+      "skill_gap": "Failure to distinguish between ultimate conclusion and supporting intermediate conclusions"
+    },
+    {
+      "text": "It provides evidence directly supporting the view that the argument opposes.",
+      "is_correct": false,
+      "explanation": "Trap type: Assigns impossible role. This claim cannot support the officials' view because it directly contradicts their reasoning. The claim that cross-resistance occurs undermines, not supports, the idea that different antibiotics pose minimal risk.",
+      "tutor_explanation": "Consider what the public health officials believe: that different antibiotics mean minimal risk. Now look at this claim—it says resistance can spread across 'structurally similar compounds,' which means using different antibiotics doesn't prevent the risk. This directly contradicts the officials' position! The claim is attacking their view, not supporting it.",
+      "skill_tested": null,
+      "trap_type": "Assigns impossible role (e.g., 'evidence against' when it supports)",
+      "skill_gap": "Confusion about the direction of argumentative support"
+    },
+    {
+      "text": "It restates in different terms the position attributed to public health officials.",
+      "is_correct": false,
+      "explanation": "Trap type: Confuses the target statement with adjacent text. The officials' position is that livestock antibiotics pose minimal risk because they differ from human antibiotics. The target claim about cross-resistance mechanisms is entirely different content that refutes this position.",
+      "tutor_explanation": "It's important to keep track of who says what in a rebuttal argument. The officials claim that different antibiotics mean minimal risk. The target statement about cross-resistance is the AUTHOR's claim, and it's making the opposite point—that resistance can spread regardless of which specific antibiotic is used. These are opposing claims, not restatements of the same idea.",
+      "skill_tested": null,
+      "trap_type": "Confuses the target statement with adjacent text",
+      "skill_gap": "Difficulty tracking which claim belongs to which speaker/position"
+    },
+    {
+      "text": "It describes the mechanism by which antibiotics eliminate harmful bacteria in humans.",
+      "is_correct": false,
+      "explanation": "Trap type: Describes content rather than function. This choice addresses what the claim is about (bacterial mechanisms) but mischaracterizes even the content—the claim is about resistance development, not antibiotic efficacy. More critically, it fails to identify the claim's argumentative role.",
+      "tutor_explanation": "This choice makes a common mistake: it tries to summarize what the claim is ABOUT rather than explaining what JOB it does in the argument. Role questions ask about function—how does this piece fit into the argumentative structure? Additionally, the claim isn't even about how antibiotics eliminate bacteria; it's about how bacteria develop resistance. Always distinguish between a statement's topic and its role.",
+      "skill_tested": null,
+      "trap_type": "Describes content rather than function",
+      "skill_gap": "Conflating subject matter with structural function in arguments"
+    }
+  ],
+  "metadata": {
+    "question_type": "Role of a Statement",
+    "family": "Structure Family",
+    "primary_skill_id": "S_02",
+    "primary_skill_name": "Role Identification",
+    "secondary_skills": [
+      "S_01"
+    ],
+    "difficulty": "HARD",
+    "topic": "Infectious disease",
+    "word_count": 98,
+    "validation_method": "Correct answer must accurately identify whether the statement functions as: main conclusion, intermediate conclusion, premise, background, counterargument, concession, or evidence"
+  }
+}
+
+{
+  "stimulus": "Some public health officials maintain that widespread antibiotic use in livestock poses minimal risk to human health because the antibiotics used differ from those prescribed to humans. This reasoning is flawed. Bacteria exposed to any antibiotic can develop resistance mechanisms that protect against structurally similar compounds—including those administered to humans. Furthermore, resistant bacteria readily transfer between animal and human populations through the food supply. The claim that livestock antibiotics differ from human medications thus provides false reassurance, obscuring rather than addressing the genuine threat that agricultural antibiotic practices pose to the efficacy of human medical treatments.",
+  "stem": "The claim that bacteria exposed to any antibiotic can develop resistance mechanisms that protect against structurally similar compounds plays which one of the following roles in the argument?",
+  "options": [
+    {
+      "text": "It serves as a premise that undermines the reasoning behind the position being criticized.",
+      "is_correct": true,
+      "explanation": "This is correct. The claim about cross-resistance mechanisms functions as a premise (a stated fact about bacterial biology) that attacks the reasoning of the public health officials by showing why their 'different antibiotics' premise fails to support their conclusion about minimal risk. It is not itself supported by other claims in the argument; rather, it is offered as a scientific fact that the author uses to dismantle the officials' reasoning.",
+      "tutor_explanation": "To find this answer, trace the argument's structure. The author says the officials' reasoning is 'flawed' and then provides THIS claim as the reason why their premise (different antibiotics = no risk) doesn't work. The claim about resistance mechanisms is presented as a factual assertion about bacterial biology—it isn't supported by other explicit premises in this argument. It functions as evidence that directly attacks the officials' assumption that different antibiotics mean different (non-overlapping) resistance profiles.",
+      "skill_tested": "Role Identification - recognizing that a statement functions as a premise attacking an opponent's reasoning",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "It is the main conclusion that the argument is designed to establish.",
+      "is_correct": false,
+      "explanation": "Trap type: Misidentifies premise as main conclusion. The main conclusion is that agricultural antibiotic practices pose a genuine threat to human medical treatments—the resistance mechanism claim is evidence supporting this larger point, not the ultimate conclusion.",
+      "tutor_explanation": "This choice is tempting because the resistance mechanism claim is clearly important to the argument. However, look at the argument's ultimate goal: the author wants to establish that livestock antibiotics threaten human health. The cross-resistance claim is one step in that reasoning—it helps explain WHY there's a threat—but it's not the final point the author is trying to prove. The last sentence reveals the main conclusion about the 'genuine threat.'",
+      "skill_tested": null,
+      "trap_type": "Misidentifies premise as main conclusion",
+      "skill_gap": "Failure to distinguish between ultimate conclusion and supporting premises"
+    },
+    {
+      "text": "It provides evidence directly supporting the view that the argument opposes.",
+      "is_correct": false,
+      "explanation": "Trap type: Assigns impossible role. This claim cannot support the officials' view because it directly contradicts their reasoning. The claim that cross-resistance occurs undermines, not supports, the idea that different antibiotics pose minimal risk.",
+      "tutor_explanation": "Consider what the public health officials believe: that different antibiotics mean minimal risk. Now look at this claim—it says resistance can spread across 'structurally similar compounds,' which means using different antibiotics doesn't prevent the risk. This directly contradicts the officials' position! The claim is attacking their view, not supporting it.",
+      "skill_tested": null,
+      "trap_type": "Assigns impossible role (e.g., 'evidence against' when it supports)",
+      "skill_gap": "Confusion about the direction of argumentative support"
+    },
+    {
+      "text": "It restates in different terms the position attributed to public health officials.",
+      "is_correct": false,
+      "explanation": "Trap type: Confuses the target statement with adjacent text. The officials' position is that livestock antibiotics pose minimal risk because they differ from human antibiotics. The target claim about cross-resistance mechanisms is entirely different content that refutes this position.",
+      "tutor_explanation": "It's important to keep track of who says what in a rebuttal argument. The officials claim that different antibiotics mean minimal risk. The target statement about cross-resistance is the AUTHOR's claim, and it's making the opposite point—that resistance can spread regardless of which specific antibiotic is used. These are opposing claims, not restatements of the same idea.",
+      "skill_tested": null,
+      "trap_type": "Confuses the target statement with adjacent text",
+      "skill_gap": "Difficulty tracking which claim belongs to which speaker/position"
+    },
+    {
+      "text": "It describes the mechanism by which antibiotics eliminate harmful bacteria in humans.",
+      "is_correct": false,
+      "explanation": "Trap type: Describes content rather than function. This choice addresses what the claim is about (bacterial mechanisms) but mischaracterizes even the content—the claim is about resistance development, not antibiotic efficacy. More critically, it fails to identify the claim's argumentative role.",
+      "tutor_explanation": "This choice makes a common mistake: it tries to summarize what the claim is ABOUT rather than explaining what JOB it does in the argument. Role questions ask about function—how does this piece fit into the argumentative structure? Additionally, the claim isn't even about how antibiotics eliminate bacteria; it's about how bacteria develop resistance. Always distinguish between a statement's topic and its role.",
+      "skill_tested": null,
+      "trap_type": "Describes content rather than function",
+      "skill_gap": "Conflating subject matter with structural function in arguments"
+    }
+  ],
+  "metadata": {
+    "question_type": "Role of a Statement",
+    "family": "Structure Family",
+    "primary_skill_id": "S_02",
+    "primary_skill_name": "Role Identification",
+    "secondary_skills": [
+      "S_01"
+    ],
+    "difficulty": "HARD",
+    "topic": "Infectious disease",
+    "word_count": 98,
+    "validation_method": "Correct answer must accurately identify whether the statement functions as: main conclusion, intermediate conclusion, premise, background, counterargument, concession, or evidence"
+  }
+}
+
+{
+  "stimulus": "The prevailing interpretation of early athletic recovery protocols emphasizes that practitioners prioritized rest over active rehabilitation. However, examination of training records reveals that many athletes continued modified exercises during injury periods. This apparent discrepancy dissolves when one recognizes that \"rest\" in historical medical contexts denoted cessation of competitive exertion rather than complete immobilization. The traditional interpretation therefore remains fundamentally sound, since practitioners understood recovery to permit therapeutic movement while proscribing performance-intensity activity—a distinction that later terminology obscured.",
+  "stem": "The claim that \"rest\" in historical medical contexts denoted cessation of competitive exertion rather than complete immobilization plays which one of the following roles in the argument?",
+  "options": [
+    {
+      "text": "It provides the key premise that resolves an apparent conflict between a historical interpretation and certain evidence",
+      "is_correct": true,
+      "explanation": "This statement functions as the crucial premise that enables the argument to reconcile the tension between the 'prevailing interpretation' (rest-focused protocols) and the 'examination of training records' (athletes exercising during recovery). By redefining what 'rest' meant historically, this claim allows the author to maintain that both the interpretation and the evidence are accurate. It is not itself a conclusion but rather the logical bridge that supports the main conclusion that 'the traditional interpretation remains fundamentally sound.'",
+      "tutor_explanation": "Let's trace the argument's structure. The author presents what seems like a contradiction: historians say early practitioners emphasized rest, but records show athletes kept exercising. The statement about what 'rest' historically meant is the key that unlocks this puzzle—it explains away the apparent conflict. Notice this claim isn't being argued FOR; it's being used to support the final conclusion that the traditional interpretation is 'fundamentally sound.' That makes it a premise, specifically one that resolves a tension in the evidence.",
+      "skill_tested": "S_02: Role Identification - correctly identifying a premise that serves a reconciling function in a complex argument structure",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "It is the main conclusion that the argument as a whole is designed to establish",
+      "is_correct": false,
+      "explanation": "Trap type: Misidentifies intermediate conclusion as main. The main conclusion is actually that 'the traditional interpretation therefore remains fundamentally sound.' The definitional claim about 'rest' is offered as support for this conclusion, not as the ultimate point the argument seeks to establish.",
+      "tutor_explanation": "This is tempting because the statement about what 'rest' meant is central to the argument—it does a lot of work! But ask yourself: is the author trying to convince you of this definition, or using it to convince you of something else? The word 'therefore' later signals the real destination: defending the 'traditional interpretation.' The definition is a means to that end, not the end itself.",
+      "skill_tested": null,
+      "trap_type": "Misidentifies intermediate conclusion as main",
+      "skill_gap": "Failure to distinguish between a facilitating premise and the argument's ultimate claim"
+    },
+    {
+      "text": "It states a position that the argument ultimately rejects as historically inaccurate",
+      "is_correct": false,
+      "explanation": "Trap type: Assigns impossible role. The argument does not reject this claim; rather, it embraces and relies upon it as the crucial insight that reconciles the apparent discrepancy. The author presents this definitional clarification as accurate, not as something to be refuted.",
+      "tutor_explanation": "Read the tone around this statement carefully. The author says the discrepancy 'dissolves' once we 'recognize' this meaning of rest—that's language of endorsement, not criticism. The author isn't attacking this definition; they're relying on it to make their whole argument work. If the author rejected this claim, the entire defense of the traditional interpretation would collapse.",
+      "skill_tested": null,
+      "trap_type": "Assigns impossible role (e.g., 'evidence against' when it supports)",
+      "skill_gap": "Misreading the author's stance toward the statement—confusing endorsement with rejection"
+    },
+    {
+      "text": "It describes the evidence from training records that challenges the prevailing historical interpretation",
+      "is_correct": false,
+      "explanation": "Trap type: Confuses the target statement with adjacent text. The evidence from training records is a separate element mentioned earlier in the argument (athletes continuing 'modified exercises during injury periods'). The target statement about the meaning of 'rest' is the author's response to that evidence, not the evidence itself.",
+      "tutor_explanation": "This choice mixes up two different parts of the argument. The training records showing athletes exercised during recovery ARE the challenging evidence—but that's mentioned separately, earlier in the passage. The statement about what 'rest' meant historically comes AFTER the evidence is introduced and explains how to make sense of it. These are two different components playing different roles.",
+      "skill_tested": null,
+      "trap_type": "Confuses the target statement with adjacent text",
+      "skill_gap": "Conflating distinct argumentative elements that appear in proximity"
+    },
+    {
+      "text": "It articulates the distinction between competitive exertion and therapeutic movement as a matter of practical importance",
+      "is_correct": false,
+      "explanation": "Trap type: Describes content rather than function. While this choice accurately summarizes WHAT the statement says (the distinction between types of activity), it fails to identify the ROLE the statement plays in the argument's logical structure. Role questions require identifying function, not paraphrasing content.",
+      "tutor_explanation": "This choice tells you what the statement is ABOUT, not what it DOES in the argument. On Role questions, you need to identify function: Is it a conclusion? A premise? Support for what? Simply describing the content of the statement—yes, it does discuss a distinction—doesn't tell you its argumentative purpose. Always ask: how does this statement relate to the other claims being made?",
+      "skill_tested": null,
+      "trap_type": "Describes content rather than function",
+      "skill_gap": "Confusing description of content with identification of structural function"
+    }
+  ],
+  "metadata": {
+    "question_type": "Role of a Statement",
+    "family": "Structure Family",
+    "primary_skill_id": "S_02",
+    "primary_skill_name": "Role Identification",
+    "secondary_skills": [
+      "S_01"
+    ],
+    "difficulty": "CHALLENGING",
+    "topic": "Sports medicine",
+    "word_count": 89,
+    "validation_method": "Correct answer must accurately identify the statement's function as premise, conclusion, intermediate conclusion, background, counterargument, concession, or evidence in the argument structure"
+  }
+}
+
+{
+  "stimulus": "The prevailing interpretation of early athletic recovery protocols emphasizes that practitioners prioritized rest over active rehabilitation. However, examination of training records reveals that many athletes continued modified exercises during injury periods. This apparent discrepancy dissolves when one recognizes that \"rest\" in historical medical contexts denoted cessation of competitive exertion rather than complete immobilization. The traditional interpretation therefore remains fundamentally sound, since practitioners understood recovery to permit therapeutic movement while proscribing performance-intensity activity—a distinction that later terminology obscured.",
+  "stem": "The claim that \"rest\" in historical medical contexts denoted cessation of competitive exertion rather than complete immobilization plays which one of the following roles in the argument?",
+  "options": [
+    {
+      "text": "It provides the key premise that resolves an apparent conflict between a historical interpretation and certain evidence.",
+      "is_correct": true,
+      "explanation": "This statement functions as the crucial premise that enables the argument to reconcile the tension between the 'prevailing interpretation' (rest-focused protocols) and the 'examination of training records' (athletes exercising during recovery). By redefining what 'rest' meant historically, this claim allows the author to maintain that both the interpretation and the evidence are accurate. It is not itself a conclusion but rather the logical bridge that supports the main conclusion that 'the traditional interpretation remains fundamentally sound.'",
+      "tutor_explanation": "Let's trace the argument's structure. The author presents what seems like a contradiction: historians say early practitioners emphasized rest, but records show athletes kept exercising. The statement about what 'rest' historically meant is the key that unlocks this puzzle—it explains away the apparent conflict. Notice this claim isn't being argued FOR; it's being used to support the final conclusion that the traditional interpretation is 'fundamentally sound.' That makes it a premise, specifically one that resolves a tension in the evidence.",
+      "skill_tested": "S_02: Role Identification - correctly identifying a premise that serves a reconciling function in a complex argument structure",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "It is the main conclusion that the argument as a whole is designed to establish.",
+      "is_correct": false,
+      "explanation": "Trap type: Misidentifies intermediate conclusion as main. The main conclusion is actually that 'the traditional interpretation therefore remains fundamentally sound.' The definitional claim about 'rest' is offered as support for this conclusion, not as the ultimate point the argument seeks to establish.",
+      "tutor_explanation": "This is tempting because the statement about what 'rest' meant is central to the argument—it does a lot of work! But ask yourself: is the author trying to convince you of this definition, or using it to convince you of something else? The word 'therefore' later signals the real destination: defending the 'traditional interpretation.' The definition is a means to that end, not the end itself.",
+      "skill_tested": null,
+      "trap_type": "Misidentifies intermediate conclusion as main",
+      "skill_gap": "Failure to distinguish between a facilitating premise and the argument's ultimate claim"
+    },
+    {
+      "text": "It states a position that the argument ultimately rejects as historically inaccurate.",
+      "is_correct": false,
+      "explanation": "Trap type: Assigns impossible role. The argument does not reject this claim; rather, it embraces and relies upon it as the crucial insight that reconciles the apparent discrepancy. The author presents this definitional clarification as accurate, not as something to be refuted.",
+      "tutor_explanation": "Read the tone around this statement carefully. The author says the discrepancy 'dissolves' once we 'recognize' this meaning of rest—that's language of endorsement, not criticism. The author isn't attacking this definition; they're relying on it to make their whole argument work. If the author rejected this claim, the entire defense of the traditional interpretation would collapse.",
+      "skill_tested": null,
+      "trap_type": "Assigns impossible role (e.g., 'evidence against' when it supports)",
+      "skill_gap": "Misreading the author's stance toward the statement—confusing endorsement with rejection"
+    },
+    {
+      "text": "It describes the evidence from training records that challenges the prevailing historical interpretation.",
+      "is_correct": false,
+      "explanation": "Trap type: Confuses the target statement with adjacent text. The evidence from training records is a separate element mentioned earlier in the argument (athletes continuing 'modified exercises during injury periods'). The target statement about the meaning of 'rest' is the author's response to that evidence, not the evidence itself.",
+      "tutor_explanation": "This choice mixes up two different parts of the argument. The training records showing athletes exercised during recovery ARE the challenging evidence—but that's mentioned separately, earlier in the passage. The statement about what 'rest' meant historically comes AFTER the evidence is introduced and explains how to make sense of it. These are two different components playing different roles.",
+      "skill_tested": null,
+      "trap_type": "Confuses the target statement with adjacent text",
+      "skill_gap": "Conflating distinct argumentative elements that appear in proximity"
+    },
+    {
+      "text": "It articulates a distinction between competitive exertion and therapeutic movement that later medical terminology failed to preserve.",
+      "is_correct": false,
+      "explanation": "Trap type: Describes content rather than function. While this choice accurately summarizes WHAT the statement says (the distinction between types of activity), it fails to identify the ROLE the statement plays in the argument's logical structure. Role questions require identifying function, not paraphrasing content.",
+      "tutor_explanation": "This choice tells you what the statement is ABOUT, not what it DOES in the argument. On Role questions, you need to identify function: Is it a conclusion? A premise? Support for what? Simply describing the content of the statement—yes, it does discuss a distinction—doesn't tell you its argumentative purpose. Always ask: how does this statement relate to the other claims being made?",
+      "skill_tested": null,
+      "trap_type": "Describes content rather than function",
+      "skill_gap": "Confusing description of content with identification of structural function"
+    }
+  ],
+  "metadata": {
+    "question_type": "Role of a Statement",
+    "family": "Structure Family",
+    "primary_skill_id": "S_02",
+    "primary_skill_name": "Role Identification",
+    "secondary_skills": [
+      "S_01"
+    ],
+    "difficulty": "CHALLENGING",
+    "topic": "Sports medicine",
+    "word_count": 89,
+    "validation_method": "Correct answer must accurately identify the statement's function as premise, conclusion, intermediate conclusion, background, counterargument, concession, or evidence in the argument structure"
+  }
+}
+

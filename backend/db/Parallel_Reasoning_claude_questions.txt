@@ -1,0 +1,264 @@
+{
+  "stimulus": "Historians note that ancient civilizations that failed to protect their forests eventually experienced soil erosion and agricultural collapse. If a society does not safeguard its natural resources, it cannot sustain long-term prosperity. Our modern industrial practices show little regard for environmental limits. Therefore, without significant regulatory changes, our current economic system will not achieve lasting stability.",
+  "stem": "Which one of the following arguments exhibits a pattern of reasoning most similar to that exhibited by the argument above?",
+  "options": [
+    {
+      "text": "Athletes who neglect proper nutrition cannot perform at elite levels. This runner rarely pays attention to dietary guidelines. Thus, unless she changes her eating habits, she will not compete successfully at the championship level.",
+      "is_correct": true,
+      "explanation": "This answer exhibits identical logical structure: (1) establishes a conditional rule (no X → no Y), (2) identifies that a subject lacks X, (3) concludes that without change, subject will lack Y. This directly mirrors the stimulus's contrapositive structure: not safeguarding resources → not sustaining prosperity, applied to a specific case.",
+      "tutor_explanation": "This choice matches the stimulus perfectly. Both arguments start with a general rule (if you don't protect something important, you can't succeed), then apply it to a specific case that currently violates the rule, and conclude that without change, success won't happen. The nutrition-to-athletic-success connection mirrors the environmental protection-to-economic-stability connection in form.",
+      "skill_tested": "FL_02: Contrapositive Operations",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Ecosystems that lose keystone species often collapse entirely. Several marine habitats have recently lost their primary predators. Therefore, these habitats require immediate intervention to prevent ecosystem failure.",
+      "is_correct": false,
+      "explanation": "Same topic trap (environmental). While superficially similar in subject matter, this argument lacks the contrapositive conditional structure. It moves from observation to prescription rather than applying a conditional rule with a 'without change' qualifier.",
+      "tutor_explanation": "This choice discusses environmental topics like the stimulus, which might make it feel similar. But look at the structure: it simply observes a problem and prescribes a solution. The stimulus has a specific pattern—a conditional rule applied to a case with a 'without change' conclusion. Don't be fooled by matching topics; focus on matching logical form.",
+      "skill_tested": null,
+      "trap_type": "Same topic but different logical structure",
+      "skill_gap": "Confusing topical similarity with structural similarity"
+    },
+    {
+      "text": "If a company invests in employee training, then productivity increases. This firm has invested heavily in training programs. Therefore, the firm will see productivity gains.",
+      "is_correct": false,
+      "explanation": "Reverses conditional direction trap. This argument affirms the antecedent (if A then B; A; therefore B), while the stimulus uses a negative conditional applied to a case lacking the antecedent. The logical operation is fundamentally different.",
+      "tutor_explanation": "This choice has a conditional structure, but it runs in the wrong direction. The stimulus says 'if NOT X, then NOT Y' and applies it when X is absent. This choice says 'if X, then Y' and applies it when X is present. That's a completely different logical move—affirming rather than denying, positive rather than negative conditions.",
+      "skill_tested": null,
+      "trap_type": "Reverses conditional direction",
+      "skill_gap": "FL_02: Failing to distinguish modus ponens from contrapositive reasoning"
+    },
+    {
+      "text": "All successful businesses monitor customer feedback closely. Some technology startups fail to gather user data systematically. Hence, at least some technology startups will not become successful businesses.",
+      "is_correct": false,
+      "explanation": "Similar feel but wrong quantifier scope trap. This argument uses 'all-some' quantifier reasoning rather than conditional reasoning about a specific case. The conclusion applies to 'some' members of a class rather than predicting an outcome for a specific subject without change.",
+      "tutor_explanation": "This might seem similar because it has a rule and applies it. But notice the quantifiers: 'all' and 'some.' The stimulus doesn't reason about categories—it applies a conditional to one specific case (our current system) and predicts what will happen without change. This choice makes a general claim about 'some startups' rather than a specific prediction.",
+      "skill_tested": null,
+      "trap_type": "Similar feel but wrong quantifier scope",
+      "skill_gap": "FL_04: Confusing quantifier logic with conditional logic"
+    },
+    {
+      "text": "Cities that invest in public transit reduce traffic congestion. Because reduced congestion improves air quality, cities investing in public transit will have cleaner air.",
+      "is_correct": false,
+      "explanation": "Same conclusion type but different premise structure trap. This argument chains two conditionals together (A→B, B→C, therefore A→C), creating a transitive inference. The stimulus does not chain conditionals; it applies a single negative conditional to a specific case.",
+      "tutor_explanation": "This choice links two separate conditional statements together in a chain (transit reduces congestion, congestion reduction improves air, so transit improves air). That's different from what the stimulus does. The stimulus takes one conditional rule and applies it to a specific situation. Chaining conditionals is a different logical operation than applying a contrapositive.",
+      "skill_tested": null,
+      "trap_type": "Same conclusion type but different premise structure",
+      "skill_gap": "Failing to distinguish conditional chains from single conditional application"
+    }
+  ],
+  "metadata": {
+    "question_type": "Parallel Reasoning",
+    "family": "Structure Family",
+    "primary_skill_id": "FL_02",
+    "primary_skill_name": "Contrapositive Operations",
+    "secondary_skills": [
+      "S_01",
+      "FL_04"
+    ],
+    "difficulty": "EASY",
+    "topic": "Environmental regulation",
+    "word_count": 62,
+    "validation_method": "Correct answer must have identical logical structure: same number of premises, same conditional/quantifier relationships, same conclusion type"
+  }
+}
+
+{
+  "stimulus": "Any regulation that fails to consider economic impact cannot achieve lasting compliance. Environmental policies that ignore market forces fail to consider economic impact. Therefore, environmental policies that ignore market forces cannot achieve lasting compliance. This principle extends further: regulations that cannot achieve lasting compliance inevitably face political opposition. Thus, environmental policies that ignore market forces will inevitably face political opposition.",
+  "stem": "Which one of the following arguments exhibits a pattern of reasoning most similar to that exhibited by the argument above?",
+  "options": [
+    {
+      "text": "Any investment strategy that neglects risk assessment cannot generate sustainable returns. Portfolio approaches that dismiss volatility analysis neglect risk assessment. Therefore, portfolio approaches that dismiss volatility analysis cannot generate sustainable returns. Investment strategies that cannot generate sustainable returns ultimately lose client confidence. Thus, portfolio approaches that dismiss volatility analysis will ultimately lose client confidence.",
+      "is_correct": true,
+      "explanation": "This answer perfectly mirrors the stimulus structure: (1) A conditional establishing that lacking X prevents Y; (2) A premise establishing a specific category lacks X; (3) A conclusion applying the contrapositive to that category; (4) A second conditional linking failure of Y to consequence Z; (5) A final conclusion chaining to Z. The logical form is identical.",
+      "tutor_explanation": "This is correct because it follows the exact same logical chain as the stimulus. First, it establishes a conditional (neglecting risk assessment prevents sustainable returns), then identifies something that falls into that category (portfolio approaches dismissing volatility analysis), applies the contrapositive to reach an intermediate conclusion, introduces a second conditional about consequences, and chains to a final conclusion. The structure mirrors the stimulus perfectly, even though the topic is completely different.",
+      "skill_tested": "FL_02: Contrapositive Operations",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Environmental policies that consider economic impact achieve lasting compliance. Market-based approaches consider economic impact. Therefore, market-based approaches achieve lasting compliance. Regulations achieving lasting compliance gain public support. Thus, market-based approaches gain public support.",
+      "is_correct": false,
+      "explanation": "Same topic trap. This uses the same environmental regulation topic but applies the conditional directly (affirming the antecedent) rather than using the contrapositive. The stimulus negates conditions, while this affirms them.",
+      "tutor_explanation": "This choice is tempting because it discusses environmental policy and economic impact, just like the stimulus. However, look at the logical structure: this argument affirms that something DOES have a quality, while the stimulus works through what happens when something LACKS a quality. The stimulus uses negation throughout (fails to consider, ignore, cannot achieve), but this choice uses positive statements. Same topic, different logical form.",
+      "skill_tested": null,
+      "trap_type": "Same topic but different logical structure",
+      "skill_gap": "Distinguishing topic from logical structure"
+    },
+    {
+      "text": "Any curriculum that overlooks practical application cannot produce competent graduates. Programs emphasizing theory over practice overlook practical application. Therefore, programs emphasizing theory over practice cannot produce competent graduates. Educational approaches that produce competent graduates receive accreditation. Thus, programs emphasizing theory over practice receive accreditation.",
+      "is_correct": false,
+      "explanation": "Same conclusion type but different premise structure. The final step incorrectly applies the conditional to 'cannot produce competent graduates' as if it were 'produce competent graduates.' This reverses the relationship in the second conditional chain.",
+      "tutor_explanation": "This choice starts similarly to the stimulus but makes a critical error in the final step. The second conditional says programs that PRODUCE competent graduates receive accreditation. But the intermediate conclusion establishes these programs CANNOT produce competent graduates. The argument then incorrectly concludes they receive accreditation, which doesn't follow. The stimulus correctly chains negative consequences to negative consequences.",
+      "skill_tested": null,
+      "trap_type": "Same conclusion type but different premise structure",
+      "skill_gap": "Tracking negation through conditional chains"
+    },
+    {
+      "text": "Policies ignoring market forces face political opposition. Environmental regulations often ignore market forces. Therefore, some environmental regulations face political opposition. Regulations facing political opposition require revision. Thus, some environmental regulations require revision.",
+      "is_correct": false,
+      "explanation": "Similar feel but wrong quantifier scope. This uses 'often' and 'some' quantifiers rather than universal conditional statements. The stimulus makes categorical claims about all members of a class, while this makes claims about some members.",
+      "tutor_explanation": "This choice has a similar feel because it discusses the same topics, but notice the key words 'often' and 'some.' The stimulus makes universal claims: ANY regulation that fails, environmental policies that ignore (meaning all of them). This choice hedges with quantifiers, concluding only that SOME regulations face these consequences. That's a fundamentally different logical structure.",
+      "skill_tested": null,
+      "trap_type": "Similar feel but wrong quantifier scope",
+      "skill_gap": "FL_04: Distinguishing universal from particular claims"
+    },
+    {
+      "text": "Lasting compliance requires considering economic impact. Considering economic impact requires understanding market forces. Therefore, lasting compliance requires understanding market forces. Political support depends on lasting compliance. Thus, political support requires understanding market forces.",
+      "is_correct": false,
+      "explanation": "Reverses conditional direction. This chains requirements forward (A requires B, B requires C, therefore A requires C) rather than using contrapositive reasoning about what PREVENTS outcomes. The stimulus works from 'failing to do X prevents Y' while this works from 'achieving X requires Y.'",
+      "tutor_explanation": "This choice chains conditionals, but in the wrong direction. The stimulus argues from negative conditions: if you FAIL to do something, you CANNOT achieve something else. This choice argues from requirements: achieving X REQUIRES Y. Both involve conditionals, but the logical direction is reversed. The stimulus uses contrapositive reasoning (not-Y means not-X), while this uses direct conditional chaining (X requires Y, Y requires Z, so X requires Z).",
+      "skill_tested": null,
+      "trap_type": "Reverses conditional direction",
+      "skill_gap": "FL_02: Recognizing contrapositive vs. direct conditional chains"
+    }
+  ],
+  "metadata": {
+    "question_type": "Parallel Reasoning",
+    "family": "Structure Family",
+    "primary_skill_id": "FL_02",
+    "primary_skill_name": "Contrapositive Operations",
+    "secondary_skills": [
+      "S_01",
+      "FL_04"
+    ],
+    "difficulty": "MEDIUM",
+    "topic": "Environmental regulation",
+    "word_count": 67,
+    "validation_method": "The correct answer must have IDENTICAL logical structure: same number of premises, same conditional/quantifier relationships, same conclusion type. Content is irrelevant; form is everything."
+  }
+}
+
+{
+  "stimulus": "Historical reforms aimed at reducing judicial corruption often expanded bureaucratic oversight mechanisms. Yet increased oversight invariably concentrates power among those administering it. Thus, if a reform genuinely curtails corruption, it necessarily empowers a new class of administrators. Any measure that empowers administrators, however, creates fresh opportunities for abuse. Consequently, no anti-corruption reform can entirely eliminate the conditions that foster misconduct.",
+  "stem": "The pattern of reasoning in the argument above is most similar to that in which one of the following?",
+  "options": [
+    {
+      "text": "Environmental regulations designed to reduce industrial pollution require extensive monitoring systems. Monitoring systems inevitably demand specialized technical expertise. Therefore, if a regulation effectively reduces pollution, it must rely on expert oversight. But expert oversight creates dependency on those experts' continued cooperation. Thus, no pollution regulation can wholly eliminate vulnerability to disruption in enforcement.",
+      "is_correct": true,
+      "explanation": "This answer perfectly mirrors the stimulus structure: (1) Reform aimed at X requires mechanism Y; (2) Y invariably leads to Z; (3) Therefore, if reform achieves X, then Z occurs; (4) Z leads to W (a problematic outcome); (5) Conclusion: No reform aimed at X can entirely eliminate W. Both arguments employ nested conditionals culminating in a universal negative conclusion derived through contrapositive reasoning.",
+      "tutor_explanation": "This is correct because it follows the exact same logical chain as the stimulus. Both start with a reform designed to address a problem, show that the reform mechanism necessarily creates a secondary condition, then demonstrate that this secondary condition leads to a problematic outcome related to the original concern. The key is tracing how the conditional chain (reform → mechanism → concentration of power/expertise → new vulnerability) leads to the universal negative conclusion.",
+      "skill_tested": "FL_02: Contrapositive Operations",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Agricultural subsidies intended to protect small farmers often lead to market distortions. Market distortions can harm consumers through higher prices. Some subsidies do successfully protect farmers while minimizing consumer harm. Therefore, well-designed agricultural policy can achieve its goals without significant negative consequences.",
+      "is_correct": false,
+      "explanation": "This distractor uses the same topic domain (policy reform with unintended consequences) but has fundamentally different logical structure. It uses 'can' and 'some' rather than universal conditionals, and reaches an optimistic rather than pessimistic conclusion. The stimulus uses necessary conditionals ('invariably,' 'necessarily') to reach a universal negative.",
+      "tutor_explanation": "This choice is tempting because it discusses policies with unintended consequences, similar to the stimulus. However, notice the key difference: this argument concludes that success IS possible ('can achieve its goals'), while the stimulus concludes that complete success is IMPOSSIBLE ('no reform can entirely eliminate'). The logical structures are actually opposites—one uses universal necessity, the other uses possibility.",
+      "skill_tested": null,
+      "trap_type": "Same topic but different logical structure",
+      "skill_gap": "Distinguishing universal from particular claims"
+    },
+    {
+      "text": "Educational reforms that increase standardized testing claim to improve accountability. Improved accountability leads to better educational outcomes. If outcomes improve, then testing has succeeded. Successful testing programs warrant continued implementation. Therefore, standardized testing reforms should be maintained.",
+      "is_correct": false,
+      "explanation": "This distractor shares the conclusion type (about reform outcomes) but has entirely different premise structure. It constructs a simple linear chain of positive conditionals leading to a prescriptive conclusion, whereas the stimulus uses nested conditionals with a negative universal conclusion about inherent limitations.",
+      "tutor_explanation": "This might seem similar because it discusses reform and uses conditional reasoning. But look carefully: this argument builds a straightforward chain leading to a recommendation ('should be maintained'), while the stimulus reveals an inherent paradox leading to an impossibility claim. The stimulus shows why reform CANNOT fully succeed; this choice argues why reform SHOULD continue.",
+      "skill_tested": null,
+      "trap_type": "Same conclusion type but different premise structure",
+      "skill_gap": "Recognizing premise-to-conclusion relationships"
+    },
+    {
+      "text": "If monitoring systems do not concentrate power, then oversight mechanisms have not been expanded. Expanded oversight is required only when reforms target corruption. Therefore, when power is not concentrated among administrators, no genuine anti-corruption effort has occurred.",
+      "is_correct": false,
+      "explanation": "This distractor explicitly reverses the conditional direction from the stimulus. The stimulus states: expanded oversight → concentrated power. This choice states: ~concentrated power → ~expanded oversight (which is the contrapositive) but then misapplies it by reversing the second conditional relationship, creating invalid reasoning.",
+      "tutor_explanation": "This choice is tricky because it uses contrapositive language ('if not... then not...'), which might seem to match the stimulus's use of contrapositive reasoning. However, the stimulus uses contrapositives correctly within a chain leading to a conclusion about reform limitations. This choice scrambles the conditional relationships, reversing the direction of inference in a way that doesn't parallel the original structure.",
+      "skill_tested": null,
+      "trap_type": "Reverses conditional direction",
+      "skill_gap": "Tracking conditional direction across multiple statements"
+    },
+    {
+      "text": "Most diplomatic initiatives designed to reduce international tensions require compromise. Compromise sometimes weakens a nation's negotiating position. Therefore, some diplomatic initiatives may undermine the very stability they seek to achieve.",
+      "is_correct": false,
+      "explanation": "This distractor has a similar 'feel' to the stimulus (well-intentioned measures with potential negative consequences) but uses wrong quantifier scope. It employs 'most' and 'sometimes' and 'some... may,' yielding only a possibility claim. The stimulus uses universal quantifiers ('invariably,' 'any,' 'no') throughout to reach a necessary conclusion.",
+      "tutor_explanation": "This choice has the same pessimistic flavor—policies might backfire—which makes it appealing. But notice the crucial difference in strength: words like 'most,' 'sometimes,' and 'may' indicate mere possibility, while the stimulus uses 'invariably,' 'necessarily,' and 'no... can entirely' to establish certainty. The stimulus proves something MUST happen; this choice only suggests something MIGHT happen.",
+      "skill_tested": null,
+      "trap_type": "Similar feel but wrong quantifier scope",
+      "skill_gap": "FL_04: Quantifier Scope - distinguishing universal from existential claims"
+    }
+  ],
+  "metadata": {
+    "question_type": "Parallel Reasoning",
+    "family": "Structure Family",
+    "primary_skill_id": "FL_02",
+    "primary_skill_name": "Contrapositive Operations",
+    "secondary_skills": [
+      "S_01",
+      "FL_04"
+    ],
+    "difficulty": "HARD",
+    "topic": "Ethics",
+    "word_count": 68,
+    "validation_method": "Structural isomorphism: correct answer must replicate exact conditional chain pattern (A→B, B→C, therefore A→C, C→D, therefore no A entirely avoids D) with matching quantifier scope throughout"
+  }
+}
+
+{
+  "stimulus": "Recent analyses of software licensing agreements reveal that any program whose source code is freely distributable cannot be subject to restrictive patent claims. Since machine learning algorithms that incorporate open-source components necessarily contain freely distributable code, it follows that no machine learning algorithm incorporating open-source components can be subject to restrictive patent claims.",
+  "stem": "Which one of the following exhibits a pattern of reasoning most closely parallel to the reasoning in the argument above?",
+  "options": [
+    {
+      "text": "Any pharmaceutical compound that undergoes accelerated clinical trials cannot receive standard regulatory approval. Since experimental gene therapies that utilize viral vectors necessarily undergo accelerated trials, no experimental gene therapy utilizing viral vectors can receive standard regulatory approval.",
+      "is_correct": true,
+      "explanation": "This answer perfectly mirrors the stimulus structure: (1) All A → ~B (freely distributable → not subject to restrictive patents); (2) All C → A (ML algorithms with open-source → contain freely distributable code); (3) Conclusion: All C → ~B (ML algorithms with open-source → not subject to restrictive patents). The correct answer follows identical structure: All accelerated trials → ~standard approval; All viral vector therapies → accelerated trials; Therefore: All viral vector therapies → ~standard approval. This is a valid chain of conditionals with the contrapositive relationship preserved.",
+      "tutor_explanation": "Let's map out the logical structure. The stimulus says: (1) freely distributable code → cannot have restrictive patents; (2) ML algorithms with open-source → have freely distributable code. By chaining these conditionals, we get: ML with open-source → freely distributable → no restrictive patents. The correct answer follows this exact pattern: (1) accelerated trials → no standard approval; (2) viral vector therapies → accelerated trials. Chain them: viral vector therapies → accelerated trials → no standard approval. Both arguments use the same valid conditional chain structure.",
+      "skill_tested": "FL_02: Contrapositive Operations - recognizing the valid conditional chain A→~B, C→A, therefore C→~B",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Any pharmaceutical compound that fails clinical trials cannot receive market authorization. Since experimental gene therapies rarely fail clinical trials when properly designed, most experimental gene therapies can receive market authorization.",
+      "is_correct": false,
+      "explanation": "This distractor shifts from universal quantifiers ('any,' 'no') to probabilistic quantifiers ('rarely,' 'most'). The stimulus uses strict conditionals throughout, while this answer introduces frequency language that changes the logical form entirely. Tests whether students recognize quantifier scope differences.",
+      "tutor_explanation": "Watch the quantifiers carefully. The stimulus uses strict universal terms: 'any,' 'cannot,' 'necessarily,' 'no.' This answer choice shifts to probabilistic language: 'rarely' and 'most.' That's a fundamentally different logical structure. When the original argument deals in absolutes (all X are Y), a parallel argument must also deal in absolutes—not in probabilities or frequencies. The soft quantifiers here make this a different type of reasoning entirely.",
+      "skill_tested": null,
+      "trap_type": "Similar feel but wrong quantifier scope",
+      "skill_gap": "FL_04: Quantifier Scope - confusing universal quantifiers with probabilistic language"
+    },
+    {
+      "text": "Any research methodology that permits data manipulation cannot yield replicable findings. Since longitudinal cohort studies that rely on self-reported data permit some data manipulation, no longitudinal cohort study relying on self-reported data yields replicable findings.",
+      "is_correct": false,
+      "explanation": "This distractor introduces a subtle scope shift: the stimulus says algorithms 'necessarily contain' (universal inclusion), but this answer says studies 'permit some' (partial allowance). The shift from 'necessarily X' to 'permits some X' breaks the logical equivalence. The conditional chain appears similar but fails on the strength of the middle term.",
+      "tutor_explanation": "This one is tricky because the structure looks almost identical at first glance. But notice the key difference in the middle premise. The stimulus says algorithms 'necessarily contain' freely distributable code—that's a universal claim. This answer says studies 'permit some data manipulation'—that's a weaker, partial claim. 'Necessarily contains' means 100% inclusion; 'permits some' just means it's possible or partial. This subtle shift breaks the valid conditional chain.",
+      "skill_tested": null,
+      "trap_type": "Shell game - mimics correct logic but fails on one technicality",
+      "skill_gap": "FL_02: Contrapositive Operations - missing that 'permits some' is weaker than 'necessarily contains'"
+    },
+    {
+      "text": "Any chemical process that generates toxic byproducts must comply with environmental disposal regulations. Since industrial solvents used in semiconductor manufacturing generate toxic byproducts, industrial solvents used in semiconductor manufacturing must comply with environmental disposal regulations.",
+      "is_correct": false,
+      "explanation": "This distractor reverses the polarity of the conclusion. The stimulus concludes with a negative ('cannot be subject to'), but this answer concludes with an affirmative obligation ('must comply with'). While the conditional chain is valid, the structural form differs because the stimulus specifically demonstrates deriving a negative conclusion through the chain.",
+      "tutor_explanation": "The reasoning here is actually valid—it's a proper conditional chain. But for parallel reasoning questions, we need the structure to match, not just be valid. Look at the conclusions: the stimulus concludes that something 'cannot' happen (a prohibition/impossibility). This answer concludes that something 'must' happen (an obligation/requirement). That's the opposite polarity. Both are valid chains, but they have different logical forms because one derives a negative conclusion and the other derives a positive obligation.",
+      "skill_tested": null,
+      "trap_type": "Same conclusion type but different premise structure",
+      "skill_gap": "FL_02: Contrapositive Operations - failing to recognize that conclusion polarity is part of structural matching"
+    },
+    {
+      "text": "Any intellectual property that is publicly disclosed before filing loses patent eligibility. Machine learning algorithms are a form of intellectual property. Therefore, machine learning algorithms that are publicly disclosed before filing lose patent eligibility.",
+      "is_correct": false,
+      "explanation": "This distractor uses the same topic (intellectual property, machine learning, patents) but employs a different logical structure. It's a simple categorical syllogism (All A are B, All C are A, therefore All C are B) rather than a conditional chain involving a negative conclusion. Students who focus on surface content rather than logical form may select this.",
+      "tutor_explanation": "Don't be fooled by familiar terms! This answer talks about intellectual property, machine learning, and patents—the same concepts as the stimulus. But parallel reasoning questions test whether you can match logical structure, not topic. The stimulus has a three-part conditional chain leading to a negative conclusion ('cannot be subject to'). This answer is a simpler categorical syllogism where being in one category means being in another. The surface similarity in subject matter masks a fundamentally different argument form.",
+      "skill_tested": null,
+      "trap_type": "Same topic but different logical structure",
+      "skill_gap": "S_01: Main Conclusion ID - distracted by topic similarity rather than analyzing argument structure"
+    }
+  ],
+  "metadata": {
+    "question_type": "Parallel Reasoning",
+    "family": "Structure Family",
+    "primary_skill_id": "FL_02",
+    "primary_skill_name": "Contrapositive Operations",
+    "secondary_skills": [
+      "S_01",
+      "FL_04"
+    ],
+    "difficulty": "CHALLENGING",
+    "topic": "Intellectual property",
+    "word_count": 58,
+    "validation_method": "The correct answer must have IDENTICAL logical structure: same number of premises, same conditional/quantifier relationships, same conclusion type. Structure: Universal conditional (A→~B), Universal conditional linking new term to first antecedent (C→A), Conclusion deriving new term to original consequent (C→~B)."
+  }
+}
+

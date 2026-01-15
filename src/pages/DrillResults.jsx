@@ -3,6 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { renderTextWithHighlights } from '../utils/highlightRenderer'
 import { getChoiceText } from '../utils/answerChoiceUtils'
+import { cn } from '../utils'
+import { Button } from '../components/ui/Button'
+import { Card } from '../components/ui/Card'
+import { Badge } from '../components/ui/Badge'
 
 const letterFromIndex = (index) => String.fromCharCode(65 + index)
 
@@ -63,11 +67,10 @@ const DrillResults = () => {
 
   if (loading) {
     return (
-      <div className="py-10">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="rounded-3xl border border-border-default bg-bg-secondary/80 p-8 text-center shadow-card">
-            <p className="text-lg text-text-secondary">Loading drill results...</p>
-          </div>
+      <div className="flex h-screen items-center justify-center bg-background-light dark:bg-background-dark">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="size-12 rounded-full border-4 border-terracotta border-t-transparent animate-spin"></div>
+          <p className="text-text-main/50 font-bold uppercase tracking-widest text-xs">Loading Results...</p>
         </div>
       </div>
     )
@@ -75,294 +78,182 @@ const DrillResults = () => {
 
   if (error) {
     return (
-      <div className="py-10">
-        <div className="max-w-5xl mx-auto px-4 space-y-6">
-          <div className="rounded-3xl border border-danger/40 bg-danger/10 p-8 text-center shadow-card">
-            <p className="text-lg font-semibold text-danger mb-2">Error</p>
-            <p className="text-sm text-text-primary mb-4">{error}</p>
-            <button
-              type="button"
-              className="px-4 py-2 rounded-xl bg-button-primary hover:bg-button-primary-hover text-white transition"
-              onClick={() => navigate('/drill')}
-            >
-              Back to Drills
-            </button>
+      <div className="flex h-screen items-center justify-center bg-background-light dark:bg-background-dark p-6">
+        <Card variant="flat" className="bg-white dark:bg-white/5 max-w-md w-full text-center space-y-6">
+          <div className="size-16 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto">
+            <span className="material-symbols-outlined text-red-500 text-3xl">error_outline</span>
           </div>
-        </div>
+          <div className="space-y-2">
+            <h2 className="text-xl font-bold text-text-main dark:text-white">Unable to Load</h2>
+            <p className="text-sm text-text-main/60 dark:text-white/60">{error}</p>
+          </div>
+          <Button onClick={() => navigate('/drill')}>Back to Practice</Button>
+        </Card>
       </div>
     )
   }
 
-  if (!drillData) {
-    return null
-  }
+  if (!drillData) return null
 
   const userHighlights = drillData.user_highlights || {}
   const drillConfig = drillData.drill_config || {}
-  const skillPerformance = drillData.skill_performance || {}
   const questionResults = Array.isArray(drillData.question_results) ? drillData.question_results : []
 
   const totalQuestions = drillData.total_questions ?? 0
   const correctAnswers = drillData.correct_answers ?? 0
   const reviewCount = Math.max(totalQuestions - correctAnswers, 0)
-  const formattedScore = useMemo(() => Math.round(drillData.score_percentage ?? 0), [drillData.score_percentage])
-  const completedLabel = drillData.completed_at
-    ? new Date(drillData.completed_at).toLocaleString()
-    : 'just now'
-  const timeTakenLabel = typeof drillData.time_taken === 'number'
-    ? `${Math.max(Math.round(drillData.time_taken / 60), 1)} min`
-    : 'Untimed'
-  const hasTimingConfig = Object.prototype.hasOwnProperty.call(drillConfig, 'timing')
-  const timingLabel = typeof drillConfig.timing === 'number'
-    ? `${Math.round(drillConfig.timing / 60)} min limit`
-    : 'Untimed'
-  const showSkills = Array.isArray(drillConfig.skills) && drillConfig.skills.length > 0
-  const difficultyLabel = Array.isArray(drillConfig.difficulty)
-    ? drillConfig.difficulty.join(', ')
-    : drillConfig.difficulty
-  const skillEntries = Object.entries(skillPerformance)
+  const formattedScore = Math.round(drillData.score_percentage ?? 0)
 
   return (
-    <div className="py-10">
-      <div className="max-w-5xl mx-auto px-4 space-y-8">
-        {/* Summary Section */}
-        <section className="rounded-3xl border border-border-default bg-gradient-to-br from-bg-secondary/90 to-bg-tertiary/95 p-8 text-text-primary shadow-card">
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-text-muted mb-2">Performance recap</p>
-              <h1 className="font-display text-4xl md:text-5xl text-text-primary leading-tight">Drill Results</h1>
-              <p className="text-text-secondary mt-3">
-                Completed {completedLabel}
-              </p>
-            </div>
-            <div className="flex gap-3 flex-wrap">
-              <button
-                type="button"
-                className="px-4 py-2 rounded-xl bg-bg-secondary border border-border-default text-text-primary hover:bg-bg-tertiary transition"
-                onClick={() => navigate('/drill')}
-              >
-                Build New Drill
-              </button>
-              <button
-                type="button"
-                className="px-4 py-2 rounded-xl bg-button-primary hover:bg-button-primary-hover text-white shadow-glow-primary transition"
-                onClick={() => navigate('/study-plan')}
-              >
-                View Study Plan
-              </button>
-            </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3 mt-10">
-            <div className="rounded-2xl border border-border-default bg-bg-primary/50 p-4 text-center backdrop-blur">
-              <p className="text-[11px] uppercase tracking-[0.4em] text-text-tertiary">Total Questions</p>
-              <p className="font-display text-4xl text-text-primary mt-3">{totalQuestions}</p>
-            </div>
-            <div className="rounded-2xl border border-brand-primary/30 bg-brand-primary/10 p-4 text-center">
-              <p className="text-[11px] uppercase tracking-[0.4em] text-text-tertiary">Correct</p>
-              <p className="font-display text-4xl text-success mt-3">{correctAnswers}</p>
-              <p className="text-sm text-text-secondary">{reviewCount} to review</p>
-            </div>
-            <div className="rounded-2xl border border-border-active bg-brand-secondary/10 p-4 text-center">
-              <p className="text-[11px] uppercase tracking-[0.4em] text-text-tertiary">Score</p>
-              <p className="font-display text-4xl text-text-primary mt-3">{formattedScore}%</p>
-              <p className="text-sm text-text-secondary">{timeTakenLabel}</p>
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {showSkills && (
-              <div className="rounded-2xl border border-border-default bg-bg-secondary/70 p-4">
-                <p className="text-[11px] uppercase tracking-[0.3em] text-text-muted mb-3">Skills Targeted</p>
-                <div className="flex flex-wrap gap-2">
-                  {drillConfig.skills.map((skill) => (
-                    <span key={skill} className="px-3 py-1 rounded-full border border-border-default text-xs text-text-secondary">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-            {difficultyLabel && (
-              <div className="rounded-2xl border border-border-default bg-bg-secondary/70 p-4">
-                <p className="text-[11px] uppercase tracking-[0.3em] text-text-muted mb-3">Difficulty Mix</p>
-                <p className="text-text-primary text-lg font-medium">{difficultyLabel}</p>
-              </div>
-            )}
-            {hasTimingConfig && (
-              <div className="rounded-2xl border border-border-default bg-bg-secondary/70 p-4">
-                <p className="text-[11px] uppercase tracking-[0.3em] text-text-muted mb-3">Timing</p>
-                <p className="text-text-primary text-lg font-medium">{timingLabel}</p>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {skillEntries.length > 0 && (
-          <section className="rounded-3xl border border-border-default bg-bg-secondary/80 p-6 shadow-card">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-text-muted">Skill focus</p>
-                <h2 className="font-display text-3xl text-text-primary">Performance by Skill</h2>
-              </div>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {skillEntries.map(([skill, stats]) => {
-                const percentage = stats.total > 0
-                  ? Math.round((stats.correct / stats.total) * 100)
-                  : 0
-                return (
-                  <div
-                    key={skill}
-                    className="rounded-2xl border border-border-default bg-bg-primary/60 p-5 flex flex-col gap-2"
-                  >
-                    <p className="text-sm text-text-secondary uppercase tracking-wide">{skill}</p>
-                    <p className="text-3xl font-semibold text-text-primary">{percentage}%</p>
-                    <p className="text-sm text-text-tertiary">{stats.correct} / {stats.total} correct</p>
-                    <div className="h-2 w-full rounded-full bg-bg-secondary">
-                      <div
-                        className="h-full rounded-full bg-brand-primary"
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* Questions Section */}
-        <section className="rounded-3xl border border-border-default bg-bg-secondary/80 p-6 text-text-primary space-y-6 shadow-card">
-          <div className="flex flex-col gap-2">
-            <p className="text-xs uppercase tracking-[0.3em] text-text-muted">Deep dive</p>
-            <h2 className="font-display text-3xl">Question Review</h2>
-          </div>
-
-          {questionResults.map((result, index) => {
-            const questionDetails = result.question_details
-            if (!questionDetails) return null
-
-            const userAnswerIndex = indexFromLetter(result.user_answer)
-            const correctAnswerIndex = indexFromLetter(result.correct_answer)
-
-            const userAnswerLetter = result.user_answer || null
-            const correctAnswerLetter = result.correct_answer || null
-
-            // Get highlights for this question
-            const questionHighlights = userHighlights[result.question_id] || []
-            const answerChoices = Array.isArray(questionDetails.answer_choices)
-              ? questionDetails.answer_choices
-              : []
-
-            return (
-              <div
-                key={result.question_id}
-                className="rounded-2xl border border-border-default bg-bg-primary/70 p-5 text-text-primary space-y-4 shadow-sm"
-              >
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-text-primary">
-                      Question {index + 1}
-                    </span>
-                    <div className="flex gap-2 text-xs text-text-secondary">
-                      {questionDetails.question_type && (
-                        <span className="px-2 py-0.5 rounded-full bg-brand-primary/20 text-brand-primary">
-                          {questionDetails.question_type}
-                        </span>
-                      )}
-                      {questionDetails.difficulty_level && (
-                        <span className="px-2 py-0.5 rounded-full bg-warning/10 text-warning">
-                          Difficulty: {questionDetails.difficulty_level}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <span
-                    className={`text-sm font-semibold ${
-                      result.is_correct ? 'text-success' : 'text-danger'
-                    }`}
-                  >
-                    {result.is_correct ? 'Correct' : 'Review this one'}
-                  </span>
-                </div>
-
-                <p className="text-sm text-text-primary">
-                  {renderTextWithHighlights(questionDetails.question_text, questionHighlights)}
-                </p>
-
-                {questionDetails.passage_text && (
-                  <div className="bg-bg-secondary rounded-xl border border-border-default p-4 text-xs text-text-secondary whitespace-pre-wrap">
-                    {renderTextWithHighlights(questionDetails.passage_text, questionHighlights)}
-                  </div>
-                )}
-
-                <div className="grid gap-2">
-                  {answerChoices.map((choice, choiceIndex) => {
-                    const optionLetter = letterFromIndex(choiceIndex)
-                    const optionText = getChoiceText(choice)
-                    const isCorrect = choiceIndex === correctAnswerIndex
-                    const isSelected = choiceIndex === userAnswerIndex
-
-                    let optionClass = 'border border-border-default bg-bg-secondary text-text-primary'
-                    if (isCorrect) {
-                      optionClass = 'border-success bg-success/10 text-success'
-                    } else if (isSelected && !isCorrect) {
-                      optionClass = 'border-danger bg-danger/10 text-danger'
-                    }
-
-                    return (
-                      <div
-                        key={`choice-${choiceIndex}-${choice?.letter || ''}`}
-                        className={`rounded-lg px-4 py-2 text-sm flex items-start gap-3 ${optionClass}`}
-                      >
-                        <span className="font-semibold">{optionLetter}.</span>
-                        <span className="leading-relaxed">{optionText}</span>
-                        {isSelected && !isCorrect && (
-                          <span className="ml-auto text-xs uppercase tracking-wide">
-                            Your pick
-                          </span>
-                        )}
-                        {isCorrect && (
-                          <span className="ml-auto text-xs uppercase tracking-wide">
-                            Correct answer
-                          </span>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-
-                <div className="text-xs text-text-secondary flex flex-wrap gap-4">
-                  <span>
-                    <span className="font-semibold text-text-primary mr-1">Your answer:</span>
-                    {userAnswerLetter || 'No selection'}
-                  </span>
-                  <span>
-                    <span className="font-semibold text-text-primary mr-1">Correct answer:</span>
-                    {correctAnswerLetter || '—'}
-                  </span>
-                </div>
-              </div>
-            )
-          })}
-        </section>
-
-        <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
+    <div className="flex-1 flex flex-col h-screen bg-background-light dark:bg-background-dark overflow-hidden">
+      {/* Header */}
+      <header className="h-20 border-b border-sand-dark/30 dark:border-white/5 flex items-center justify-between px-6 lg:px-10 shrink-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-10">
+        <div className="flex items-center gap-6">
           <button
-            type="button"
-            className="px-4 py-2 rounded-xl bg-bg-secondary border border-border-default hover:bg-bg-tertiary text-text-primary transition"
+            onClick={() => navigate(-1)}
+            className="size-10 rounded-full border border-sand-dark/30 flex items-center justify-center hover:bg-sand/30 transition-colors"
+          >
+            <span className="material-symbols-outlined text-xl text-text-main dark:text-white">arrow_back</span>
+          </button>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-terracotta">Drill Report</span>
+            <h1 className="font-slab font-semibold text-text-main dark:text-white">Performance Overview</h1>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="primary"
             onClick={() => navigate('/drill')}
           >
-            Review Builder
-          </button>
-          <button
-            type="button"
-            className="px-4 py-2 rounded-xl bg-button-primary hover:bg-button-primary-hover text-white shadow-glow-primary transition"
-            onClick={() => navigate('/analytics')}
-          >
-            View Analytics
-          </button>
+            New Drill
+          </Button>
+        </div>
+      </header>
+
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto no-scrollbar p-6 lg:p-12">
+        <div className="max-w-6xl mx-auto space-y-12">
+
+          {/* Stats Grid */}
+          <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card variant="flat" className="text-center p-8 bg-white dark:bg-white/5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-main/40 dark:text-white/40 mb-4">Final Score</p>
+              <div className="font-display font-black text-6xl text-text-main dark:text-white">
+                {formattedScore}<span className="text-2xl text-text-main/40">%</span>
+              </div>
+              <p className="text-sm text-text-main/60 dark:text-white/60 mt-2">Accuracy Rate</p>
+            </Card>
+
+            <Card variant="flat" className="text-center p-8 bg-white dark:bg-white/5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-main/40 dark:text-white/40 mb-4">Correct</p>
+              <div className="font-display font-black text-6xl text-sage">
+                {correctAnswers}
+              </div>
+              <p className="text-sm text-text-main/60 dark:text-white/60 mt-2">Questions Solved</p>
+            </Card>
+
+            <Card variant="flat" className="text-center p-8 bg-white dark:bg-white/5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-main/40 dark:text-white/40 mb-4">Pending Review</p>
+              <div className="font-display font-black text-6xl text-terracotta">
+                {reviewCount}
+              </div>
+              <p className="text-sm text-text-main/60 dark:text-white/60 mt-2">Questions Missed</p>
+            </Card>
+          </section>
+
+          {/* Question Review List */}
+          <section className="space-y-8">
+            <div className="flex items-end justify-between border-b border-sand-dark/30 dark:border-white/10 pb-4">
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-sage">Detailed Analysis</span>
+                <h2 className="text-2xl font-slab font-bold text-text-main dark:text-white">Question Review</h2>
+              </div>
+            </div>
+
+            {questionResults.length > 0 ? (
+              <div className="grid gap-8">
+                {questionResults.map((result, index) => {
+                  const questionDetails = result.question_details || {}
+                  const questionHighlights = result.question_id ? (userHighlights[result.question_id] || []) : []
+                  const answerChoices = Array.isArray(questionDetails.answer_choices) ? questionDetails.answer_choices : []
+                  const userAnswerIndex = indexFromLetter(result.user_answer)
+                  const correctAnswerIndex = indexFromLetter(result.correct_answer)
+
+                  return (
+                    <div key={index} className="bg-white dark:bg-white/5 rounded-3xl p-8 border border-sand-dark/20 dark:border-white/5 shadow-sm space-y-6">
+                      {/* Question Header */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          <span className="size-8 rounded-full bg-sand-dark/20 dark:bg-white/10 flex items-center justify-center text-xs font-bold text-text-main dark:text-white">
+                            {index + 1}
+                          </span>
+                          <div className="flex gap-2">
+                            {questionDetails.question_type && (
+                              <Badge>{questionDetails.question_type}</Badge>
+                            )}
+                            {questionDetails.difficulty_level && (
+                              <Badge variant="default" className="bg-transparent border-sand-dark/50">Diff: {questionDetails.difficulty_level}</Badge>
+                            )}
+                          </div>
+                        </div>
+                        <Badge variant={result.is_correct ? 'success' : 'primary'}>
+                          {result.is_correct ? 'Correct' : 'Incorrect'}
+                        </Badge>
+                      </div>
+
+                      {/* Passage & Question */}
+                      <div className="space-y-4">
+                        {questionDetails.passage_text && (
+                          <div className="p-6 bg-sand/20 dark:bg-white/5 rounded-2xl border border-sand-dark/10 text-sm leading-relaxed font-serif text-text-main/80 dark:text-sand">
+                            {renderTextWithHighlights(questionDetails.passage_text, questionHighlights)}
+                          </div>
+                        )}
+                        <h3 className="text-lg font-medium text-text-main dark:text-white">
+                          {renderTextWithHighlights(questionDetails.question_text, questionHighlights)}
+                        </h3>
+                      </div>
+
+                      {/* Answers */}
+                      <div className="grid grid-cols-1 gap-3">
+                        {answerChoices.map((choice, idx) => {
+                          const letter = letterFromIndex(idx)
+                          const text = getChoiceText(choice)
+                          const isCorrect = idx === correctAnswerIndex
+                          const isSelected = idx === userAnswerIndex
+
+                          let variantStyle = "border-sand-dark/30 bg-white/50"
+                          if (isCorrect) variantStyle = "border-sage bg-sage-soft/30 text-sage-dark"
+                          else if (isSelected && !isCorrect) variantStyle = "border-terracotta bg-terracotta-soft/30 text-terracotta-dark"
+
+                          return (
+                            <div
+                              key={idx}
+                              className={cn(
+                                "flex items-start gap-4 p-4 rounded-xl border transition-colors text-sm",
+                                variantStyle
+                              )}
+                            >
+                              <span className={cn(
+                                "shrink-0 font-bold",
+                                isCorrect ? "text-sage" : isSelected ? "text-terracotta" : "text-text-main/40"
+                              )}>{letter}.</span>
+                              <span className="flex-1">{text}</span>
+                              {isCorrect && <span className="text-[10px] font-bold uppercase text-sage tracking-wider">Correct Answer</span>}
+                              {isSelected && !isCorrect && <span className="text-[10px] font-bold uppercase text-terracotta tracking-wider">Your Answer</span>}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-20 bg-sand/10 rounded-3xl border border-dashed border-sand-dark/30">
+                <p className="text-text-main/50">No questions to review in this session.</p>
+              </div>
+            )}
+          </section>
         </div>
       </div>
     </div>

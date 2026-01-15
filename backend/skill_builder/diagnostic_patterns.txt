@@ -1,0 +1,866 @@
+# LSAT LOGICAL REASONING: DIAGNOSTIC PATTERNS MANUAL
+# Version 1.0 | Comprehensive Skill Diagnosis and Remediation Guide
+# Based on: lsat_lr_skill_taxonomy_v2.txt & lsat_lr_question_skill_mapping.txt
+
+=============================================================================
+HOW TO USE THIS DOCUMENT
+=============================================================================
+This document provides a comprehensive framework for diagnosing student 
+weaknesses based on performance patterns across LSAT LR question types.
+
+For each diagnostic pattern:
+  - TRIGGER: The failure pattern that initiates this diagnostic
+  - CROSS-CHECK: Additional data points to confirm/refine diagnosis
+  - ROOT CAUSE: The underlying skill deficiency
+  - DIFFERENTIAL: How to distinguish from similar-looking issues
+  - REMEDIATION: Targeted practice recommendations
+  - EXPECTED IMPACT: Other question types that should improve
+
+=============================================================================
+PART I: STRUCTURAL DECOMPOSITION DIAGNOSTICS (S Domain)
+=============================================================================
+
+[DIAG-S01] MAIN CONCLUSION IDENTIFICATION FAILURE
+-----------------------------------------------------------------------------
+TRIGGER: 
+  Student fails Main Point [3] consistently (>50% error rate)
+
+CROSS-CHECK:
+  - Role of Statement [13]: If also weak → S_01 is core issue
+  - Strengthen/Weaken [5,6]: If weak → cascading effect confirmed
+  - Necessary Assumption [8]: If weak → can't identify what to defend
+
+ROOT CAUSE: S_01 (Main Conclusion ID)
+
+DIFFERENTIAL:
+  • If Role of Statement [13] is strong but Main Point [3] is weak:
+    → Issue may be S_04 (confusing intermediate for main conclusion)
+  • If student picks premises as conclusions:
+    → Missing "indicator word" recognition training
+  • If student picks background/context:
+    → Missing argument boundary recognition
+
+REMEDIATION:
+  1. Drill conclusion indicator words (therefore, thus, hence, consequently)
+  2. Practice "because test" - can each claim be preceded by "because"?
+  3. Work backwards: what is the author trying to PROVE?
+
+EXPECTED IMPACT: Improvements in [5], [6], [7], [8], [11], [12]
+
+PRIORITY: ★★★★★ CRITICAL - Address before all other skills
+
+-----------------------------------------------------------------------------
+
+[DIAG-S02] INTERMEDIATE CONCLUSION CONFUSION
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student passes simple Main Point [3] but fails complex arguments with 
+  nested structure, OR consistently picks intermediate conclusions on [3]
+
+CROSS-CHECK:
+  - Role of Statement [13]: If weak on "sub-conclusion" identifications
+  - Method of Reasoning [12]: If struggles with "proceeds by using X to 
+    support Y, which in turn supports Z" type answers
+
+ROOT CAUSE: S_04 (Intermediate Conclusion Recognition)
+
+DIFFERENTIAL:
+  • If Main Point [3] errors are random (premises, background, etc.):
+    → Issue is S_01 fundamentally, not S_04
+  • If Main Point [3] errors are specifically intermediate conclusions:
+    → Confirmed S_04 issue
+
+REMEDIATION:
+  1. Practice mapping multi-tier argument structures
+  2. Identify claims that have BOTH supporting evidence AND downstream claims
+  3. Ask: "Does this claim support something else?" If yes, it's not main.
+
+EXPECTED IMPACT: Improvements in [3], [12], [13], [7], [8]
+
+PRIORITY: ★★★★☆ HIGH
+
+-----------------------------------------------------------------------------
+
+[DIAG-S03] DISAGREEMENT ISOLATION FAILURE
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Point at Issue [4] consistently
+
+CROSS-CHECK:
+  - Main Point [3]: If weak → may not be isolating either speaker's claim
+  - Answer patterns: Picking topics vs. actual disagreement points
+
+ROOT CAUSE: S_03 (Disagreement Isolation)
+
+DIFFERENTIAL:
+  • If picking topics both speakers discuss but don't disagree on:
+    → Missing "affirmation vs. denial" test application
+  • If picking claims only ONE speaker addresses:
+    → Not tracking both speakers systematically
+  • If Main Point [3] is also weak:
+    → S_01 deficiency is upstream cause; fix S_01 first
+
+REMEDIATION:
+  1. For each answer choice, explicitly test: Does A believe X? Does B deny X?
+  2. Create two-column charts mapping each speaker's claims
+  3. Eliminate answers where one speaker is silent or agrees
+
+EXPECTED IMPACT: Direct improvement in [4] only (isolated skill)
+
+PRIORITY: ★★★☆☆ MODERATE (isolated, low cross-question impact)
+
+=============================================================================
+PART II: FORMAL & DEDUCTIVE LOGIC DIAGNOSTICS (FL Domain)
+=============================================================================
+
+[DIAG-FL01] CORE CONDITIONAL LOGIC FAILURE
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Must Be True [1] AND Sufficient Assumption [7] AND 
+  Parallel Reasoning [14] (when conditional)
+
+CROSS-CHECK:
+  - Check specific conditional keywords: "if," "only if," "unless"
+  - Check for contrapositive errors vs. translation errors
+  - Do they pass non-conditional versions of same question types?
+
+ROOT CAUSE: FL_01 (Conditional Translation) and/or FL_02 (Contrapositive)
+
+DIFFERENTIAL:
+  • If "if...then" questions are passed but "unless/only if" fail:
+    → FL_01 is partial (keyword-specific gap)
+  • If translation is correct but contrapositive is missed:
+    → FL_02 specifically (knows A→B but misses ~B→~A)
+  • If passing simple conditionals but failing chains:
+    → Issue is FL_03, not FL_01/02
+
+REMEDIATION:
+  1. Systematic keyword training:
+     - "If A then B" → A → B
+     - "Only if B" → A → B (B is necessary)
+     - "Unless B" → ~B → consequence
+  2. Contrapositive drills: immediate reversal and negation
+  3. Practice diagramming before solving
+
+EXPECTED IMPACT: Improvements in [1], [7], [14], [16]
+
+PRIORITY: ★★★★★ CRITICAL - Foundation for FL domain
+
+-----------------------------------------------------------------------------
+
+[DIAG-FL02] CHAIN DEDUCTION FAILURE
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student passes simple conditional questions but fails when 3+ variables 
+  must be linked (A→B→C→D type structures)
+
+CROSS-CHECK:
+  - Must Be True [1]: Fails on chained inference stimuli
+  - Sufficient Assumption [7]: Fails when answer completes a chain
+  - Parallel Reasoning [14]: Fails on longer conditional arguments
+
+ROOT CAUSE: FL_03 (Chain/Transitive Deduction)
+
+DIFFERENTIAL:
+  • If failing on 2-variable conditionals:
+    → Issue is FL_01/FL_02, not FL_03
+  • If correctly identifying each link but missing the chain:
+    → Working memory or systematic tracking issue
+  • If contrapositive chains specifically fail:
+    → FL_02 is weak, chains just expose it
+
+REMEDIATION:
+  1. Practice building conditional chains step-by-step
+  2. Write out full chains before evaluating answer choices
+  3. Train both forward (A→D) and backward (~D→~A) chain construction
+
+EXPECTED IMPACT: Improvements in [1], [7], [14]
+
+PRIORITY: ★★★★☆ HIGH
+
+-----------------------------------------------------------------------------
+
+[DIAG-FL03] QUANTIFIER SCOPE CONFUSION
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Most Strongly Supported [2] with quantified stimuli, OR 
+  makes "some→all" or "most→all" errors on Must Be True [1]
+
+CROSS-CHECK:
+  - Flaw [11]: If missing scope shift flaws
+  - Resolve the Paradox [17]: If struggling with "some but not all" resolutions
+  - Check answer patterns: Are they picking "stronger than warranted" choices?
+
+ROOT CAUSE: FL_04 (Quantifier Scope) and/or FL_06 (Modal Precision)
+
+DIFFERENTIAL:
+  • If "all" vs "most" vs "some" distinctions are clear but "some" overlaps 
+    are missed:
+    → Issue is FL_05 (Quantifier Intersection) specifically
+  • If "must" vs "could" vs "probably" distinctions are blurred:
+    → FL_06 (Modal Precision) issue
+  • If picking "all" when "most" is stated:
+    → Pure FL_04 error
+
+REMEDIATION:
+  1. Drill quantifier definitions:
+     - All = 100% | Most = >50% | Some = 1-100% | None = 0%
+  2. Practice "scope ceiling" - answer cannot exceed stimulus scope
+  3. Modal precision: Must = 100% | Likely = >50% | Could = >0%
+
+EXPECTED IMPACT: Improvements in [1], [2], [11], [17]
+
+PRIORITY: ★★★★☆ HIGH
+
+-----------------------------------------------------------------------------
+
+[DIAG-FL04] QUANTIFIER INTERSECTION FAILURE
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Must Be True [1] specifically on stimuli requiring overlap 
+  deductions (e.g., "Most A are B" + "All B are C" → "Some A are C")
+
+CROSS-CHECK:
+  - Do they pass single-quantifier inferences?
+  - Do they understand "most" + "most" = "some overlap" logic?
+
+ROOT CAUSE: FL_05 (Quantifier Intersection)
+
+DIFFERENTIAL:
+  • If failing all quantifier questions:
+    → Issue is FL_04, not specifically FL_05
+  • If passing "all→some" inferences but failing "most→some":
+    → FL_05 specifically, with "most" intersection gaps
+
+REMEDIATION:
+  1. Visual Venn diagram training
+  2. Rules: "Most + Most = Some overlap" / "Most + All = Most"
+  3. Practice with numerical examples (Most of 100 = 51+)
+
+EXPECTED IMPACT: Improvements in [1], [2]
+
+PRIORITY: ★★★☆☆ MODERATE
+
+-----------------------------------------------------------------------------
+
+[DIAG-FL05] NECESSARY VS. SUFFICIENT CONFUSION
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student shows these patterns:
+  - On Necessary Assumption [8]: Picks "too strong" answers (sufficient)
+  - On Sufficient Assumption [7]: Picks "too weak" answers (necessary)
+  - On Flaw [11]: Misses "confuses necessary for sufficient" errors
+
+CROSS-CHECK:
+  - Analyze wrong answer patterns on [7] and [8]
+  - Check Flaw [11] performance on conditional fallacy stimuli
+  - Check if Strengthen [5] errors involve picking "guarantees" (too strong)
+
+ROOT CAUSE: FL_07 (Conditional Fallacies / Converse-Inverse)
+
+DIFFERENTIAL:
+  • If only [8] shows "too strong" without [7] issues:
+    → May be RH_04 gap detection issue, not FL_07
+  • If [7] and [8] both show pattern:
+    → Confirmed FL_07 - core distinction not understood
+  • If Flaw [11] misses conditional fallacies specifically:
+    → Confirms FL_07 affects flaw recognition too
+
+REMEDIATION:
+  1. Core distinction training:
+     - Necessary: Required, but not enough alone (Nurse must pass test for 
+       license, but test alone isn't sufficient)
+     - Sufficient: Enough to guarantee, but not required (Winning lottery 
+       guarantees wealth, but not required for wealth)
+  2. Negation test practice for [8]
+  3. "Does this 100% guarantee?" test for [7]
+
+EXPECTED IMPACT: Improvements in [7], [8], [11]
+
+PRIORITY: ★★★★★ CRITICAL - High-impact skill
+
+=============================================================================
+PART III: RHETORICAL & INDUCTIVE EVALUATION DIAGNOSTICS (RH Domain)
+=============================================================================
+
+[DIAG-RH01] CAUSALITY vs. CORRELATION CONFUSION
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Flaw [11] on causal argument stimuli, OR fails to identify 
+  alternative explanations in Weaken [6]
+
+CROSS-CHECK:
+  - Weaken [6]: Are causal weakeners (alternatives) missed?
+  - Strengthen [5]: Are "ruling out alternatives" strengtheners missed?
+  - Evaluate [9]: If causal evaluation questions are weak
+  - Resolve Paradox [17]: If missing explanatory mechanisms
+
+ROOT CAUSE: RH_01 (Causality vs. Correlation) and RH_02 (Alternative Explanations)
+
+DIFFERENTIAL:
+  • If identifying "correlation cited" but not recognizing flaw:
+    → RH_01 is partial - knows pattern but not critique
+  • If picking "effect caused cause" (reverse causation):
+    → RH_02 is weak; not considering all alternative types
+  • If non-causal Strengthen/Weaken are fine:
+    → Confirmed causal-specific issue
+
+REMEDIATION:
+  1. Causal attack training (3 types):
+     - Alternative cause (Z caused both X and Y)
+     - Reverse causation (Y caused X)
+     - Coincidence (no causal link)
+  2. Causal support training: ruling out alternatives
+  3. Flag words: "led to," "caused," "resulted in," "due to"
+
+EXPECTED IMPACT: Improvements in [5], [6], [9], [11], [17]
+
+PRIORITY: ★★★★☆ HIGH - Very common flaw type
+
+-----------------------------------------------------------------------------
+
+[DIAG-RH02] GAP ANALYSIS FAILURE (SUFFICIENCY)
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Sufficient Assumption [7] AND Strengthen [5] together
+
+CROSS-CHECK:
+  - Principle Justify [10]: If also weak → confirmed RH_03 issue
+  - Can student identify WHAT is missing between premises and conclusion?
+  - Check if FL_03 is also weak (chain construction)
+
+ROOT CAUSE: RH_03 (Sufficiency Gaps)
+
+DIFFERENTIAL:
+  • If [7] fails but [5] passes:
+    → Issue may be FL_03 (chain-building), not gap identification
+  • If [5] fails but [7] passes:
+    → Issue is RH_07 (comparing partial support), not RH_03
+  • If both fail with FL_03 strong:
+    → Confirmed RH_03 - can't identify the gap itself
+
+REMEDIATION:
+  1. "What's missing?" training - explicit gap identification
+  2. Practice: "If [gap filler] is true, does conclusion follow 100%?"
+  3. Bridge-building: connect premise terms to conclusion terms
+
+EXPECTED IMPACT: Improvements in [5], [7], [10]
+
+PRIORITY: ★★★★★ CRITICAL
+
+-----------------------------------------------------------------------------
+
+[DIAG-RH03] GAP ANALYSIS FAILURE (NECESSITY)
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Necessary Assumption [8] AND Weaken [6] together
+
+CROSS-CHECK:
+  - Evaluate [9]: If weak on "what would determine validity" questions
+  - Does student understand negation test?
+  - Are they picking answers that COULD help but aren't REQUIRED?
+
+ROOT CAUSE: RH_04 (Necessity Gaps)
+
+DIFFERENTIAL:
+  • If [8] fails with "too strong" answers:
+    → See DIAG-FL05 (FL_07 issue instead)
+  • If [6] fails but non-support questions pass:
+    → General RH_04 weakness
+  • If [6] fails on causal arguments specifically:
+    → See DIAG-RH01 (RH_01/02 issue instead)
+
+REMEDIATION:
+  1. Negation test training: "If this is FALSE, does argument collapse?"
+  2. Dependency identification: "What MUST be true for this to work?"
+  3. Practice eliminating "nice to have" vs. "must have" answers
+
+EXPECTED IMPACT: Improvements in [6], [8], [9]
+
+PRIORITY: ★★★★★ CRITICAL
+
+-----------------------------------------------------------------------------
+
+[DIAG-RH04] EVIDENTIAL WEIGHT COMPARISON FAILURE
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student passes Sufficient Assumption [7] and Necessary Assumption [8] 
+  BUT fails Strengthen [5] and Most Strongly Supported [2]
+
+CROSS-CHECK:
+  - Are wrong answers "relevant but weaker support"?
+  - Does student understand probabilistic vs. certain reasoning?
+  - Evaluate [9]: Does student recognize "more vs. less helpful" data?
+
+ROOT CAUSE: RH_07 (Evidential Weight Assessment)
+
+DIFFERENTIAL:
+  • If [5] fails with irrelevant answers:
+    → Issue is gap identification (RH_03/04), not strength comparison
+  • If [5] fails with "relevant but weaker" answers:
+    → Confirmed RH_07 - can't compare evidential strength
+  • If [2] specifically fails:
+    → May also have FL_06 (modal precision) issue
+
+REMEDIATION:
+  1. Comparative evaluation training: "Which helps MORE?"
+  2. Evidential strength hierarchy practice
+  3. Always compare top 2-3 answers explicitly
+
+EXPECTED IMPACT: Improvements in [2], [5], [9]
+
+PRIORITY: ★★★★☆ HIGH
+
+-----------------------------------------------------------------------------
+
+[DIAG-RH05] SAMPLING/EVIDENCE FLAW BLINDNESS
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Flaw [11] on evidence-based flaws (surveys, studies, 
+  generalizations)
+
+CROSS-CHECK:
+  - Are scope shift flaws also missed? (RH_08)
+  - Does student recognize biased sample, small sample, unrepresentative 
+    sample distinctions?
+
+ROOT CAUSE: RH_05 (Sampling Validity)
+
+DIFFERENTIAL:
+  • If missing "sample too small":
+    → Size recognition gap
+  • If missing "sample biased/unrepresentative":
+    → Selection bias recognition gap
+  • If missing "survey wording" issues:
+    → Methodology flaw recognition gap
+
+REMEDIATION:
+  1. Evidence critique checklist: Size? Selection? Methodology?
+  2. Practice identifying generalizations in conclusions
+  3. "Does the sample represent the conclusion population?" test
+
+EXPECTED IMPACT: Improvements in [11]
+
+PRIORITY: ★★★☆☆ MODERATE
+
+-----------------------------------------------------------------------------
+
+[DIAG-RH06] SCOPE SHIFT BLINDNESS
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Flaw [11] on scope-based flaws, OR fails Weaken [6] when 
+  weakener targets scope overreach
+
+CROSS-CHECK:
+  - Common scope shifts: Some→All, Past→Future, Subgroup→Whole
+  - Does student notice when conclusion is "broader" than evidence?
+  - Quantifier questions (FL_04): if weak, may be related
+
+ROOT CAUSE: RH_08 (Scope Shift Recognition)
+
+DIFFERENTIAL:
+  • If quantifier-specific scope (some/all) is missed:
+    → May be FL_04/05 issue
+  • If time-scope shifts (past→future) are missed:
+    → Confirmed RH_08 (temporal scope specifically)
+  • If group-scope shifts (subgroup→population) are missed:
+    → Confirmed RH_08 (generalization scope)
+
+REMEDIATION:
+  1. Scope comparison training: premise scope vs. conclusion scope
+  2. Flag common shifts: some→all, past→future, group→whole, absolute→relative
+  3. Practice: "Does the evidence actually cover what the conclusion claims?"
+
+EXPECTED IMPACT: Improvements in [6], [11]
+
+PRIORITY: ★★★★☆ HIGH
+
+-----------------------------------------------------------------------------
+
+[DIAG-RH07] AD HOMINEM / RELEVANCE FAILURE
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Flaw [11] on relevance-based flaws (attacks on source, 
+  motive, character rather than argument)
+
+CROSS-CHECK:
+  - Does student distinguish "argument about person" from "attack on logic"?
+  - Are "appeal to authority" flaws also missed?
+
+ROOT CAUSE: RH_06 (Ad Hominem / Source Attacks)
+
+DIFFERENTIAL:
+  • If student thinks personal attacks ARE valid weakeners:
+    → Core RH_06 misunderstanding
+  • If student identifies ad hominem but uses wrong abstract language:
+    → ABS_02 matching issue, not RH_06
+
+REMEDIATION:
+  1. Relevance filter: "Does this attack the ARGUMENT or the PERSON?"
+  2. Source vs. content distinction training
+  3. Practice: "Even if true about the person, does it affect the logic?"
+
+EXPECTED IMPACT: Improvements in [11]
+
+PRIORITY: ★★★☆☆ MODERATE
+
+=============================================================================
+PART IV: SYSTEMIC ABSTRACTION DIAGNOSTICS (ABS Domain)
+=============================================================================
+
+[DIAG-ABS01] STRUCTURAL MATCHING FAILURE
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Parallel Reasoning [14] BUT passes Must Be True [1] and 
+  Sufficient Assumption [7]
+
+CROSS-CHECK:
+  - Is FL domain strong? If yes → abstraction is the issue
+  - Can student describe argument structure in abstract terms?
+  - Are they matching content rather than structure?
+
+ROOT CAUSE: ABS_01 (Structural Matching)
+
+DIFFERENTIAL:
+  • If FL is weak:
+    → Address FL first; parallel reasoning failure is downstream
+  • If FL is strong but [14] fails:
+    → Confirmed ABS_01 - can't strip content from arguments
+  • If student finds matching structure but wrong conclusion polarity:
+    → Need to verify conclusion type matching too
+
+REMEDIATION:
+  1. Variable substitution practice: A, B, C instead of actual terms
+  2. Structure templates: "If A then B; A; therefore B"
+  3. Content-stripping drills: identify structure ignoring subject matter
+
+EXPECTED IMPACT: Improvements in [14]
+
+PRIORITY: ★★★☆☆ MODERATE (but question type is time-consuming)
+
+-----------------------------------------------------------------------------
+
+[DIAG-ABS02] FLAW MATCHING FAILURE
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student identifies flaws correctly in Flaw [11] BUT fails Parallel Flaw [15]
+
+CROSS-CHECK:
+  - Can student name the flaw abstractly?
+  - Are they finding the flaw but not the matching case?
+  - Which flaw types cause matching errors specifically?
+
+ROOT CAUSE: ABS_02 (Flaw Matching)
+
+DIFFERENTIAL:
+  • If Flaw [11] is also weak:
+    → Address flaw recognition first (RH skills)
+  • If Flaw [11] is strong but [15] fails:
+    → Confirmed ABS_02 - can recognize but not match
+  • If only certain flaw types cause [15] failure:
+    → Flaw-specific matching gap
+
+REMEDIATION:
+  1. Flaw categorization training with abstract labels
+  2. Practice: "Find another argument with the SAME error"
+  3. Build flaw pattern library (causal flaw template, scope flaw template, etc.)
+
+EXPECTED IMPACT: Improvements in [15]
+
+PRIORITY: ★★★☆☆ MODERATE
+
+-----------------------------------------------------------------------------
+
+[DIAG-ABS03] PRINCIPLE APPLICATION FAILURE
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails Principle Application [16] AND/OR Principle Justify [10]
+
+CROSS-CHECK:
+  - Is FL_01 strong? (Principles often conditional)
+  - Can student extract the abstract rule from specific cases?
+  - Direction confusion: [10] = find principle for case; [16] = find case for principle
+
+ROOT CAUSE: ABS_03 (Principle Application)
+
+DIFFERENTIAL:
+  • If [10] fails but [16] passes:
+    → Issue is principle extraction (abstraction direction)
+  • If [16] fails but [10] passes:
+    → Issue is principle application (concretization direction)
+  • If both fail:
+    → Confirmed ABS_03 - general principle reasoning gap
+
+REMEDIATION:
+  1. Bidirectional practice: extract principles AND apply principals
+  2. Train conditional principle format: "If [condition], then [result]"
+  3. Case-rule mapping exercises
+
+EXPECTED IMPACT: Improvements in [10], [16]
+
+PRIORITY: ★★★☆☆ MODERATE
+
+=============================================================================
+PART V: CROSS-DOMAIN DIAGNOSTIC PATTERNS
+=============================================================================
+
+[DIAG-CROSS01] PROVE FAMILY FAILURE (Family 1: [1], [2], [3], [4])
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails multiple questions in the Prove family
+
+DIAGNOSIS FLOW:
+  1. Check Main Point [3]:
+     - If weak → S_01 is foundational issue, address first
+  2. Check Must Be True [1]:
+     - If weak with conditionals → FL_01/02/03
+     - If weak with quantifiers → FL_04/05/06
+  3. Check Most Strongly Supported [2]:
+     - If [1] strong but [2] weak → FL_06/RH_07 (probabilistic reasoning)
+  4. Check Point at Issue [4]:
+     - Largely isolated; test S_03 independently
+
+PRIORITY ORDER: [3] → [1] → [2] → [4]
+
+-----------------------------------------------------------------------------
+
+[DIAG-CROSS02] HELP/HURT FAMILY FAILURE (Family 2: [5]-[10])
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails multiple questions in the Help/Hurt family
+
+DIAGNOSIS FLOW:
+  1. Check Main Point [3] first:
+     - If weak → can't identify what to strengthen/weaken, fix S_01
+  2. Check Sufficient Assumption [7] vs. Strengthen [5]:
+     - If [7] strong, [5] weak → RH_07 (evidential weight)
+     - If both weak → RH_03 (sufficiency gaps)
+  3. Check Necessary Assumption [8] vs. Weaken [6]:
+     - If [8] strong, [6] weak → RH_01/02 (causal) or general weakening skill
+     - If both weak → RH_04 (necessity gaps)
+  4. Check for SA/NA confusion:
+     - If [7] and [8] show opposite error patterns → FL_07
+  5. Check Evaluate [9]:
+     - Integrates both strengthening and weakening → RH_07 with uncertainty
+
+PRIORITY ORDER: [3] → [7]/[8] → [5]/[6] → [9] → [10]
+
+-----------------------------------------------------------------------------
+
+[DIAG-CROSS03] STRUCTURE FAMILY FAILURE (Family 3: [11]-[16])
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student fails multiple questions in the Structure family
+
+DIAGNOSIS FLOW:
+  1. Check Main Point [3] again:
+     - Affects [11], [12] especially
+  2. Check Flaw [11]:
+     - Track which flaw TYPES are missed → maps to specific RH skills
+  3. Check Method [12] vs. Role [13]:
+     - Both weak → S_02 deficiency
+     - [12] weak, [13] strong → ABS_01 (can't describe structure abstractly)
+  4. Check Parallel Reasoning [14]:
+     - If FL is strong but [14] fails → ABS_01
+     - If FL is weak → address FL first
+  5. Check Parallel Flaw [15]:
+     - If [11] strong but [15] fails → ABS_02
+     - If [11] weak → address flaw recognition first
+
+PRIORITY ORDER: [3] → [11] → [12]/[13] → [14] → [15] → [16]
+
+-----------------------------------------------------------------------------
+
+[DIAG-CROSS04] CONDITIONAL LOGIC SENSITIVITY CHECK
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student shows inconsistent performance that varies by whether stimulus 
+  contains conditional logic
+
+DIAGNOSTIC TEST:
+  Compare performance on:
+  - Conditional vs. non-conditional Must Be True [1]
+  - Conditional vs. causal Strengthen/Weaken [5]/[6]
+  - Conditional vs. non-conditional Sufficient/Necessary Assumption [7]/[8]
+
+IF CONDITIONAL VERSIONS CONSISTENTLY WORSE:
+  → FL domain is the bottleneck; prioritize FL_01-03
+
+IF NON-CONDITIONAL VERSIONS ALSO WEAK:
+  → Issue is not FL-specific; check RH domain skills
+
+-----------------------------------------------------------------------------
+
+[DIAG-CROSS05] CAUSAL REASONING SENSITIVITY CHECK
+-----------------------------------------------------------------------------
+TRIGGER:
+  Student shows inconsistent performance that varies by whether stimulus 
+  contains causal reasoning
+
+DIAGNOSTIC TEST:
+  Compare performance on:
+  - Causal vs. non-causal Strengthen [5]
+  - Causal vs. non-causal Weaken [6]
+  - Causal vs. non-causal Flaw [11]
+  - Causal Evaluate [9] questions
+  - Resolve Paradox [17] with causal mechanisms
+
+IF CAUSAL VERSIONS CONSISTENTLY WORSE:
+  → RH_01/RH_02 are the bottleneck; prioritize causal reasoning training
+
+IF NON-CAUSAL VERSIONS ALSO WEAK:
+  → General gap analysis skills (RH_03/RH_04) are the issue
+
+=============================================================================
+PART VI: SKILL PREREQUISITE CHAINS
+=============================================================================
+
+These chains indicate remediation order when multiple skills are weak.
+Address upstream skills before downstream skills.
+
+CHAIN 1: STRUCTURAL FOUNDATION
+  S_01 → S_04 → S_02 → [All other skills]
+  
+  (Main Conclusion → Intermediate Conclusion → Role → Everything else)
+
+CHAIN 2: CONDITIONAL LOGIC
+  FL_01 → FL_02 → FL_03 → FL_07
+  
+  (Translation → Contrapositive → Chains → Fallacy Recognition)
+
+CHAIN 3: QUANTIFIER LOGIC
+  FL_04 → FL_05 → FL_06
+  
+  (Scope → Intersection → Modal Precision)
+
+CHAIN 4: GAP ANALYSIS
+  S_01 → RH_03/RH_04 → RH_07
+  
+  (Conclusion ID → Gap Detection → Evidential Comparison)
+
+CHAIN 5: CAUSAL REASONING
+  RH_01 → RH_02 → [Application in Strengthen/Weaken]
+  
+  (Recognize Causal Claims → Identify Alternatives → Apply to Questions)
+
+CHAIN 6: ABSTRACTION
+  [FL skills + RH skills] → ABS_01/ABS_02/ABS_03
+  
+  (Content skills must be solid before pure abstraction skills)
+
+=============================================================================
+PART VII: RAPID DIAGNOSTIC DECISION TREE
+=============================================================================
+
+START: Student is struggling with LSAT LR
+
+├── CHECK: Main Point [3] performance
+│   ├── WEAK → PRIORITY: S_01 (address immediately)
+│   └── STRONG → CONTINUE
+│
+├── CHECK: Must Be True [1] + Sufficient Assumption [7]
+│   ├── BOTH WEAK → CHECK: Conditional content?
+│   │   ├── YES → PRIORITY: FL_01, FL_02, FL_03
+│   │   └── NO  → CHECK: Quantifier content?
+│   │       ├── YES → PRIORITY: FL_04, FL_05
+│   │       └── NO  → PRIORITY: Basic deductive reasoning
+│   └── STRONG → CONTINUE
+│
+├── CHECK: Strengthen [5] + Weaken [6]
+│   ├── BOTH WEAK → CHECK: SA [7] + NA [8]
+│   │   ├── BOTH WEAK → PRIORITY: RH_03, RH_04 (gap analysis)
+│   │   └── STRONG → PRIORITY: RH_07 (evidential comparison)
+│   ├── [5] WEAK ONLY → CHECK: Causal arguments?
+│   │   ├── YES → PRIORITY: RH_01, RH_02
+│   │   └── NO  → PRIORITY: RH_03
+│   └── [6] WEAK ONLY → CHECK: Causal arguments?
+│       ├── YES → PRIORITY: RH_01, RH_02
+│       └── NO  → PRIORITY: RH_04
+│
+├── CHECK: SA [7] vs. NA [8] answer patterns
+│   ├── SA: picking too weak / NA: picking too strong
+│   │   → PRIORITY: FL_07 (necessary/sufficient confusion)
+│   └── OTHER PATTERNS → Continue general diagnosis
+│
+├── CHECK: Flaw [11] by flaw type
+│   ├── CAUSAL FLAWS MISSED → PRIORITY: RH_01, RH_02
+│   ├── SCOPE FLAWS MISSED → PRIORITY: RH_08
+│   ├── SAMPLING FLAWS MISSED → PRIORITY: RH_05
+│   ├── RELEVANCE FLAWS MISSED → PRIORITY: RH_06
+│   └── CONDITIONAL FLAWS MISSED → PRIORITY: FL_07
+│
+├── CHECK: Parallel Reasoning [14]
+│   ├── WEAK + FL WEAK → Address FL first
+│   └── WEAK + FL STRONG → PRIORITY: ABS_01
+│
+└── CHECK: Parallel Flaw [15]
+    ├── WEAK + [11] WEAK → Address flaw recognition first
+    └── WEAK + [11] STRONG → PRIORITY: ABS_02
+
+=============================================================================
+PART VIII: PROFICIENCY THRESHOLDS AND FLAGS
+=============================================================================
+
+SKILL PROFICIENCY LEVELS:
+  - MASTERY: >85% accuracy on question types testing this skill
+  - PROFICIENT: 70-85% accuracy
+  - DEVELOPING: 50-70% accuracy
+  - WEAK: <50% accuracy
+
+DIAGNOSTIC FLAGS:
+  🚨 CRITICAL: Skill affects >5 question types; address immediately
+  ⚠️ HIGH: Skill affects 3-5 question types; address soon
+  📝 MODERATE: Skill affects 1-2 question types; address when possible
+
+CRITICAL SKILLS (🚨):
+  - S_01: Main Conclusion ID
+  - FL_01: Conditional Translation
+  - FL_07: Conditional Fallacies
+  - RH_03: Sufficiency Gaps
+  - RH_04: Necessity Gaps
+
+HIGH-IMPACT SKILLS (⚠️):
+  - FL_02: Contrapositive Operations
+  - FL_03: Chain Deduction
+  - FL_04: Quantifier Scope
+  - RH_01: Causality vs. Correlation
+  - RH_07: Evidential Weight Assessment
+  - RH_08: Scope Shift Recognition
+
+MODERATE-IMPACT SKILLS (📝):
+  - S_02: Role Identification
+  - S_03: Disagreement Isolation
+  - S_04: Intermediate Conclusion Recognition
+  - FL_05: Quantifier Intersection
+  - FL_06: Modal Precision
+  - RH_02: Alternative Explanations
+  - RH_05: Sampling Validity
+  - RH_06: Ad Hominem/Source Attacks
+  - ABS_01: Structural Matching
+  - ABS_02: Flaw Matching
+  - ABS_03: Principle Application
+
+=============================================================================
+PART IX: REMEDIATION PRIORITY MATRIX
+=============================================================================
+
+Based on skill weakness combinations, use this matrix to prioritize:
+
+| Current Weakness      | If Also Weak In...        | Priority Skill    |
+|-----------------------|---------------------------|-------------------|
+| Any question type     | Main Point [3]            | S_01 (FIRST)      |
+| Conditional questions | Other FL questions        | FL_01 → FL_02     |
+| Strengthen [5]        | Suff. Assumption [7]      | RH_03             |
+| Strengthen [5]        | NOT Suff. Assumption [7]  | RH_07             |
+| Weaken [6]            | Nec. Assumption [8]       | RH_04             |
+| Weaken [6]            | Causal arguments only     | RH_01, RH_02      |
+| SA [7] + NA [8]       | Opposite error patterns   | FL_07             |
+| Flaw [11]             | Specific flaw types       | [That RH skill]   |
+| Parallel Reasoning    | FL questions              | FL (first)        |
+| Parallel Reasoning    | NOT FL questions          | ABS_01            |
+| Parallel Flaw [15]    | Flaw [11]                 | [RH skills first] |
+| Parallel Flaw [15]    | NOT Flaw [11]             | ABS_02            |
+
+=============================================================================
+END OF DIAGNOSTIC PATTERNS MANUAL
+=============================================================================

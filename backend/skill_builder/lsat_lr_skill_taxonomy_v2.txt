@@ -1,0 +1,90 @@
+# LSAT LOGICAL REASONING SKILL TAXONOMY (FINAL v2.1)
+# Designed for Q-Matrix Construction and Competency Analysis
+
+=============================================================================
+DOMAIN I: STRUCTURAL DECOMPOSITION (Parsing & Syntax)
+Focus: Navigating complex syntax and identifying functional roles.
+=============================================================================
+[S_01] Main Conclusion ID
+       - Definition: Distinguishing the final claim from intermediate conclusions.
+       - Trigger: "Main point," "Conclusion."
+
+[S_02] Role Identification
+       - Definition: Identifying the rhetorical function of a specific sentence.
+       - Trigger: "The statement that... plays which one of the following roles?"
+
+[S_03] Disagreement Isolation
+       - Definition: Pinpointing the exact proposition where two speakers differ.
+       - Trigger: "Point at issue," "Disagree over."
+
+[S_04] Intermediate Conclusion Recognition
+       - Definition: Identifying claims that are both supported by premises AND used to support further conclusions.
+       - Trigger: Nested indicators (e.g., "Therefore" appearing before the final sentence).
+
+=============================================================================
+DOMAIN II: FORMAL & DEDUCTIVE LOGIC (The "Games" Replacement)
+Focus: Manipulating symbols, rules, and mathematical scope with certainty.
+=============================================================================
+[FL_01] Conditional Translation
+        - Definition: Converting text (unless, only if) into symbolic notation (A -> B).
+
+[FL_02] Contrapositive Operations
+        - Definition: Recognizing that A -> B is logically identical to ~B -> ~A.
+
+[FL_03] Chain/Transitive Deduction
+        - Definition: Linking variables across statements (A -> B -> C, therefore A -> C).
+
+[FL_04] Quantifier Scope
+        - Definition: Distinguishing force: All (100%), Most (>50%), Some (1-100%), None (0%).
+
+[FL_05] Quantifier Intersection
+        - Definition: Deducing overlaps (e.g., If Most A are B, and All B are C -> Some A are C).
+
+[FL_06] Modal Precision
+        - Definition: Distinguishing between Must, Likely, and Could.
+
+[FL_07] Conditional Fallacies (Converse/Inverse)
+        - Definition: Recognizing the error of reversing (B -> A) or negating (~A -> ~B) without a biconditional relationship.
+        - Trigger: "Confuses a necessary condition for a sufficient condition."
+
+=============================================================================
+DOMAIN III: RHETORICAL & INDUCTIVE EVALUATION (The "Gap")
+Focus: Assessing the validity of arguments and identifying flaws.
+=============================================================================
+[RH_01] Causality vs. Correlation
+        - Definition: Identifying the flaw of assuming causation based on occurrence.
+
+[RH_02] Alternative Explanations
+        - Definition: Recognizing a third factor (Z) or reversal (Y caused X).
+
+[RH_03] Sufficiency Gaps (Forward Bridge)
+        - Definition: Identifying a premise that guarantees the conclusion (100% valid).
+
+[RH_04] Necessity Gaps (Backward Requirement)
+        - Definition: Identifying a condition required for the argument to survive.
+
+[RH_05] Sampling Validity
+        - Definition: Critiquing the representativeness or size of a sample/survey.
+
+[RH_06] Ad Hominem / Source Attacks
+        - Definition: Distinguishing attacks on character/motive from attacks on logic.
+
+[RH_07] Evidential Weight Assessment
+        - Definition: Comparing how strongly different pieces of evidence support a claim.
+        - Trigger: "Most strongly supported," "Strengthen" (comparative choices).
+
+[RH_08] Scope Shift Recognition
+        - Definition: Identifying when a conclusion's scope exceeds the evidence (e.g., "Some" to "All", "Past" to "Future").
+
+=============================================================================
+DOMAIN IV: SYSTEMIC ABSTRACTION (Pattern Recognition)
+Focus: Stripping away content to analyze the logical skeleton.
+=============================================================================
+[ABS_01] Structural Matching
+         - Definition: Matching valid logical structure to a new scenario (Parallel Reasoning).
+
+[ABS_02] Flaw Matching
+         - Definition: Matching a specific logical error to a new scenario (Parallel Flaw).
+
+[ABS_03] Principle Application
+         - Definition: Applying a broad rule to a specific factual case.

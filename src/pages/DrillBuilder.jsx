@@ -8,7 +8,12 @@ import {
 } from '../config/skillBuilder'
 import { useDrill } from '../contexts/DrillContext'
 import { useAuth } from '../contexts/AuthContext'
+import { Card } from '../components/ui/Card'
+import { Button } from '../components/ui/Button'
+import { Badge } from '../components/ui/Badge'
+import { cn } from '../utils'
 
+// Styled Dropdown Components
 const SingleSelectDropdown = ({
   label,
   options,
@@ -25,7 +30,6 @@ const SingleSelectDropdown = ({
         setIsOpen(false)
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isOpen])
@@ -42,53 +46,57 @@ const SingleSelectDropdown = ({
   const summary = selectedOption ? getOptionLabel(selectedOption) : placeholder
 
   return (
-    <div className="relative space-y-2" ref={containerRef}>
-      <label className="text-[11px] font-medium text-text-tertiary uppercase tracking-wider">{label}</label>
-      <button
-        type="button"
-        className="w-full rounded-xl px-4 py-3 text-left text-text-primary flex items-center justify-between bg-bg-secondary border border-border-default hover:border-border-hover transition-all duration-200"
-        onClick={() => setIsOpen((prev) => !prev)}
+    <div className="relative space-y-3" ref={containerRef}>
+      <label className="text-xs font-bold uppercase tracking-widest text-text-main/50 dark:text-white/50 px-1">{label}</label>
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        className={cn(
+          "w-full rounded-2xl px-5 py-4 text-left cursor-pointer transition-all duration-200 border flex items-center justify-between group",
+          isOpen
+            ? "bg-white dark:bg-white/10 border-terracotta ring-1 ring-terracotta"
+            : "bg-sand/30 dark:bg-white/5 border-sand-dark/30 dark:border-white/10 hover:border-terracotta/50"
+        )}
       >
-        <span className={`truncate text-sm ${selectedOption ? 'text-text-primary' : 'text-text-secondary'}`}>
+        <span className={cn(
+          "text-sm font-medium",
+          selectedOption ? "text-text-main dark:text-white" : "text-text-main/40 dark:text-white/40"
+        )}>
           {summary}
         </span>
-        <svg className={`w-4 h-4 text-text-tertiary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
+        <span className={cn(
+          "material-symbols-outlined text-text-main/30 group-hover:text-terracotta transition-colors duration-200",
+          isOpen && "rotate-180 text-terracotta"
+        )}>
+          expand_more
+        </span>
+      </div>
 
       {isOpen && (
-        <div className="absolute left-0 z-20 mt-2 w-full rounded-xl bg-bg-secondary border border-border-default shadow-xl backdrop-blur-xl">
-          <div className="py-2">
-            {options.map((option) => {
-              const value = getOptionValue(option)
-              const labelText = getOptionLabel(option)
-              const isActive = value === selected
+        <div className="absolute left-0 z-30 mt-2 w-full rounded-2xl bg-white dark:bg-[#2A2D26] border border-sand-dark/20 dark:border-white/10 shadow-soft-xl max-h-60 overflow-y-auto p-2">
+          {options.map((option) => {
+            const value = getOptionValue(option)
+            const labelText = getOptionLabel(option)
+            const isActive = value === selected
 
-              return (
-                <button
-                  key={value}
-                  type="button"
-                  className={`w-full px-4 py-2.5 text-left text-sm flex items-center justify-between transition-all duration-150 ${
-                    isActive
-                      ? 'bg-brand-primary/20 text-brand-primary font-medium border-l-2 border-brand-primary'
-                      : 'text-text-primary hover:bg-bg-tertiary'
-                  }`}
-                  onClick={() => {
-                    onChange(value)
-                    setIsOpen(false)
-                  }}
-                >
-                  <span>{labelText}</span>
-                  {isActive && <span className="text-brand-primary text-xs font-semibold">✓</span>}
-                </button>
-              )
-            })}
-
-            {options.length === 0 && (
-              <div className="px-4 py-2.5 text-sm text-text-secondary">No options</div>
-            )}
-          </div>
+            return (
+              <div
+                key={value}
+                onClick={() => {
+                  onChange(value)
+                  setIsOpen(false)
+                }}
+                className={cn(
+                  "w-full px-4 py-3 rounded-xl text-left text-sm flex items-center justify-between cursor-pointer transition-colors mb-1",
+                  isActive
+                    ? "bg-terracotta-soft text-terracotta font-bold"
+                    : "text-text-main dark:text-sand hover:bg-sand/30 dark:hover:bg-white/5"
+                )}
+              >
+                <span>{labelText}</span>
+                {isActive && <span className="material-symbols-outlined text-sm">check</span>}
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
@@ -112,7 +120,6 @@ const MultiSelectDropdown = ({
         setIsOpen(false)
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isOpen])
@@ -131,74 +138,68 @@ const MultiSelectDropdown = ({
       : `${selected.slice(0, 2).join(', ')} +${selected.length - 2} more`
 
   return (
-    <div className="relative space-y-2" ref={containerRef}>
-      <label className="text-[11px] font-medium text-text-tertiary uppercase tracking-wider">{label}</label>
-      <button
-        type="button"
-        className="w-full rounded-xl px-4 py-3 text-left text-text-primary flex items-center justify-between bg-bg-secondary border border-border-default hover:border-border-hover transition-all duration-200"
-        onClick={() => setIsOpen((prev) => !prev)}
+    <div className="relative space-y-3" ref={containerRef}>
+      <label className="text-xs font-bold uppercase tracking-widest text-text-main/50 dark:text-white/50 px-1">{label}</label>
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        className={cn(
+          "w-full rounded-2xl px-5 py-4 text-left cursor-pointer transition-all duration-200 border flex items-center justify-between group",
+          isOpen
+            ? "bg-white dark:bg-white/10 border-sage ring-1 ring-sage"
+            : "bg-sand/30 dark:bg-white/5 border-sand-dark/30 dark:border-white/10 hover:border-sage/50"
+        )}
       >
-        <span className="truncate text-sm text-text-secondary">{summary}</span>
-        <svg className={`w-4 h-4 text-text-tertiary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
+        <span className={cn(
+          "text-sm font-medium",
+          selected.length > 0 ? "text-text-main dark:text-white" : "text-text-main/40 dark:text-white/40"
+        )}>
+          {summary}
+        </span>
+        <span className={cn(
+          "material-symbols-outlined text-text-main/30 group-hover:text-sage transition-colors duration-200",
+          isOpen && "rotate-180 text-sage"
+        )}>
+          expand_more
+        </span>
+      </div>
 
       {isOpen && (
-        <div className="absolute left-0 z-20 mt-2 w-full rounded-xl bg-bg-secondary border border-border-default shadow-xl backdrop-blur-xl">
-          <div className="max-h-64 overflow-y-auto">
-            <div className="sticky top-0 bg-bg-secondary border-b border-border-subtle py-2 px-4 flex gap-2">
-              <button
-                type="button"
-                className={`text-xs font-semibold text-brand-primary hover:text-brand-secondary transition ${showClear ? 'flex-1 text-left' : 'w-full text-left'}`}
-                onClick={() => onChange(options)}
-              >
-                Select All
-              </button>
-              {showClear && (
-                <button
-                  type="button"
-                  className="flex-1 text-xs font-semibold text-brand-primary hover:text-brand-secondary transition text-right"
-                  onClick={() => onChange([])}
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-            <div className="py-2">
-              {options.map((option) => {
-                const isActive = selected.includes(option)
-                return (
-                  <button
-                    key={option}
-                    type="button"
-                    className={`w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 transition-all duration-150 ${
-                      isActive
-                        ? 'bg-brand-primary/20 text-brand-primary font-medium border-l-2 border-brand-primary'
-                        : 'text-text-primary hover:bg-bg-tertiary'
-                    }`}
-                    onClick={() => toggleOption(option)}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isActive}
-                      onChange={() => {}}
-                      className="w-4 h-4 rounded border-border-default bg-bg-primary text-brand-primary focus:ring-brand-primary focus:ring-offset-0 pointer-events-none"
-                    />
-                    <span>{option}</span>
-                  </button>
-                )
-              })}
-              {options.length === 0 && (
-                <div className="px-4 py-2.5 text-sm text-text-secondary">No options</div>
-              )}
-            </div>
+        <div className="absolute left-0 z-30 mt-2 w-full rounded-2xl bg-white dark:bg-[#2A2D26] border border-sand-dark/20 dark:border-white/10 shadow-soft-xl max-h-80 overflow-y-auto p-2">
+          <div className="flex justify-between items-center px-4 py-2 border-b border-sand-dark/10 dark:border-white/5 mb-2">
+            <button onClick={() => onChange(options)} className="text-xs font-bold uppercase text-sage hover:text-sage-dark transition-colors">Select All</button>
+            {showClear && <button onClick={() => onChange([])} className="text-xs font-bold uppercase text-text-main/40 hover:text-terracotta transition-colors">Clear</button>}
           </div>
+          {options.map((option) => {
+            const isActive = selected.includes(option)
+            return (
+              <div
+                key={option}
+                onClick={() => toggleOption(option)}
+                className={cn(
+                  "w-full px-4 py-3 rounded-xl text-left text-sm flex items-center justify-between cursor-pointer transition-colors mb-1",
+                  isActive
+                    ? "bg-sage-soft text-sage font-bold"
+                    : "text-text-main dark:text-sand hover:bg-sand/30 dark:hover:bg-white/5"
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={cn(
+                    "w-4 h-4 rounded border flex items-center justify-center transition-colors",
+                    isActive ? "bg-sage border-sage" : "border-text-main/30 bg-white"
+                  )}>
+                    {isActive && <span className="material-symbols-outlined text-white text-[10px]">check</span>}
+                  </div>
+                  <span>{option}</span>
+                </div>
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
   )
 }
+
 
 const DrillBuilder = () => {
   const navigate = useNavigate()
@@ -265,190 +266,164 @@ const DrillBuilder = () => {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4">
-      <div className="max-w-6xl mx-auto space-y-8">
-        <div className="rounded-3xl border border-border-default bg-gradient-to-br from-bg-secondary/90 to-bg-tertiary/95 p-10 shadow-xl backdrop-blur-xl">
-          <div className="mb-8">
-            <h1 className="font-serif text-4xl md:text-5xl font-normal text-text-primary mb-3 tracking-tight">Build Your LSAT Drill</h1>
-            <p className="text-text-secondary text-base max-w-3xl leading-relaxed">
-              Customize a focused practice set by choosing the question mix that matches your study goals.
-              Pick the number of questions, dial in the difficulty, and highlight the reasoning skills you want to sharpen.
+    <div className="p-6 lg:p-12 max-w-[1600px] mx-auto space-y-12">
+      {/* Header */}
+      <header className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-sand-dark/30 dark:border-white/5 pb-8">
+        <div className="space-y-2">
+          <p className="text-sm font-bold uppercase tracking-widest text-terracotta font-sans">Practice Center</p>
+          <h1 className="text-4xl md:text-5xl font-black text-text-main dark:text-white leading-[0.9]">
+            Drill<br />
+            <span className="text-text-main/40 dark:text-white/40 font-medium tracking-tight">Focus &amp; Sharpen.</span>
+          </h1>
+        </div>
+      </header>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
+        <div className="lg:col-span-7 space-y-8">
+          <Card variant="flat" className="bg-white dark:bg-white/5 p-8 border border-sand-dark/30 dark:border-white/10">
+            <h2 className="text-2xl font-bold font-slab text-text-main dark:text-white mb-2">Build Custom Drill</h2>
+            <p className="text-text-main/60 dark:text-sand/60 mb-8 max-w-lg">
+              Customize a focused practice set. Pick question count, difficulty, and specific reasoning skills.
             </p>
-          </div>
-
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div className="space-y-5">
-              <SingleSelectDropdown
-                label="Question Count"
-                options={DRILL_QUESTION_COUNTS.map((count) => ({
-                  value: count,
-                  label: `${count} questions`
-                }))}
-                selected={drillConfig.questionCount}
-                placeholder="Select question count"
-                onChange={(value) => {
-                  const nextValue = typeof value === 'number' ? value : Number(value)
-                  setDrillConfig((prev) => ({ ...prev, questionCount: nextValue }))
-                }}
-              />
-
-              <SingleSelectDropdown
-                label="Timing"
-                options={DRILL_TIME_OPTIONS}
-                selected={drillConfig.timePercentage}
-                placeholder="Select timing"
-                onChange={(value) => {
-                  const nextValue = value === 'untimed' ? 'untimed' : Number(value)
-                  setDrillConfig((prev) => ({ ...prev, timePercentage: nextValue }))
-                }}
-              />
-
-              <MultiSelectDropdown
-                label="Difficulty"
-                options={DRILL_DIFFICULTIES}
-                selected={drillConfig.difficulties}
-                placeholder="Select difficulty levels"
-                onChange={(values) => {
-                  const next = values.length === 0 ? ['Medium'] : values
-                  setDrillConfig((prev) => ({ ...prev, difficulties: next }))
-                }}
-              />
-
-              <MultiSelectDropdown
-                label="Skills"
-                options={DRILL_SKILLS}
-                selected={drillConfig.skills}
-                placeholder="Select targeted skills (optional)"
-                showClear={true}
-                onChange={(values) => {
-                  setDrillConfig((prev) => ({ ...prev, skills: values }))
-                }}
-              />
-
-              <div className="space-y-2">
-                <label className="text-[11px] font-medium text-text-tertiary uppercase tracking-wider">Question Selection</label>
-                <button
-                  type="button"
-                  onClick={() => setDrillConfig((prev) => ({ ...prev, allowRepeatedQuestions: !prev.allowRepeatedQuestions }))}
-                  className={`w-full rounded-xl px-4 py-3 text-left flex items-center justify-between border transition-all duration-200 ${
-                    drillConfig.allowRepeatedQuestions
-                      ? 'bg-brand-primary/10 border-brand-primary/30'
-                      : 'bg-bg-secondary border-border-default hover:border-border-hover'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-6 rounded-full transition-all duration-200 relative ${
-                      drillConfig.allowRepeatedQuestions ? 'bg-brand-primary' : 'bg-bg-tertiary border border-border-default'
-                    }`}>
-                      <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-200 ${
-                        drillConfig.allowRepeatedQuestions ? 'left-5' : 'left-1'
-                      }`} />
-                    </div>
-                    <span className="text-sm text-text-primary">Allow repeated questions</span>
-                  </div>
-                </button>
-                <p className="text-xs text-text-tertiary px-1">
-                  {drillConfig.allowRepeatedQuestions
-                    ? 'Questions you have already answered may appear again'
-                    : 'Only new questions you haven\'t seen before'}
-                </p>
-              </div>
-            </div>
 
             <div className="space-y-6">
-              <div className="rounded-2xl border border-border-default bg-bg-primary/40 p-6 space-y-5 backdrop-blur-sm">
-                <h3 className="text-xl font-medium text-text-primary">Drill Summary</h3>
-                <div className="space-y-3 text-sm text-text-secondary">
-                  <div className="flex justify-between items-center py-2 border-b border-border-subtle">
-                    <span className="text-[11px] uppercase tracking-wider text-text-tertiary">Questions</span>
-                    <span className="text-base font-medium text-text-primary">{drillConfig.questionCount}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <SingleSelectDropdown
+                  label="Question Count"
+                  options={DRILL_QUESTION_COUNTS.map((count) => ({
+                    value: count,
+                    label: `${count} questions`
+                  }))}
+                  selected={drillConfig.questionCount}
+                  placeholder="Select count"
+                  onChange={(value) => {
+                    const nextValue = typeof value === 'number' ? value : Number(value)
+                    setDrillConfig((prev) => ({ ...prev, questionCount: nextValue }))
+                  }}
+                />
+
+                <SingleSelectDropdown
+                  label="Timing"
+                  options={DRILL_TIME_OPTIONS}
+                  selected={drillConfig.timePercentage}
+                  placeholder="Select timing"
+                  onChange={(value) => {
+                    const nextValue = value === 'untimed' ? 'untimed' : Number(value)
+                    setDrillConfig((prev) => ({ ...prev, timePercentage: nextValue }))
+                  }}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-6">
+                <MultiSelectDropdown
+                  label="Difficulty"
+                  options={DRILL_DIFFICULTIES}
+                  selected={drillConfig.difficulties}
+                  placeholder="Select difficulty levels"
+                  onChange={(values) => {
+                    const next = values.length === 0 ? ['Medium'] : values
+                    setDrillConfig((prev) => ({ ...prev, difficulties: next }))
+                  }}
+                />
+
+                <MultiSelectDropdown
+                  label="Target Skills"
+                  options={DRILL_SKILLS}
+                  selected={drillConfig.skills}
+                  placeholder="All Skills (Mixed)"
+                  showClear={true}
+                  onChange={(values) => {
+                    setDrillConfig((prev) => ({ ...prev, skills: values }))
+                  }}
+                />
+              </div>
+
+              <div className="pt-4 flex items-center justify-between">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className={cn(
+                    "w-12 h-6 rounded-full relative transition-colors duration-300",
+                    drillConfig.allowRepeatedQuestions ? "bg-terracotta" : "bg-sand-dark"
+                  )}>
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      checked={drillConfig.allowRepeatedQuestions}
+                      onChange={() => setDrillConfig((prev) => ({ ...prev, allowRepeatedQuestions: !prev.allowRepeatedQuestions }))}
+                    />
+                    <div className={cn(
+                      "absolute top-1 w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-300",
+                      drillConfig.allowRepeatedQuestions ? "left-7" : "left-1"
+                    )} />
                   </div>
-                  <div className="flex justify-between items-start py-2 border-b border-border-subtle">
-                    <span className="text-[11px] uppercase tracking-wider text-text-tertiary">Difficulty mix</span>
-                    <span className="text-base font-medium text-text-primary text-right">{[...drillConfig.difficulties]
-                      .sort((a, b) => {
-                        const order = { 'Easy': 1, 'Medium': 2, 'Hard': 3, 'Challenging': 4 }
-                        return order[a] - order[b]
-                      })
-                      .join(', ')}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-border-subtle">
-                    <span className="text-[11px] uppercase tracking-wider text-text-tertiary">Timing</span>
-                    <span className="text-base font-medium text-text-primary">{
-                      DRILL_TIME_OPTIONS.find((option) => option.value === drillConfig.timePercentage)?.label
-                      || `${drillConfig.timePercentage}%`
-                    }</span>
-                  </div>
-                  <div className="flex justify-between items-start py-2">
-                    <span className="text-[11px] uppercase tracking-wider text-text-tertiary">Skills</span>
-                    <span className="text-base font-medium text-text-primary text-right">{drillConfig.skills.length > 0 ? drillConfig.skills.join(', ') : 'Any available'}</span>
-                  </div>
-                </div>
-                {errorMessage && (
-                  <div className="text-sm text-danger bg-danger/10 border border-danger/30 rounded-xl px-4 py-3">
-                    {errorMessage}
-                  </div>
-                )}
-                {drillConfig.difficulties.length === 0 && (
-                  <div className="text-sm text-text-secondary bg-bg-tertiary/50 border border-border-subtle rounded-xl px-4 py-3">
-                    Please select at least one difficulty level to continue
-                  </div>
-                )}
+                  <span className="text-sm font-medium text-text-main/70 group-hover:text-text-main transition-colors">Allow Repeats</span>
+                </label>
+
                 <button
                   type="button"
-                  className="w-full py-3.5 bg-gradient-to-r from-brand-primary to-brand-secondary hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] rounded-xl text-white font-semibold transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed shadow-lg transform hover:-translate-y-0.5"
-                  onClick={startDrillSession}
-                  disabled={isLoading || drillConfig.difficulties.length === 0}
-                >
-                  {isLoading ? 'Generating...' : 'Generate Drill'}
-                </button>
-                <button
-                  type="button"
-                  className="w-full py-2.5 bg-transparent border border-border-default hover:bg-bg-tertiary rounded-xl text-text-secondary text-sm transition-all duration-200"
+                  className="text-xs font-bold uppercase tracking-widest text-text-main/40 hover:text-terracotta transition-colors"
                   onClick={handleResetConfiguration}
                   disabled={isLoading}
                 >
-                  Reset configuration
+                  Reset Config
                 </button>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
 
-        <div className="rounded-3xl border border-border-default bg-gradient-to-br from-bg-secondary/90 to-bg-tertiary/95 p-10 shadow-xl backdrop-blur-xl">
-          <h2 className="font-serif text-3xl font-normal mb-4 text-text-primary tracking-tight">Ready when you are</h2>
-          <p className="text-text-secondary max-w-2xl text-base leading-relaxed">
-            Choose your drill configuration above and tap <span className="text-text-primary font-semibold">Generate Drill</span> to pull a fresh set of questions from the Deductly skill library.
-          </p>
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
-            <div className="rounded-2xl border border-border-subtle bg-bg-primary/30 p-6 backdrop-blur-sm">
-              <div className="w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-              </div>
-              <p className="text-text-primary font-semibold mb-2 text-base">Adaptive mix</p>
-              <p className="text-sm text-text-secondary leading-relaxed">We'll fill any gaps in your request with similar questions so every drill reaches your requested length.</p>
+        <div className="lg:col-span-5 space-y-8">
+          {/* Summary Card */}
+          <Card variant="featured" className="bg-sage-soft/50 dark:bg-sage/10 border-sage/20 sticky top-8">
+            <div className="flex items-center gap-2 mb-6 text-sage">
+              <span className="material-symbols-outlined">analytics</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Session Preview</span>
             </div>
-            <div className="rounded-2xl border border-border-subtle bg-bg-primary/30 p-6 backdrop-blur-sm">
-              <div className="w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex justify-between items-baseline border-b border-sage/10 pb-3">
+                <span className="text-sm text-text-main/60 dark:text-sand/60">Questions</span>
+                <span className="text-2xl font-bold font-slab text-text-main dark:text-white">{drillConfig.questionCount}</span>
               </div>
-              <p className="text-text-primary font-semibold mb-2 text-base">Real LSAT content</p>
-              <p className="text-sm text-text-secondary leading-relaxed">Questions map directly to LSAT reasoning skills so you always know what you're sharpening.</p>
-            </div>
-            <div className="rounded-2xl border border-border-subtle bg-bg-primary/30 p-6 backdrop-blur-sm">
-              <div className="w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+              <div className="flex justify-between items-baseline border-b border-sage/10 pb-3">
+                <span className="text-sm text-text-main/60 dark:text-sand/60">Skills</span>
+                <span className="text-right font-medium text-text-main dark:text-white max-w-[200px] truncate">
+                  {drillConfig.skills.length > 0 ? `${drillConfig.skills.length} Selected` : 'Mixed (All)'}
+                </span>
               </div>
-              <p className="text-text-primary font-semibold mb-2 text-base">Flexible pacing</p>
-              <p className="text-sm text-text-secondary leading-relaxed">Dial the timer from tight to untimed to mirror your practice strategy.</p>
+              <div className="flex justify-between items-baseline pb-3">
+                <span className="text-sm text-text-main/60 dark:text-sand/60">Difficulty</span>
+                <span className="text-right font-medium text-text-main dark:text-white">
+                  {drillConfig.difficulties.join(', ')}
+                </span>
+              </div>
             </div>
-          </div>
+
+            {errorMessage && (
+              <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm border border-red-100 flex gap-2">
+                <span className="material-symbols-outlined text-sm mt-0.5">error</span>
+                {errorMessage}
+              </div>
+            )}
+
+            <Button
+              size="lg"
+              className="w-full text-lg shadow-soft-xl hover:scale-[1.02]"
+              disabled={isLoading || drillConfig.difficulties.length === 0}
+              onClick={startDrillSession}
+            >
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-spin material-symbols-outlined text-base">refresh</span>
+                  Generating...
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  Launch Drill
+                  <span className="material-symbols-outlined">arrow_forward</span>
+                </span>
+              )}
+            </Button>
+          </Card>
         </div>
       </div>
     </div>

@@ -249,6 +249,30 @@ CREATE TABLE IF NOT EXISTS user_question_history (
 CREATE INDEX IF NOT EXISTS idx_uqh_user_id ON user_question_history(user_id);
 CREATE INDEX IF NOT EXISTS idx_uqh_user_correct ON user_question_history(user_id, is_correct);
 CREATE INDEX IF NOT EXISTS idx_uqh_user_last_correct ON user_question_history(user_id, last_correct);
+
+
+-- ============================================================================
+-- Adaptive Diagnostic Sessions Table
+-- Tracks state for question-by-question adaptive diagnostic tests
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS adaptive_diagnostic_sessions (
+    id VARCHAR(50) PRIMARY KEY,
+    user_id VARCHAR(100) NOT NULL,
+    diagnostic_type VARCHAR(20) DEFAULT 'lr',
+    status VARCHAR(20) DEFAULT 'in_progress',
+    current_position INTEGER DEFAULT 0,
+    selected_question_ids TEXT,
+    user_answers TEXT,
+    elo_snapshots TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP,
+    drill_id VARCHAR(50) REFERENCES drills(drill_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_ads_user_id ON adaptive_diagnostic_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_ads_status ON adaptive_diagnostic_sessions(status);
+CREATE INDEX IF NOT EXISTS idx_ads_user_status ON adaptive_diagnostic_sessions(user_id, status);
 """
 
 
@@ -279,6 +303,7 @@ def drop_all_tables(conn):
     """
     # Order matters: children before parents (reverse of creation order)
     tables = [
+        'adaptive_diagnostic_sessions',
         'user_question_history',
         'question_elo_ratings',
         'user_elo_ratings',

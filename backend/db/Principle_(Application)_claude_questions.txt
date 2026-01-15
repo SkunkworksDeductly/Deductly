@@ -1,0 +1,252 @@
+{
+  "stimulus": "Historians of administrative law agree that when a regulatory body consistently interprets its own rules in a particular way over many years, that interpretation should be treated as authoritative unless clear evidence shows the interpretation contradicts the rules' original intent. This principle applies regardless of whether later scholars find the interpretation analytically flawed.",
+  "stem": "Which one of the following judgments most closely conforms to the principle stated above?",
+  "options": [
+    {
+      "text": "A municipal zoning board interpreted its noise ordinance to exempt construction during weekday business hours for three decades, so this interpretation should be treated as authoritative even though some urban planners consider the exemption poorly reasoned.",
+      "is_correct": true,
+      "explanation": "This answer correctly applies the principle: (1) The zoning board is a regulatory body that has consistently interpreted its rule (the noise ordinance) in a particular way (exempting weekday construction) over many years (three decades). (2) The conclusion follows—this interpretation should be treated as authoritative. (3) The answer correctly notes that later scholars (urban planners) finding analytical flaws does not negate the authority. All conditions of the principle are met and the conclusion matches.",
+      "tutor_explanation": "This is the correct answer. The principle says that when a regulatory body consistently interprets its rules the same way over many years, that interpretation should be authoritative—even if scholars later find flaws in the reasoning. Here, the zoning board (regulatory body) has interpreted its noise ordinance (its own rule) the same way for thirty years (many years), and urban planners (later scholars) think it's poorly reasoned (analytically flawed). This matches every element of the principle perfectly.",
+      "skill_tested": "ABS_03: Principle Application",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "A tax tribunal recently changed its interpretation of a deduction rule after academic criticism, so this new interpretation should now be treated as authoritative.",
+      "is_correct": false,
+      "explanation": "This distractor fails because it describes a changed interpretation rather than a consistent one maintained over many years. The principle requires consistent interpretation over time as the basis for authority. A test-taker selecting this misunderstands the condition requiring consistency.",
+      "tutor_explanation": "This choice is tempting because it involves a regulatory body and interpretation of rules. However, the principle specifically requires 'consistent' interpretation 'over many years.' Here, the tribunal recently changed its interpretation, which means the consistency condition isn't met. The principle doesn't address how to treat new or changed interpretations.",
+      "skill_tested": null,
+      "trap_type": "Doesn't meet principle's conditions",
+      "skill_gap": "Failing to verify that all conditions of the principle are satisfied"
+    },
+    {
+      "text": "A licensing agency interpreted its certification requirements broadly for decades, but documents show this contradicted the drafters' stated purposes, so this interpretation should not be treated as authoritative.",
+      "is_correct": false,
+      "explanation": "This answer acknowledges the exception in the principle (clear evidence of contradiction with original intent) and reaches the opposite conclusion from the main principle. While this shows understanding of the exception, it is not an application of the principle itself—it's an application of when the principle doesn't apply.",
+      "tutor_explanation": "This choice correctly recognizes that the principle has an exception: when 'clear evidence shows the interpretation contradicts the rules' original intent.' The documents showing contradiction with drafters' purposes trigger this exception. However, this isn't really applying the principle—it's applying the exception to the principle. The question asks for a judgment that conforms to the principle, not one that correctly identifies when the principle doesn't apply.",
+      "skill_tested": null,
+      "trap_type": "Consistent with principle but not an application",
+      "skill_gap": "Confusing a case where the principle's exception applies with an application of the principle itself"
+    },
+    {
+      "text": "A health department consistently applied its food safety standards strictly for twenty years, so courts should defer to its expertise when reviewing its enforcement decisions.",
+      "is_correct": false,
+      "explanation": "This distractor applies a different but related principle—judicial deference to agency expertise—rather than the stated principle about consistent interpretation establishing authority. The principle concerns how interpretations should be treated, not about judicial deference to enforcement decisions.",
+      "tutor_explanation": "This choice sounds similar because it involves a regulatory body acting consistently over time. But the principle in the stimulus is specifically about how consistent interpretation of rules should be treated as authoritative. This choice is about courts deferring to agency expertise in enforcement—a related but different concept. Consistent application of standards isn't the same as consistent interpretation of rules.",
+      "skill_tested": null,
+      "trap_type": "Applies a different/similar principle",
+      "skill_gap": "Confusing related but distinct principles regarding administrative authority"
+    },
+    {
+      "text": "A regulatory commission interpreted its disclosure requirements narrowly for fifteen years, so any broader interpretation would violate the regulated parties' expectations.",
+      "is_correct": false,
+      "explanation": "This distractor meets the conditions (consistent interpretation over years) but reaches a different conclusion than the principle supports. The principle says the interpretation should be 'treated as authoritative,' not that changing it would 'violate expectations.' This conflates interpretive authority with reliance interests.",
+      "tutor_explanation": "This choice correctly identifies a consistent interpretation over many years, which meets the principle's conditions. However, the conclusion doesn't match. The principle says such interpretations should be 'treated as authoritative.' This choice instead concludes something about violating expectations—a different (though perhaps related) concept. When applying principles, both the conditions and the conclusion must match.",
+      "skill_tested": null,
+      "trap_type": "Meets conditions but reaches wrong conclusion",
+      "skill_gap": "Failing to match the conclusion of the principle precisely"
+    }
+  ],
+  "metadata": {
+    "question_type": "Principle (Application)",
+    "family": "Structure Family",
+    "primary_skill_id": "ABS_03",
+    "primary_skill_name": "Principle Application",
+    "secondary_skills": [],
+    "difficulty": "EASY",
+    "topic": "Administrative law",
+    "word_count": 58,
+    "validation_method": "Correct answer must be a specific case where: (1) The conditions of the principle are met (regulatory body, consistent interpretation, many years), AND (2) The conclusion follows (interpretation should be treated as authoritative). All terms must match."
+  }
+}
+
+{
+  "stimulus": "A sovereign nation may legitimately restrict the passage of foreign vessels through its territorial waters only when such passage poses a demonstrable threat to its security or environmental integrity. Mere economic inconvenience to domestic industries, however significant, does not constitute grounds for such restriction under international maritime principles.",
+  "stem": "Which one of the following judgments most closely conforms to the principle stated above?",
+  "options": [
+    {
+      "text": "Country X is justified in barring foreign fishing boats from a coastal zone where their presence would deplete fish stocks that local ecosystems depend upon for survival.",
+      "is_correct": true,
+      "explanation": "This choice correctly applies the principle. The depletion of fish stocks that local ecosystems depend upon constitutes a demonstrable threat to environmental integrity. The principle permits restriction when environmental integrity is threatened, and this case meets that condition exactly.",
+      "tutor_explanation": "This is correct because it matches both parts of the principle. The principle says nations can restrict passage when there's a demonstrable threat to environmental integrity. Here, depleting fish stocks that ecosystems depend upon is exactly that kind of environmental threat—it's not about economics or convenience, but about ecological harm. The judgment follows the principle precisely.",
+      "skill_tested": "ABS_03: Principle Application",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Country Y should not prevent foreign cargo ships from transiting its waters simply because those ships carry goods that compete with domestic manufacturers.",
+      "is_correct": false,
+      "explanation": "This choice is consistent with the principle but is not an application of it. It describes what should NOT happen (matching the principle's exclusion of economic inconvenience), but principle application questions require finding a case where the principle IS applied to reach a judgment. This is merely restating the negative condition.",
+      "tutor_explanation": "This is tempting because it aligns with the principle—the principle does say economic inconvenience isn't grounds for restriction. But notice this choice just restates what the principle prohibits rather than applying the principle to justify an action. We need a case where the principle actively supports a judgment, not one that merely avoids violating it.",
+      "skill_tested": null,
+      "trap_type": "Consistent with principle but not an application",
+      "skill_gap": "Confusing consistency with application"
+    },
+    {
+      "text": "Country Z is justified in closing its ports to foreign vessels because their presence reduces profits for local shipping companies.",
+      "is_correct": false,
+      "explanation": "This choice directly violates the principle. The principle explicitly states that economic inconvenience does not constitute grounds for restriction. Reduced profits for local shipping companies is precisely the type of economic harm the principle excludes as justification.",
+      "tutor_explanation": "This directly contradicts the principle. The stimulus explicitly says that 'mere economic inconvenience to domestic industries' is not grounds for restriction. Reduced profits for local shipping companies is exactly that kind of economic harm. A test-taker might choose this if they focus only on the fact that it involves a restriction decision without checking whether the stated reason actually qualifies.",
+      "skill_tested": null,
+      "trap_type": "Violates the principle",
+      "skill_gap": "Failing to recognize explicit violations of stated conditions"
+    },
+    {
+      "text": "Country W may restrict foreign naval vessels carrying weapons from entering waters near its military installations.",
+      "is_correct": false,
+      "explanation": "This choice appears to meet the conditions (security threat) but involves ports/installations rather than passage through territorial waters. The principle specifically addresses 'passage of foreign vessels through territorial waters,' not entry into ports or proximity to installations, which involves different legal frameworks.",
+      "tutor_explanation": "This seems right because armed naval vessels near military sites sounds like a security threat. However, the principle specifically addresses 'passage through territorial waters'—the transit of ships moving through. Restricting access to areas 'near military installations' involves a different concept (proximity to sensitive sites) rather than transit rights. The principle doesn't quite cover this scenario.",
+      "skill_tested": null,
+      "trap_type": "Applies a different/similar principle",
+      "skill_gap": "Overlooking scope limitations in principle statements"
+    },
+    {
+      "text": "Country V is justified in prohibiting foreign vessels from its waters because it wishes to preserve exclusive fishing rights for its citizens.",
+      "is_correct": false,
+      "explanation": "This choice does not meet the principle's conditions. Preserving exclusive fishing rights for citizens is an economic/commercial interest, not a security or environmental threat. While it involves natural resources, the motivation is economic benefit rather than environmental protection.",
+      "tutor_explanation": "This is tricky because it involves fishing and waters, which might seem environmental. But look closely: the reason given is to 'preserve exclusive fishing rights for its citizens'—that's about economic benefit and commercial access, not environmental protection. The first answer choice mentions ecosystem survival; this one mentions citizens' fishing rights. That's the key distinction between environmental integrity and economic interest.",
+      "skill_tested": null,
+      "trap_type": "Doesn't meet principle's conditions",
+      "skill_gap": "Conflating economic interests with environmental integrity"
+    }
+  ],
+  "metadata": {
+    "question_type": "Principle (Application)",
+    "family": "Structure Family",
+    "primary_skill_id": "ABS_03",
+    "primary_skill_name": "Principle Application",
+    "secondary_skills": [],
+    "difficulty": "MEDIUM",
+    "topic": "International law",
+    "word_count": 52,
+    "validation_method": "Correct answer must be a specific case where: (1) The conditions of the principle are met (demonstrable threat to security or environmental integrity), AND (2) The conclusion follows from the principle (restriction is legitimate). All terms must match."
+  }
+}
+
+{
+  "stimulus": "Recent scholarship suggests that biographical interpretations of literary works are justified only when textual evidence independently supports the proposed connection between an author's life and the work's meaning. Without such corroboration, attributing thematic significance to biographical circumstances constitutes speculation rather than legitimate interpretation, regardless of how plausible the connection might seem.",
+  "stem": "Which one of the following judgments most closely conforms to the principle articulated above?",
+  "options": [
+    {
+      "text": "A critic's claim that a novelist's depiction of urban poverty reflects her childhood in tenement housing is warranted because the novel's detailed descriptions of specific neighborhoods correspond precisely to documented locations from the author's youth.",
+      "is_correct": true,
+      "explanation": "This choice correctly applies the principle by meeting both conditions: (1) a biographical interpretation is proposed (the connection between the novelist's childhood and her depiction of poverty), and (2) independent textual evidence corroborates this connection (the detailed descriptions matching documented locations). The principle states such interpretations are justified only when textual evidence independently supports the proposed connection, which is exactly what occurs here.",
+      "tutor_explanation": "This answer correctly applies the principle because it includes both required elements. First, a critic makes a biographical claim—that the novelist's depiction of poverty reflects her childhood. Second, there's independent textual evidence supporting this connection—the novel's descriptions match documented locations from the author's life. The principle says biographical interpretations are justified 'only when textual evidence independently supports the proposed connection,' and that's precisely what we have here.",
+      "skill_tested": "Principle Application (ABS_03)",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "A scholar's interpretation linking a poet's elegiac tone to the recent death of his spouse is compelling because the timing of the poem's composition coincides with the period of mourning.",
+      "is_correct": false,
+      "explanation": "Trap type: Doesn't meet principle's conditions. The 'timing coincidence' is biographical evidence, not textual evidence from the work itself. The principle requires that textual evidence independently support the connection, but this choice relies solely on external biographical correlation without referencing any features of the text that corroborate the interpretation.",
+      "tutor_explanation": "This is tempting because it seems like a reasonable scholarly connection—the timing matches up! But notice what's missing: there's no mention of anything in the poem itself that supports the interpretation. The principle specifically requires 'textual evidence' to corroborate biographical claims. Timing of composition is biographical circumstance, not evidence from within the text. Without pointing to something in the poem that independently supports this reading, the connection remains speculation according to the principle.",
+      "skill_tested": null,
+      "trap_type": "Doesn't meet principle's conditions",
+      "skill_gap": "Distinguishing textual evidence from biographical evidence"
+    },
+    {
+      "text": "A biographer's assertion that a playwright's comedies mask personal despair should be rejected because no surviving letters or journals confirm the playwright experienced depression during those years.",
+      "is_correct": false,
+      "explanation": "Trap type: Applies a different/similar principle. This answer invokes a different standard—requiring biographical documentation (letters, journals) rather than textual evidence within the literary work. The principle in the stimulus concerns textual corroboration of biographical interpretations, not biographical corroboration of biographical claims.",
+      "tutor_explanation": "This choice might seem right because it's about rejecting an unsupported biographical interpretation. But look closely at what evidence it's demanding: 'surviving letters or journals' confirming the playwright's depression. That's biographical evidence about the author's life, not textual evidence from the plays themselves. The principle asks whether the work's text supports the interpretation, not whether external biographical documents confirm the author's experiences. This applies a related but different standard.",
+      "skill_tested": null,
+      "trap_type": "Applies a different/similar principle",
+      "skill_gap": "Precise identification of the principle's specific requirements"
+    },
+    {
+      "text": "A reviewer's suggestion that an essayist's philosophical pessimism stems from his wartime experiences is unwarranted because the essayist himself never publicly discussed how the war affected his thinking.",
+      "is_correct": false,
+      "explanation": "Trap type: Applies a different/similar principle. This answer uses the author's own statements (or lack thereof) as the criterion for warrant, rather than textual evidence from the essays. The principle requires independent textual corroboration, not authorial confirmation. An interpretation could be warranted under the stimulus principle even if the author never discussed it, provided textual evidence supports it.",
+      "tutor_explanation": "This choice rejects an interpretation because the author 'never publicly discussed' the connection. But the principle doesn't require the author's own statements—it requires textual evidence from the work itself. An author might never discuss how their experiences influenced their writing, yet the text could still contain evidence supporting a biographical reading. Conversely, an author might claim influence that isn't reflected in the text. The principle focuses on what the text shows, not what the author says about it.",
+      "skill_tested": null,
+      "trap_type": "Applies a different/similar principle",
+      "skill_gap": "Recognizing that authorial intent is distinct from textual evidence"
+    },
+    {
+      "text": "A literary historian's theory that a satirist's attacks on aristocracy arose from class resentment is well-founded because many writers of that era harbored similar grievances against the nobility.",
+      "is_correct": false,
+      "explanation": "Trap type: Consistent with principle but not an application. This answer justifies a biographical interpretation by appealing to general historical patterns among writers, not textual evidence from this particular satirist's work. While such historical context might make the interpretation plausible, the principle specifically requires textual evidence from the work itself to justify biographical readings.",
+      "tutor_explanation": "This choice justifies a biographical claim by pointing to what 'many writers of that era' felt. But that's historical context about a general trend, not textual evidence from the satirist's specific work. The principle requires that the text itself independently support the biographical connection. Just because similar resentments were common doesn't mean this particular satirist's text reflects class resentment. The interpretation might be plausible, but plausibility isn't the standard—independent textual corroboration is.",
+      "skill_tested": null,
+      "trap_type": "Consistent with principle but not an application",
+      "skill_gap": "Distinguishing plausibility from textual corroboration"
+    }
+  ],
+  "metadata": {
+    "question_type": "Principle (Application)",
+    "family": "Structure Family",
+    "primary_skill_id": "ABS_03",
+    "primary_skill_name": "Principle Application",
+    "secondary_skills": [],
+    "difficulty": "HARD",
+    "topic": "Literary criticism",
+    "word_count": 56,
+    "validation_method": "Correct answer must be a specific case where: (1) The conditions of the principle are met (biographical interpretation with independent textual evidence), AND (2) The conclusion follows from the principle (interpretation is justified). All terms must match."
+  }
+}
+
+{
+  "stimulus": "Recent fiscal research suggests that tax incentives designed to encourage socially beneficial behavior paradoxically undermine their own efficacy when taxpayers perceive such incentives as manipulative rather than facilitative. Specifically, whenever individuals believe that a tax benefit exists primarily to alter their conduct rather than to reduce genuine financial burdens, compliance with the incentive's intended purpose decreases even when participation would be economically advantageous.",
+  "stem": "Which one of the following situations most closely illustrates the principle described above?",
+  "options": [
+    {
+      "text": "A homeowner declines to install energy-efficient windows despite a substantial tax credit, having concluded that the credit exists mainly to pressure citizens into environmentally conscious choices rather than to offset installation costs.",
+      "is_correct": true,
+      "explanation": "This answer correctly applies the principle by meeting all conditions: (1) a tax incentive exists (the credit for energy-efficient windows), (2) the individual perceives it as manipulative rather than facilitative (viewing it as pressure rather than cost offset), and (3) compliance decreases despite economic advantage (declining the credit that would be 'substantial'). This demonstrates proper Principle Application (ABS_03) by matching all elements of the abstract rule to a concrete case.",
+      "tutor_explanation": "This is correct because it matches every element of the principle. The stimulus tells us that when people see tax incentives as manipulative (trying to change behavior) rather than facilitative (reducing genuine costs), they won't comply even when it benefits them economically. Here, the homeowner views the credit as 'pressure' (manipulative) rather than a 'cost offset' (facilitative), and declines despite the credit being 'substantial' (economically advantageous). Each component of the principle is present.",
+      "skill_tested": "ABS_03: Principle Application - correctly mapping abstract conditional principle to specific factual scenario",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "A business owner claims a research tax credit after expanding laboratory facilities, believing the credit was enacted to stimulate innovation even though the expansion was planned before the credit existed.",
+      "is_correct": false,
+      "explanation": "This describes someone who DOES claim the credit and perceives it as designed to stimulate certain behavior (manipulative intent). However, this violates the principle's prediction: the principle states that perceiving manipulative intent leads to decreased compliance, but here compliance occurred. The distractor exploits confusion about the principle's direction.",
+      "tutor_explanation": "This is tempting because it involves tax incentives and perception of government intent. However, look carefully: the principle says perceiving manipulation leads to DECREASED compliance. Here, the business owner DOES claim the credit despite believing it was designed to change behavior. This actually contradicts rather than illustrates the principle—the owner complied anyway. An illustration must show the predicted outcome (non-compliance), not the opposite.",
+      "skill_tested": null,
+      "trap_type": "Violates the principle",
+      "skill_gap": "Misreading conditional direction - confusing what the principle predicts with what contradicts it"
+    },
+    {
+      "text": "A corporation declines to relocate to a tax-favorable jurisdiction because executives believe the tax structure there reflects genuine economic policy rather than an attempt to lure businesses from other regions.",
+      "is_correct": false,
+      "explanation": "This reverses the conditions: the executives perceive the incentive as facilitative (genuine economic policy), NOT manipulative. Under the principle, facilitative perception should lead to compliance, not decreased compliance. The corporation's decision to decline doesn't follow from the stated perception.",
+      "tutor_explanation": "Look carefully at the perception here: executives see the tax structure as 'genuine economic policy' rather than an attempt to 'lure businesses.' That's the facilitative perception, not the manipulative one. The principle only predicts non-compliance when people perceive manipulation. If anything, this perception should lead to compliance according to the principle's logic. The mismatch between perception and outcome means this doesn't illustrate the principle.",
+      "skill_tested": null,
+      "trap_type": "Meets conditions but reaches wrong conclusion",
+      "skill_gap": "Confusing facilitative and manipulative perceptions - misapplying the conditional's antecedent"
+    },
+    {
+      "text": "Taxpayers increasingly utilize charitable donation deductions as charitable organizations have become more transparent about how donations are used, regardless of whether such deductions were intended to encourage giving.",
+      "is_correct": false,
+      "explanation": "This scenario involves increased compliance (more utilization) correlated with organizational transparency—an entirely different causal mechanism than the perception of manipulative versus facilitative intent. The principle concerns taxpayer perception of government purpose, not charity transparency.",
+      "tutor_explanation": "This scenario sounds related because it involves tax incentives and behavior, but the mechanism is completely different. The principle is about how perceiving government manipulation affects compliance. This answer is about how charity transparency affects giving. The taxpayers' perception of whether the deduction is manipulative or facilitative isn't mentioned at all—the focus is on the charities themselves. Different cause, different effect, wrong principle.",
+      "skill_tested": null,
+      "trap_type": "Applies a different/similar principle",
+      "skill_gap": "Applying an analogous but distinct principle - confusing adjacent concepts"
+    },
+    {
+      "text": "An investor participates in a tax-advantaged retirement account program, calculating that the long-term benefits outweigh any concerns about whether the program was designed to influence savings behavior.",
+      "is_correct": false,
+      "explanation": "This describes compliance occurring despite potential perception concerns, with economic calculation overriding perception. The principle states that manipulative perception leads to non-compliance 'even when participation would be economically advantageous.' This investor's economic reasoning leading to compliance doesn't match the principle's prediction.",
+      "tutor_explanation": "This is tricky because it mentions both economic calculation and perception of government intent. But the principle specifically says non-compliance happens 'even when participation would be economically advantageous.' Here, the investor DOES participate because the benefits outweigh concerns. The principle describes people who reject advantageous incentives due to perception; this investor accepts them despite perception concerns. The outcome doesn't match what the principle predicts.",
+      "skill_tested": null,
+      "trap_type": "Doesn't meet principle's conditions",
+      "skill_gap": "Missing the 'despite economic advantage' component - failing to track all conditional elements"
+    }
+  ],
+  "metadata": {
+    "question_type": "Principle (Application)",
+    "family": "Structure Family",
+    "primary_skill_id": "ABS_03",
+    "primary_skill_name": "Principle Application",
+    "secondary_skills": [],
+    "difficulty": "CHALLENGING",
+    "topic": "Tax policy",
+    "word_count": 66,
+    "validation_method": "Correct answer must be a specific case where: (1) The conditions of the principle are met (tax incentive exists, taxpayer perceives it as manipulative rather than facilitative), AND (2) The conclusion follows from the principle (compliance decreases despite economic advantage). All terms must match precisely."
+  }
+}
+

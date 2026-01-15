@@ -1,0 +1,264 @@
+{
+  "stimulus": "Anthropologists have long observed that societies with abundant natural resources typically develop elaborate ceremonial practices requiring significant time and labor. Yet the coastal communities of one archipelago, despite having access to extraordinarily rich fishing grounds that provided food surpluses year-round, maintained only simple, brief rituals. Their neighboring inland communities, who faced seasonal food scarcity, developed far more complex ceremonial traditions.",
+  "stem": "Which one of the following, if true, most helps to explain the apparent conflict described above?",
+  "options": [
+    {
+      "text": "The coastal communities devoted their surplus time to extensive inter-island trade networks that required constant attention and travel.",
+      "is_correct": true,
+      "explanation": "This answer correctly resolves the paradox by introducing an alternative explanation (Z factor) for why the coastal communities did not develop elaborate ceremonies despite having resource abundance. The surplus time that would typically go toward ceremonial development was instead absorbed by trade activities. This allows both facts to be true: resource-rich societies generally develop elaborate ceremonies because they have surplus time, but THIS particular community channeled that surplus into trade instead.",
+      "tutor_explanation": "This choice works because it gives us a reason why both observations can be true. Resource-rich societies usually develop elaborate ceremonies because they have extra time beyond basic survival needs. But these coastal communities had something else competing for that surplus time—trade networks. So the general rule still holds (abundance creates opportunity for elaborate practices), but these communities directed their abundance toward trade rather than ceremonies.",
+      "skill_tested": "RH_02: Alternative Explanations - recognizing a third factor that explains why the expected pattern didn't occur",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "The inland communities' ceremonial traditions had been established centuries before anthropologists began studying the region.",
+      "is_correct": false,
+      "explanation": "This provides historical context about the inland communities but does nothing to explain why the coastal communities, despite their abundance, failed to develop elaborate ceremonies. It addresses only one side of the paradox.",
+      "tutor_explanation": "This tells us something about when the inland traditions started, but that's not what's puzzling here. The mystery is why the coastal communities—with all their resources—didn't develop elaborate ceremonies. Learning when the inland ceremonies began doesn't help us understand the coastal communities' simpler practices.",
+      "skill_tested": null,
+      "trap_type": "Explains only one fact (ignores the other)",
+      "skill_gap": "Failure to recognize that resolving a paradox requires addressing BOTH conflicting facts, not just providing more information about one"
+    },
+    {
+      "text": "The fishing grounds near the archipelago were not actually as productive as anthropologists initially believed.",
+      "is_correct": false,
+      "explanation": "This denies one of the stated facts (that the coastal communities had extraordinarily rich resources) rather than reconciling the two observations. The stimulus explicitly states the fishing grounds provided 'extraordinarily rich' resources and 'food surpluses year-round.'",
+      "tutor_explanation": "Be careful here—this answer tries to dissolve the paradox by saying there wasn't really an abundance after all. But we're told to accept the facts in the stimulus as true. The fishing grounds were extraordinarily rich. We need to explain how simple rituals could exist DESPITE that abundance, not deny the abundance existed.",
+      "skill_tested": null,
+      "trap_type": "Denies one of the facts instead of reconciling",
+      "skill_gap": "Failure to understand that paradox resolution must accept both facts as given and explain how they can coexist"
+    },
+    {
+      "text": "Ceremonial practices in traditional societies often incorporate elements related to the primary food sources of those communities.",
+      "is_correct": false,
+      "explanation": "This is a true and relevant observation about ceremonial practices generally, but it doesn't explain why the coastal communities had simple rather than elaborate ceremonies. It tells us about the content of ceremonies, not their complexity.",
+      "tutor_explanation": "This is interesting information about ceremonies, but it doesn't help us here. The puzzle isn't about what ceremonies contain—it's about why some communities have elaborate ceremonies while others have simple ones. Knowing that ceremonies often relate to food sources doesn't tell us why resource-rich coastal communities kept their rituals brief.",
+      "skill_tested": null,
+      "trap_type": "Relevant to topic but doesn't resolve tension",
+      "skill_gap": "Confusing topical relevance with logical relevance to the specific discrepancy"
+    },
+    {
+      "text": "Anthropologists have had difficulty explaining why resource abundance and ceremonial complexity are correlated in most societies.",
+      "is_correct": false,
+      "explanation": "This merely acknowledges the difficulty of explaining the general pattern, but does nothing to resolve why this specific community is an exception. It reinforces rather than resolves the puzzling nature of the observations.",
+      "tutor_explanation": "This choice points out that the connection between resources and ceremonies is hard to explain—but that's exactly our problem, not a solution to it. We need an answer that helps us understand how both observations can be true, not one that confirms the situation is confusing.",
+      "skill_tested": null,
+      "trap_type": "Explains why paradox seems real (not why both true)",
+      "skill_gap": "Confusing acknowledgment of a puzzle with resolution of it"
+    }
+  ],
+  "metadata": {
+    "question_type": "Resolve the Paradox",
+    "family": "Discrepancy Family",
+    "primary_skill_id": "RH_02",
+    "primary_skill_name": "Alternative Explanations",
+    "secondary_skills": [
+      "FL_04",
+      "S_01"
+    ],
+    "difficulty": "EASY",
+    "topic": "Cultural anthropology",
+    "word_count": 78,
+    "validation_method": "Correct answer must make BOTH facts simultaneously true by providing context, a third variable, or a clarifying distinction that addresses both sides of the paradox"
+  }
+}
+
+{
+  "stimulus": "Some economists argue that consumers always prefer more choices, yet historical evidence suggests otherwise. During the Great Depression, general stores offering limited but carefully selected inventory thrived while larger emporiums with extensive catalogs struggled. Similarly, modern studies show that consumers who encounter product displays with fewer options report greater satisfaction with their purchases than those presented with comprehensive selections. Nevertheless, retailers continue expanding their product lines, and consumers consistently report wanting more variety when surveyed about their preferences.",
+  "stem": "Which one of the following, if true, would most effectively reconcile the apparent conflict described above?",
+  "options": [
+    {
+      "text": "Consumers who purchase from limited selections often do so because they lack the time to evaluate larger assortments.",
+      "is_correct": false,
+      "explanation": "Trap type: Explains only one fact. This explains why consumers might purchase from limited selections but does not address why consumers report wanting more variety despite being more satisfied with limited choices.",
+      "tutor_explanation": "This choice might seem relevant because it offers a reason for purchasing from limited selections. However, notice that it doesn't address the core tension: why consumers say they want more variety but are actually more satisfied with fewer choices. It only explains one side of the paradox while ignoring the other.",
+      "skill_tested": null,
+      "trap_type": "Explains only one fact",
+      "skill_gap": "Failing to track both components of a discrepancy"
+    },
+    {
+      "text": "Satisfaction with a purchase and stated preference for variety measure fundamentally different psychological phenomena.",
+      "is_correct": true,
+      "explanation": "Correct answer. This resolves the paradox by providing an alternative explanation (RH_02): consumers' stated preferences (wanting variety) and their actual satisfaction (higher with limited options) are not contradictory because they measure different things. This allows both facts to be simultaneously true.",
+      "tutor_explanation": "This choice explains how both facts can coexist. When surveyed, consumers express a desire for variety—that's one psychological phenomenon. But satisfaction after purchasing is a different measurement entirely. People might genuinely want options in the abstract while experiencing better outcomes when choices are constrained. By identifying this third factor—that two different things are being measured—you can see why the apparent conflict isn't really a contradiction at all.",
+      "skill_tested": "Alternative Explanations (RH_02) - recognizing that a third factor explains seemingly contradictory observations",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Retailers expand product lines primarily to compete with other retailers rather than to satisfy consumer preferences.",
+      "is_correct": false,
+      "explanation": "Trap type: Relevant to topic but doesn't resolve tension. While this explains retailer behavior, it does not address the core discrepancy between consumer satisfaction and stated preferences.",
+      "tutor_explanation": "This choice is tempting because it's clearly relevant to the retail context discussed in the stimulus. However, the paradox isn't about why retailers expand their lines—it's about why consumers report wanting variety but are more satisfied with limited options. This choice sidesteps the actual conflict you're asked to resolve.",
+      "skill_tested": null,
+      "trap_type": "Relevant to topic but doesn't resolve tension",
+      "skill_gap": "Mistaking topical relevance for logical resolution"
+    },
+    {
+      "text": "The studies measuring consumer satisfaction may have used flawed methodology that produced unreliable results.",
+      "is_correct": false,
+      "explanation": "Trap type: Denies one of the facts instead of reconciling. This undermines the satisfaction findings rather than explaining how both observations can be true.",
+      "tutor_explanation": "Be careful here—this choice doesn't resolve the paradox; it dissolves it by suggesting one of the facts isn't actually true. Paradox questions ask you to explain how both observations can coexist, not to cast doubt on whether the observations are accurate. If the satisfaction studies are flawed, there's no paradox to resolve.",
+      "skill_tested": null,
+      "trap_type": "Denies one of the facts instead of reconciling",
+      "skill_gap": "Confusing denial of evidence with reconciliation of evidence"
+    },
+    {
+      "text": "Consumer reports of wanting more variety have increased significantly over the past several decades.",
+      "is_correct": false,
+      "explanation": "Trap type: Introduces new information without resolving tension. This adds historical context about preference trends but does nothing to explain why stated preferences and actual satisfaction diverge.",
+      "tutor_explanation": "This choice provides additional information about consumer preferences but doesn't help explain the paradox. Whether the desire for variety has increased over time is beside the point—the question is why consumers want variety but are more satisfied with limited options. Adding a time dimension to the paradox doesn't resolve the underlying tension.",
+      "skill_tested": null,
+      "trap_type": "Relevant to topic but doesn't resolve tension",
+      "skill_gap": "Mistaking additional detail for explanatory power"
+    }
+  ],
+  "metadata": {
+    "question_type": "Resolve the Paradox",
+    "family": "Discrepancy Family",
+    "primary_skill_id": "RH_02",
+    "primary_skill_name": "Alternative Explanations",
+    "secondary_skills": [
+      "FL_04",
+      "S_01"
+    ],
+    "difficulty": "MEDIUM",
+    "topic": "Behavioral economics",
+    "word_count": 87,
+    "validation_method": "Correct answer must make BOTH facts simultaneously true by providing context, a third variable, or a clarifying distinction"
+  }
+}
+
+{
+  "stimulus": "Marine ecologists studying coastal reef systems have observed that areas with high concentrations of filter-feeding organisms typically exhibit superior water clarity compared to areas with fewer such organisms. However, recent surveys of a particular estuary revealed that despite an unprecedented abundance of filter-feeding mussels—populations far exceeding those in comparable waterways—water clarity measurements remained persistently poor throughout the monitoring period, even during optimal tidal conditions.",
+  "stem": "Which one of the following, if true, would most effectively reconcile the observations described above?",
+  "options": [
+    {
+      "text": "The estuary receives continuous sediment discharge from upstream agricultural operations at a rate that exceeds the filtration capacity of even the largest mussel populations.",
+      "is_correct": true,
+      "explanation": "This answer correctly resolves the paradox by introducing a third factor (Z) that explains how both facts can be true simultaneously. Filter-feeders do improve water clarity (general observation holds), but in this specific estuary, an external sediment source overwhelms their capacity. This tests RH_02 (Alternative Explanations) by requiring recognition that a confounding variable can make an expected correlation disappear.",
+      "tutor_explanation": "This choice works because it provides a missing piece of context that lets both observations be true. Filter-feeders generally do improve clarity—that principle isn't wrong. But in this particular estuary, there's a constant influx of sediment that's simply too much for even an abundant mussel population to handle. Think of it like bailing water from a boat: even the best bailer can't keep up if there's a huge hole in the hull. The mussels are doing their job, but they're overwhelmed by an external factor.",
+      "skill_tested": "RH_02: Alternative Explanations - recognizing a third factor that allows both observations to coexist",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "The mussel species present in the estuary are physiologically capable of filtering particles as small as five microns in diameter.",
+      "is_correct": false,
+      "explanation": "Trap type: Relevant to topic but doesn't resolve tension. This provides technical detail about mussel capabilities but doesn't explain why abundant mussels failed to improve clarity. A student lacking skill in identifying what information actually resolves a discrepancy might find this tempting because it seems scientifically relevant.",
+      "tutor_explanation": "This choice tells us something about what these mussels can do, but it doesn't explain the puzzle. We're told that filter-feeders generally improve clarity and that this estuary has tons of mussels yet poor clarity. Knowing that the mussels can filter small particles doesn't help—if anything, it makes the paradox seem stranger. When resolving a discrepancy, you need information that explains why the expected outcome didn't occur, not additional capabilities that should have made it more likely.",
+      "skill_tested": null,
+      "trap_type": "Relevant to topic but doesn't resolve tension",
+      "skill_gap": "Failure to distinguish relevant detail from explanatory resolution"
+    },
+    {
+      "text": "Water clarity in estuarine environments is influenced by multiple variables beyond the presence of filter-feeding organisms.",
+      "is_correct": false,
+      "explanation": "Trap type: Explains why paradox seems real (not why both true). This answer merely affirms that other factors exist without specifying what factor explains this particular case. It describes the logical space where an explanation could exist rather than providing one. Tests whether students confuse acknowledging complexity with resolving it.",
+      "tutor_explanation": "This is tempting because it gestures toward an explanation—yes, other factors matter! But it's too vague to actually resolve anything. It's like answering 'Why is my car broken?' with 'Cars are complicated machines.' True, but unhelpful. A good resolution needs to identify a specific factor or mechanism that explains this particular situation. This choice just tells us that an explanation might exist somewhere without actually providing it.",
+      "skill_tested": null,
+      "trap_type": "Explains why paradox seems real (not why both true)",
+      "skill_gap": "Confusing the acknowledgment of complexity with actual resolution"
+    },
+    {
+      "text": "The monitoring period coincided with seasonal conditions that temporarily reduced mussel filtration activity to minimal levels.",
+      "is_correct": false,
+      "explanation": "Trap type: Denies one of the facts instead of reconciling. This answer effectively denies that there was a functional abundance of filter-feeders by suggesting they weren't actually filtering. Rather than explaining how abundant active mussels could coexist with poor clarity, it eliminates one side of the paradox. Tests FL_04 (Quantifier Scope) by conflating population abundance with functional activity.",
+      "tutor_explanation": "This might seem to explain the situation, but look carefully at what it does: it basically says the mussels weren't really working. That doesn't reconcile the two facts—it denies one of them. The stimulus tells us there was 'unprecedented abundance' of mussels. This answer essentially says 'well, those abundant mussels weren't actually doing their job,' which sidesteps the puzzle rather than solving it. A true resolution keeps both facts intact and explains how they can coexist.",
+      "skill_tested": null,
+      "trap_type": "Denies one of the facts instead of reconciling",
+      "skill_gap": "FL_04: Confusing numerical abundance with functional presence"
+    },
+    {
+      "text": "Filter-feeding mussels provide ecological benefits beyond water clarification, including nutrient cycling and habitat structure for smaller organisms.",
+      "is_correct": false,
+      "explanation": "Trap type: Explains only one fact (ignores the other). This provides additional information about mussels but completely fails to address the water clarity discrepancy. It shifts focus to other benefits without engaging with the central tension. Tests ability to maintain focus on the specific discrepancy requiring resolution.",
+      "tutor_explanation": "This choice goes off on a tangent. Yes, mussels might do other good things, but we're trying to understand why water clarity remained poor despite abundant filter-feeders. Telling us about nutrient cycling and habitat structure doesn't touch that question at all. When resolving a paradox, stay focused on the specific tension presented—don't get distracted by related-but-irrelevant information, even if it's true and interesting.",
+      "skill_tested": null,
+      "trap_type": "Explains only one fact (ignores the other)",
+      "skill_gap": "Losing focus on the specific discrepancy to be resolved"
+    }
+  ],
+  "metadata": {
+    "question_type": "Resolve the Paradox",
+    "family": "Discrepancy Family",
+    "primary_skill_id": "RH_02",
+    "primary_skill_name": "Alternative Explanations",
+    "secondary_skills": [
+      "FL_04",
+      "S_01"
+    ],
+    "difficulty": "HARD",
+    "topic": "Marine ecology",
+    "word_count": 78,
+    "validation_method": "Correct answer must make BOTH facts simultaneously true by providing context, a third variable, or a clarifying distinction that addresses both sides of the paradox."
+  }
+}
+
+{
+  "stimulus": "Meteorologists have long maintained that increased atmospheric moisture invariably correlates with higher precipitation totals. Yet recent satellite analyses of equatorial oceanic regions reveal that areas exhibiting the most pronounced humidity readings frequently record precipitation levels substantially below the global mean. Paradoxically, adjacent zones with considerably lower measured humidity often experience precipitation rates that exceed those of their more humid counterparts by significant margins.",
+  "stem": "Which one of the following, if true, would most effectively reconcile the apparently contradictory observations described above?",
+  "options": [
+    {
+      "text": "Satellite humidity measurements capture moisture at altitudes where air masses remain too warm to permit condensation, while precipitation depends on moisture availability at cooler, lower atmospheric levels.",
+      "is_correct": true,
+      "explanation": "This answer resolves the paradox by providing an alternative explanation (RH_02): the measurement captures humidity at one altitude, but precipitation depends on moisture at a different altitude. This third factor (vertical atmospheric stratification) allows both facts to coexist—high humidity readings can accompany low precipitation if the humidity exists at altitudes too warm for condensation, while lower measured humidity in adjacent zones reflects different altitude sampling where actual rain-producing moisture resides.",
+      "tutor_explanation": "This choice resolves the puzzle by introducing a key distinction: where humidity is measured versus where precipitation actually forms. The satellites detect moisture at high altitudes where it's too warm for rain to develop, while rain actually forms at cooler, lower levels. So an area could show high humidity on satellite readings (at upper altitudes) while having dry conditions at the lower levels where precipitation would actually occur. Meanwhile, adjacent areas might have lower satellite-detected humidity but more moisture at the precipitation-forming altitudes. This 'third variable'—altitude—explains how both observations can be true simultaneously.",
+      "skill_tested": "Alternative Explanations",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Equatorial oceanic regions experience more consistent temperatures throughout the year than do regions at higher latitudes.",
+      "is_correct": false,
+      "explanation": "Trap type: Relevant to topic but doesn't resolve tension. This provides general meteorological context about equatorial temperature patterns but does nothing to explain why high humidity areas have low precipitation and vice versa. A student selecting this lacks skill in identifying what specifically needs to be reconciled.",
+      "tutor_explanation": "While this tells us something true about equatorial regions, it doesn't address the core puzzle. The question is why humidity and precipitation appear disconnected in these areas. Knowing that temperatures are consistent year-round doesn't explain why humid zones are dry and less-humid zones are wet. When resolving a paradox, always ask: 'Does this information actually explain how both conflicting facts can be true?' Here, it doesn't.",
+      "skill_tested": null,
+      "trap_type": "Relevant to topic but doesn't resolve tension",
+      "skill_gap": "Failing to identify what the paradox requires"
+    },
+    {
+      "text": "The satellite instruments used in these analyses have been calibrated to detect water vapor rather than liquid water droplets or ice crystals.",
+      "is_correct": false,
+      "explanation": "Trap type: Explains only one fact. This explains why satellites might measure humidity differently but doesn't address why adjacent zones with lower humidity have higher precipitation. It only clarifies the measurement methodology without reconciling the inverse relationship between humidity and precipitation across adjacent regions.",
+      "tutor_explanation": "This choice might seem helpful because it clarifies what the satellites measure. However, it only addresses one side of the puzzle—it might explain something about how humidity is detected, but it doesn't explain the key mystery: why do adjacent areas with LOWER humidity readings have HIGHER precipitation? A complete resolution needs to account for both the high-humidity/low-precipitation zones AND the low-humidity/high-precipitation zones.",
+      "skill_tested": null,
+      "trap_type": "Explains only one fact (ignores the other)",
+      "skill_gap": "Failing to verify that both sides of paradox are addressed"
+    },
+    {
+      "text": "Precipitation measurements in oceanic regions are inherently less reliable than those taken over continental landmasses due to the absence of ground-based monitoring stations.",
+      "is_correct": false,
+      "explanation": "Trap type: Denies one of the facts instead of reconciling. This suggests the precipitation data might be unreliable, effectively questioning whether the observed pattern is real rather than explaining how it could occur. A student selecting this fails to recognize that paradox resolution requires accepting both facts as true.",
+      "tutor_explanation": "This is a tempting trap because it suggests the data might be wrong—if we can't trust the precipitation measurements, maybe there's no real paradox. But on the LSAT, paradox questions ask you to accept the stated facts and find information that makes them both make sense. You're not looking to dismiss or doubt the observations; you're looking to explain how they can coexist. This choice dodges the question rather than answering it.",
+      "skill_tested": null,
+      "trap_type": "Denies one of the facts instead of reconciling",
+      "skill_gap": "Understanding that paradox questions assume stated facts are accurate"
+    },
+    {
+      "text": "Strong vertical wind currents in high-humidity zones rapidly transport moisture upward faster than condensation can occur, while weaker currents in adjacent zones allow moisture to accumulate and form precipitation.",
+      "is_correct": false,
+      "explanation": "Trap type: Introduces new paradox instead of resolving. This attempts an explanation but creates a new puzzle: if humidity is transported upward in high-humidity zones, why do they still show high humidity readings? The explanation is internally inconsistent—rapid upward transport would reduce measured humidity, not maintain it at high levels. This tests whether students can evaluate whether proposed explanations are coherent.",
+      "tutor_explanation": "At first glance, this seems like a reasonable explanation involving air currents. But think carefully: if strong winds are rapidly moving moisture upward and away, why would these zones still show the HIGHEST humidity readings? The explanation contradicts itself—you can't have moisture being whisked away AND showing up as high humidity at the same time. This actually creates a new puzzle rather than solving the original one. Always check whether a proposed explanation is internally consistent.",
+      "skill_tested": null,
+      "trap_type": "Introduces new paradox instead of resolving",
+      "skill_gap": "Evaluating internal consistency of proposed explanations"
+    }
+  ],
+  "metadata": {
+    "question_type": "Resolve the Paradox",
+    "family": "Discrepancy Family",
+    "primary_skill_id": "RH_02",
+    "primary_skill_name": "Alternative Explanations",
+    "secondary_skills": [
+      "FL_04",
+      "S_01"
+    ],
+    "difficulty": "CHALLENGING",
+    "topic": "Meteorology",
+    "word_count": 72,
+    "validation_method": "Correct answer must make BOTH facts simultaneously true by providing context, a third variable, or a clarifying distinction that addresses both sides of the paradox"
+  }
+}
+

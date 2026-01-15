@@ -111,6 +111,28 @@ class ApiService {
     }
     return resp
   }
+
+  // Adaptive Diagnostic API
+  async startAdaptiveDiagnostic(userId = null) {
+    const body = userId ? { user_id: userId } : {}
+    return this.post('/skill-builder/adaptive-diagnostic', body)
+  }
+
+  async getAdaptiveDiagnosticSession(sessionId, userId = null) {
+    const query = userId ? `?user_id=${userId}` : ''
+    return this.get(`/skill-builder/adaptive-diagnostic/${sessionId}${query}`)
+  }
+
+  async submitDiagnosticAnswer(sessionId, answer, userId = null) {
+    const body = { answer }
+    if (userId) body.user_id = userId
+    return this.post(`/skill-builder/adaptive-diagnostic/${sessionId}/answer`, body)
+  }
+
+  async completeDiagnostic(sessionId, userId = null) {
+    const body = userId ? { user_id: userId } : {}
+    return this.post(`/skill-builder/adaptive-diagnostic/${sessionId}/complete`, body)
+  }
 }
 
 export default new ApiService()

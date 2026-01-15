@@ -7,6 +7,14 @@ from .logic import (
 from .curriculum_logic import (
     get_all_videos, get_video_by_id, get_related_videos, mark_video_complete, mark_video_incomplete
 )
+from .adaptive_diagnostic_logic import (
+    create_adaptive_diagnostic_session,
+    get_diagnostic_session,
+    process_answer,
+    complete_diagnostic,
+    check_existing_session,
+)
+from .evaluate import evaluate_diagnostic
 import firebase_admin
 from firebase_admin import auth as firebase_auth
 import requests
@@ -300,3 +308,149 @@ def incomplete_video(video_id):
         'message': 'Video marked as incomplete',
         'video_id': video_id
     })
+
+
+# ============================================================================
+# Adaptive Diagnostic Routes
+# ============================================================================
+
+@skill_builder_bp.route('/adaptive-diagnostic', methods=['POST'])
+def start_adaptive_diagnostic():
+    """
+    Start a new adaptive diagnostic session.
+
+    Returns the session ID and first question.
+    If user has an existing in-progress session, returns that instead.
+    """
+    user_id = get_user_id_from_token()
+
+    if not user_id:
+        data = request.get_json() or {}
+        user_id = data.get('user_id', 'anonymous')
+
+    try:
+        # Check for existing in-progress session
+        existing = check_existing_session(user_id)
+
+        if existing:
+            # Return existing session info
+            session = get_diagnostic_session(existing['session_id'], user_id)
+            if session:
+                return jsonify({
+                    'session_id': session['session_id'],
+                    'question': session.get('current_question'),
+                    'progress': session['progress'],
+                    'resumed': True,
+                })
+
+        # Create new session
+        result = create_adaptive_diagnostic_session(user_id)
+        return jsonify(result), 201
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        print(f"Error starting adaptive diagnostic: {e}")
+        return jsonify({'error': 'Failed to start diagnostic'}), 500
+
+
+@skill_builder_bp.route('/adaptive-diagnostic/<session_id>', methods=['GET'])
+def get_adaptive_diagnostic(session_id):
+    """
+    Get the current state of an adaptive diagnostic session.
+
+    Used for resuming a session or checking progress.
+    """
+    user_id = get_user_id_from_token()
+
+    if not user_id:
+        user_id = request.args.get('user_id', 'anonymous')
+
+    try:
+        session = get_diagnostic_session(session_id, user_id)
+
+        if not session:
+            return jsonify({'error': 'Session not found'}), 404
+
+        return jsonify(session)
+
+    except Exception as e:
+        print(f"Error getting diagnostic session: {e}")
+        return jsonify({'error': 'Failed to get session'}), 500
+
+
+@skill_builder_bp.route('/adaptive-diagnostic/<session_id>/answer', methods=['POST'])
+def submit_diagnostic_answer(session_id):
+    """
+    Submit an answer for the current question.
+
+    Returns whether the answer was correct, Elo changes,
+    and the next question (if not complete).
+    """
+    user_id = get_user_id_from_token()
+    data = request.get_json() or {}
+
+    if not user_id:
+        user_id = data.get('user_id', 'anonymous')
+
+    answer = data.get('answer')
+
+    if not answer:
+        return jsonify({'error': 'Answer is required'}), 400
+
+    try:
+        result = process_answer(session_id, user_id, answer)
+        return jsonify(result)
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        print(f"Error processing diagnostic answer: {e}")
+        return jsonify({'error': 'Failed to process answer'}), 500
+
+
+@skill_builder_bp.route('/adaptive-diagnostic/<session_id>/complete', methods=['POST'])
+def complete_adaptive_diagnostic(session_id):
+    """
+    Complete the diagnostic session and get final results.
+
+    Creates a drill record for results viewing and triggers IRT update.
+    """
+    user_id = get_user_id_from_token()
+    data = request.get_json() or {}
+
+    if not user_id:
+        user_id = data.get('user_id', 'anonymous')
+
+    try:
+        result = complete_diagnostic(session_id, user_id)
+        return jsonify(result)
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        print(f"Error completing diagnostic: {e}")
+        return jsonify({'error': 'Failed to complete diagnostic'}), 500
+
+
+@skill_builder_bp.route('/adaptive-diagnostic/<session_id>/evaluate', methods=['GET'])
+def evaluate_diagnostic_session(session_id):
+    """
+    Get comprehensive evaluation of a completed diagnostic session.
+
+    Returns cognitive fingerprint, strengths, weaknesses, and theta estimate.
+    """
+    user_id = get_user_id_from_token()
+
+    if not user_id:
+        user_id = request.args.get('user_id', 'anonymous')
+
+    try:
+        result = evaluate_diagnostic(session_id, user_id)
+        return jsonify(result.to_dict())
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        print(f"Error evaluating diagnostic: {e}")
+        return jsonify({'error': 'Failed to evaluate diagnostic'}), 500

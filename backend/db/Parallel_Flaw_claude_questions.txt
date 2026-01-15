@@ -1,0 +1,265 @@
+{
+  "stimulus": "Some traffic engineers claim that adding lanes to congested highways reduces commute times. However, this is mistaken. After all, many cities that expanded their highways still experience severe congestion. So adding lanes to highways does not reduce commute times.",
+  "stem": "Which one of the following arguments exhibits flawed reasoning most similar to that in the argument above?",
+  "options": [
+    {
+      "text": "Some physicians maintain that regular exercise prevents heart disease. But this cannot be correct. Many people who exercise regularly still develop heart disease. Therefore, regular exercise does not prevent heart disease.",
+      "is_correct": true,
+      "explanation": "This argument commits the same flaw as the stimulus: treating 'prevents' as meaning 'guarantees absence of' rather than 'reduces likelihood of.' Both arguments cite counterexamples (cities still congested, people still getting disease) to reject a claim about general effectiveness. The flaw is identical in structure—confusing a claim about tendency/reduction with a claim about absolute prevention.",
+      "tutor_explanation": "This is the correct answer. Notice how both arguments work the same way: someone claims X helps prevent Y, the arguer responds by pointing to cases where X was present but Y still occurred, then concludes X doesn't help at all. The stimulus says 'adding lanes reduces congestion' but interprets this as 'adding lanes eliminates congestion'—and when congestion remains, declares the claim false. This answer does exactly the same thing with exercise and heart disease. Both arguments mistake 'reduces' or 'prevents' for 'completely eliminates.'",
+      "skill_tested": "ABS_02: Flaw Matching",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Nutritionists often recommend reducing sugar intake to improve overall health. Since improved health leads to longer lifespans, reducing sugar intake must lead to longer lifespans.",
+      "is_correct": false,
+      "explanation": "This argument involves a chain of causal reasoning (A→B, B→C, therefore A→C) and is actually valid in its structure. It does not cite counterexamples to reject a general claim. The reasoning pattern differs entirely from the stimulus.",
+      "tutor_explanation": "This answer might seem relevant because it discusses health advice, but look at the logical structure. This argument chains two claims together: sugar reduction improves health, and better health leads to longer life, so sugar reduction leads to longer life. That's a transitive chain—not the same pattern as the stimulus, which rejects a claim by citing counterexamples. The reasoning here isn't even flawed in the same way.",
+      "skill_tested": null,
+      "trap_type": "Same topic with valid reasoning",
+      "skill_gap": "Students may be drawn to this because it discusses health interventions, but the logical structure is completely different—it's a transitive chain argument, not a counterexample-based rejection."
+    },
+    {
+      "text": "Urban planners argue that public transit reduces traffic. Yet traffic patterns depend on many factors including weather, time of day, and special events. Thus, we cannot determine whether public transit reduces traffic.",
+      "is_correct": false,
+      "explanation": "This argument concludes that we cannot determine something due to multiple confounding factors. The stimulus, by contrast, draws a definite negative conclusion (adding lanes does NOT reduce times) based on counterexamples. The flaw type differs: this is an appeal to complexity/uncertainty, not a misinterpretation of a preventive claim.",
+      "tutor_explanation": "This argument is flawed, but in a different way. It concludes that we simply cannot know whether public transit helps because many factors affect traffic. Compare that to the stimulus, which confidently concludes that adding lanes does NOT reduce commute times. The stimulus doesn't say 'we can't tell'—it makes a definite negative claim based on counterexamples. Different conclusion type, different flaw.",
+      "skill_tested": null,
+      "trap_type": "Flawed but with a different error type",
+      "skill_gap": "Students weak in flaw classification may conflate 'we can't know' conclusions with 'it doesn't work' conclusions."
+    },
+    {
+      "text": "Experts claim that speed limits on residential streets improve pedestrian safety. Studies show that lower speed limits correlate with fewer pedestrian injuries. Therefore, speed limits on residential streets do improve pedestrian safety.",
+      "is_correct": false,
+      "explanation": "This argument supports rather than attacks the expert claim, using correlational evidence. The stimulus attacks a claim by citing failures. Additionally, this argument's potential flaw (correlation/causation) differs from the stimulus's flaw (treating reduction as absolute prevention).",
+      "tutor_explanation": "Watch the direction here. The stimulus attacks the engineers' claim, but this argument supports the experts' claim about speed limits. The stimulus says 'engineers are wrong because look at these failures,' while this says 'experts are right because look at this evidence.' Even though both start with 'experts/engineers claim,' they move in completely opposite directions. You need an argument that rejects a claim using counterexamples.",
+      "skill_tested": null,
+      "trap_type": "Similar surface structure but different flaw",
+      "skill_gap": "Students may notice the 'experts claim' opening parallels 'engineers claim' but miss that the argument moves in the opposite direction—supporting rather than refuting the claim."
+    },
+    {
+      "text": "Transportation officials state that widening bridges alleviates bottlenecks. However, widening bridges is extremely expensive. Therefore, widening bridges is not an effective solution to traffic congestion.",
+      "is_correct": false,
+      "explanation": "This argument shifts from a claim about effectiveness (alleviates bottlenecks) to a conclusion about overall effectiveness based on cost. The flaw is a scope shift introducing an irrelevant consideration (expense), not misinterpreting counterexamples as proof of complete failure.",
+      "tutor_explanation": "This is tempting because it's about transportation and challenges an official claim. But examine the reasoning closely: it says bridges are expensive, therefore they're not effective. That's a different kind of error—bringing in cost when the original claim was about whether bridges work to alleviate bottlenecks. The stimulus's flaw is about misunderstanding 'reduces' to mean 'eliminates completely.' This argument changes the subject from effectiveness to cost-effectiveness.",
+      "skill_tested": null,
+      "trap_type": "Related flaw type but not identical",
+      "skill_gap": "Students may recognize this as flawed and be drawn to the transportation topic, but the flaw involves introducing an irrelevant criterion (cost) rather than misunderstanding what 'alleviates' means."
+    }
+  ],
+  "metadata": {
+    "question_type": "Parallel Flaw",
+    "family": "Structure Family",
+    "primary_skill_id": "ABS_02",
+    "primary_skill_name": "Flaw Matching",
+    "secondary_skills": [
+      "S_01",
+      "FL_01"
+    ],
+    "difficulty": "EASY",
+    "topic": "Transportation engineering",
+    "word_count": 47,
+    "validation_method": "The correct answer must commit the SAME TYPE of logical error as the stimulus: interpreting a claim about reduction/prevention as a claim about absolute elimination, then citing counterexamples to reject the original claim."
+  }
+}
+
+{
+  "stimulus": "The decline of craft guilds in the eighteenth century offers a lesson for contemporary labor markets. Guild apprenticeships produced skilled workers, yet guilds eventually weakened. Since guild weakening coincided with the rise of factory production, factory production must have caused the decline in skilled craftsmanship. Similarly, if automation today coincides with reduced job security, we should conclude that automation is responsible for employment instability.",
+  "stem": "Which one of the following arguments exhibits flawed reasoning most similar to that in the argument above?",
+  "options": [
+    {
+      "text": "Enrollment in evening courses increased during the same period that daytime class sizes grew smaller. Therefore, the growth in evening enrollment must have caused the reduction in daytime class sizes. By analogy, if online course offerings expand while campus housing demand decreases, the expansion of online courses must be causing the decline in housing demand.",
+      "is_correct": true,
+      "explanation": "This answer commits the identical flaw: inferring causation from mere coincidence in the initial case and then extending that flawed causal inference to a new situation by analogy. Both arguments rely on temporal correlation alone to establish causation and then apply the same reasoning pattern to a contemporary example.",
+      "tutor_explanation": "The stimulus reasons that because guild decline coincided with factory production, factory production caused the decline—and then applies that same reasoning to automation and job security. This answer does exactly the same thing: it treats coinciding trends as proof of causation and then repeats that mistake in a second context.",
+      "skill_tested": "ABS_02: Flaw Matching",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Traditional farming methods declined as industrial agriculture expanded. Since industrial methods are more efficient, they must be superior in all respects. Therefore, any modern practice that increases efficiency will necessarily be an improvement over its predecessor in every way.",
+      "is_correct": false,
+      "explanation": "This argument commits a different flaw by assuming that superiority in one respect guarantees superiority in all respects. It does not infer causation from coincidence and therefore does not match the stimulus’s flawed reasoning.",
+      "tutor_explanation": "Although this argument also draws a lesson from historical change, its error is overgeneralization, not mistaking correlation for causation. Matching flaw questions require the same logical mistake, not merely a similar theme.",
+      "skill_tested": null,
+      "trap_type": "Overgeneralization",
+      "skill_gap": "Confusing different flaw types"
+    },
+    {
+      "text": "Textile workers' wages fell during periods when trade tariffs were lowered. Historical evidence shows that reduced tariffs increased foreign competition, which in turn depressed domestic wages. Thus, if current tariff reductions coincide with wage stagnation, foreign competition likely contributes to that stagnation.",
+      "is_correct": false,
+      "explanation": "Unlike the stimulus, this argument provides a causal explanation linking the two events rather than merely inferring causation from coincidence. Its reasoning is supported rather than flawed.",
+      "tutor_explanation": "The stimulus assumes causation based solely on coincidence. This argument, by contrast, explains *why* one event would lead to another. Because it avoids the correlation–causation fallacy, it does not parallel the flawed reasoning.",
+      "skill_tested": null,
+      "trap_type": "Valid causal explanation",
+      "skill_gap": "Mistaking sound reasoning for flawed reasoning"
+    },
+    {
+      "text": "Railroad expansion occurred alongside the growth of western settlements, and railroads certainly facilitated westward migration. So whenever transportation infrastructure expands in developing regions today, such expansion must inevitably lead to increased settlement in those areas.",
+      "is_correct": false,
+      "explanation": "This argument assumes that a causal relationship observed in one case must hold universally in all cases. The flaw is hasty generalization, not inferring causation from mere coincidence.",
+      "tutor_explanation": "This choice acknowledges a causal relationship and then overextends it. The stimulus, however, never establishes causation at all—it merely assumes it from coincidence. These are different errors.",
+      "skill_tested": null,
+      "trap_type": "Hasty generalization",
+      "skill_gap": "Failure to distinguish causal assumption from causal overextension"
+    },
+    {
+      "text": "When mining towns prospered, local merchants prospered as well, because the merchants depended directly on mining income. Since mining eventually became unprofitable, the merchants consequently failed. Likewise, if service industries depend directly on manufacturing, and manufacturing relocates overseas, service industries in those regions will suffer.",
+      "is_correct": false,
+      "explanation": "This argument explicitly states a causal dependency rather than inferring causation from coincidence. Its reasoning relies on an asserted explanatory relationship, not the correlation–causation fallacy committed in the stimulus.",
+      "tutor_explanation": "The key difference is that this argument *asserts* a causal link between mining and merchant success instead of inferring it from coincidence. Because the stimulus’s flaw lies in assuming causation without evidence, this argument does not parallel the flawed reasoning.",
+      "skill_tested": null,
+      "trap_type": "Explicit causal premise",
+      "skill_gap": "Failing to notice that the causal link is stated rather than assumed"
+    }
+  ],
+  "metadata": {
+    "question_type": "Parallel Flaw",
+    "family": "Structure Family",
+    "primary_skill_id": "ABS_02",
+    "primary_skill_name": "Flaw Matching",
+    "secondary_skills": [
+      "S_01",
+      "FL_01"
+    ],
+    "difficulty": "MEDIUM",
+    "topic": "Labor economics",
+    "word_count": 68,
+    "validation_method": "Correct answer must commit the same correlation–causation fallacy with historical-to-contemporary analogy as the stimulus, while incorrect answers commit distinct logical errors."
+  }
+}
+
+{
+  "stimulus": "Economists have observed that when a product's price decreases, consumers typically purchase more of it. Since luxury automobiles are products, a reduction in their prices will necessarily lead to increased consumer purchases. This increase in demand will then stimulate greater production, ultimately benefiting the entire automotive sector.",
+  "stem": "Which one of the following arguments exhibits flawed reasoning most similar to that in the argument above?",
+  "options": [
+    {
+      "text": "Medical researchers have found that exercise generally improves cardiovascular health. Since swimming is a form of exercise, swimming must improve cardiovascular health. Therefore, hospitals should recommend swimming to all cardiac patients as a primary treatment.",
+      "is_correct": true,
+      "explanation": "This answer commits the same flaw as the stimulus: applying a general tendency (exercise improves health / price drops increase demand) to a specific case (swimming / luxury automobiles) without acknowledging that the general rule admits exceptions. Both arguments treat 'typically' or 'generally' as if it meant 'always,' then draw further unwarranted conclusions from this flawed inference. The structure matches: general tendency → specific instance treated as certain → extended conclusion.",
+      "tutor_explanation": "Look at the stimulus's core error: it takes a general observation ('typically') and applies it to a specific case ('luxury automobiles') as if the general rule were absolute ('necessarily'). This answer choice does exactly the same thing—it moves from 'generally improves' to an unqualified claim about swimming, then extends this to a recommendation. Both arguments ignore that general patterns don't guarantee specific outcomes.",
+      "skill_tested": "ABS_02 (Flaw Matching)",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Studies show that students who attend tutoring sessions typically earn higher grades. Marcus attends tutoring sessions regularly. It is likely that Marcus earns higher grades than students who do not attend tutoring.",
+      "is_correct": false,
+      "explanation": "This argument properly qualifies its conclusion with 'likely,' acknowledging the probabilistic nature of the general claim. The stimulus, by contrast, treats a typical pattern as a necessary outcome. This choice represents valid reasoning from statistical generalizations rather than the flawed certainty in the stimulus.",
+      "tutor_explanation": "This is tempting because it has the same structure of applying a general pattern to a specific case. But notice the crucial difference: this argument says Marcus 'likely' earns higher grades, while the stimulus claims the outcome will 'necessarily' occur. The stimulus's flaw is treating a typical pattern as an absolute rule—this answer avoids that error by maintaining appropriate uncertainty.",
+      "skill_tested": null,
+      "trap_type": "Same topic with valid reasoning",
+      "skill_gap": "Failing to notice that qualified conclusions (likely) differ logically from unqualified ones (necessarily)"
+    },
+    {
+      "text": "Fertilizers typically increase crop yields. Nitrogen-based fertilizers are a type of fertilizer. However, excessive nitrogen application can damage soil microorganisms, so nitrogen fertilizers do not always increase yields. Agricultural policy must account for these complexities.",
+      "is_correct": false,
+      "explanation": "This argument actually identifies and addresses the very flaw that the stimulus commits—it acknowledges that general patterns have exceptions. Rather than matching the stimulus's error, it models sound reasoning about generalizations. Students who select this may be identifying the flaw type but failing to find its parallel.",
+      "tutor_explanation": "At first glance, this might seem similar because it discusses generalizations about fertilizers. But read carefully: this argument actually acknowledges that the general rule has exceptions ('does not always increase yields'). The stimulus's flaw was ignoring such exceptions—this argument explicitly considers them. You need an answer that commits the same error, not one that corrects it.",
+      "skill_tested": null,
+      "trap_type": "Similar surface structure but different flaw",
+      "skill_gap": "Confusing the identification of a flaw with the commission of that same flaw"
+    },
+    {
+      "text": "Warm weather typically reduces heating costs. Since this region experiences warm weather, heating costs here should decrease. But warm weather also increases cooling costs, which will offset any savings, leaving total energy expenditure unchanged.",
+      "is_correct": false,
+      "explanation": "While this argument does move from a generalization to a specific case, it then introduces a countervailing factor and reaches a balanced conclusion. The stimulus draws an extended positive conclusion without considering complications. The logical structure differs because this argument incorporates opposing considerations.",
+      "tutor_explanation": "This argument starts similarly—applying a general pattern about warm weather to a specific region. However, unlike the stimulus, it then considers a complicating factor (cooling costs) and reaches a more nuanced conclusion. The stimulus's reasoning extends its flawed inference to broader claims without any such qualification. The overall argumentative moves don't match.",
+      "skill_tested": null,
+      "trap_type": "Flawed but with a different error type",
+      "skill_gap": "Focusing on the initial move (generalization to specific) while missing the overall argument structure"
+    },
+    {
+      "text": "Economists note that lower interest rates typically stimulate borrowing. Since small businesses borrow money, and borrowing stimulates economic growth, lower interest rates will necessarily cause economic growth, and economic growth always reduces unemployment.",
+      "is_correct": false,
+      "explanation": "This argument commits the same general-to-specific flaw but adds additional errors: it conflates different subjects (small businesses vs. general borrowers) and stacks multiple unqualified causal claims. The stimulus commits one clean instance of treating a tendency as a necessity; this answer commits that flaw plus further errors, making it a different overall pattern.",
+      "tutor_explanation": "This answer does treat a general tendency ('typically') as absolute ('necessarily'), matching one aspect of the stimulus's error. But it goes further—it introduces a subject shift (small businesses specifically) and chains together multiple unsupported causal claims (growth 'always' reduces unemployment). For a parallel flaw question, you need the same flaw, not the same flaw buried among other errors.",
+      "skill_tested": null,
+      "trap_type": "Commits stimulus flaw plus additional errors",
+      "skill_gap": "Selecting an answer that contains the target flaw without checking whether it contains only that flaw"
+    }
+  ],
+  "metadata": {
+    "question_type": "Parallel Flaw",
+    "family": "Structure Family",
+    "primary_skill_id": "ABS_02",
+    "primary_skill_name": "Flaw Matching",
+    "secondary_skills": [
+      "S_01",
+      "FL_01"
+    ],
+    "difficulty": "HARD",
+    "topic": "Microeconomics",
+    "word_count": 52,
+    "validation_method": "Correct answer must commit the identical logical error (treating a general tendency as a universal rule and extending unwarranted conclusions) in a structurally parallel argument"
+  }
+}
+
+{
+  "stimulus": "Media critics who dismiss algorithmic content curation as inherently manipulative fail to recognize a fundamental mechanism: any editorial process that selects which stories reach audiences necessarily shapes public perception. Since traditional newsrooms also employ selection criteria—albeit human rather than computational—their curation must be equally manipulative. Consequently, algorithmic systems deserve no special scrutiny beyond what we already apply to conventional editorial practices.",
+  "stem": "Which one of the following arguments exhibits flawed reasoning most similar to that in the argument above?",
+  "options": [
+    {
+      "text": "Critics who argue that pesticides damage ecosystems overlook that organic farming also affects wildlife habitats. Since both conventional and organic methods alter natural environments, pesticide use requires no additional environmental review beyond what organic practices receive. Therefore, regulatory distinctions between the two are unwarranted.",
+      "is_correct": true,
+      "explanation": "This argument commits the identical flaw: it identifies a shared genus (affecting environments/shaping perception), then illegitimately concludes that because two things share this broad category, they deserve equivalent treatment. The flaw lies in ignoring that sharing a category does not establish equivalent degree or mechanism of impact. Both arguments use the same structure: X is accused of having property P; Y also has property P; therefore X deserves no more scrutiny than Y—while ignoring potential differences in how P manifests.",
+      "tutor_explanation": "This is the correct answer. Notice how both arguments work: the stimulus says algorithmic and traditional curation both 'shape perception,' so they deserve equal scrutiny. This answer says pesticides and organic farming both 'affect environments,' so they deserve equal review. The flaw is identical—just because two things fall under the same broad description doesn't mean they're equivalent in severity or mechanism. Algorithms might shape perception far more powerfully than human editors, just as pesticides might harm ecosystems far more than organic methods. Both arguments ignore these potential differences in degree.",
+      "skill_tested": "ABS_02 (Flaw Matching): Correctly identifies that both arguments equate category membership with equivalent impact, ignoring differences in degree or mechanism within the shared category.",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Pharmaceutical companies that test drugs on animals are often criticized for cruelty, but medical research requires subjects for safety trials. Since human volunteers cannot ethically be exposed to untested compounds, animal testing remains necessary. Thus, such testing should continue until viable alternatives emerge.",
+      "is_correct": false,
+      "explanation": "This argument presents a necessity-based justification (no alternatives exist) rather than an equivalence argument. It does not conclude that animal testing deserves equal scrutiny to something else; it argues for continuation based on practical necessity. Different flaw structure entirely.",
+      "tutor_explanation": "This choice is tempting because it involves a controversial practice being defended, similar to the stimulus. However, the logical structure is completely different. The stimulus argues 'X and Y both do Z, so treat them equally.' This choice argues 'We need X because there's no alternative'—a necessity argument, not an equivalence argument. When matching flaws, focus on the argument's skeleton, not its ethical terrain.",
+      "skill_tested": null,
+      "trap_type": "Same topic with valid reasoning",
+      "skill_gap": "Student fails to distinguish between equivalence arguments and necessity-based justifications, focusing on surface ethical controversy rather than logical structure."
+    },
+    {
+      "text": "Those who claim that social media platforms amplify misinformation ignore that users choose which content to share. Because individual sharing decisions drive viral spread, platforms bear no responsibility for misinformation's reach. The blame lies entirely with users who propagate false claims.",
+      "is_correct": false,
+      "explanation": "This commits a different flaw: shifting responsibility from one party to another entirely (false dichotomy about blame), rather than arguing two things deserve equivalent treatment because they share a category. The structure is 'because Y causes the effect, X bears no responsibility'—not 'X and Y both have property P, so treat them equally.'",
+      "tutor_explanation": "This argument is definitely flawed—it wrongly assumes that if users drive viral spread, platforms have zero responsibility. But this is a blame-shifting flaw, not the stimulus's flaw. The stimulus doesn't shift blame; it argues two things (algorithms and editors) both share a property and therefore deserve equal scrutiny. This choice creates a false either/or about responsibility. Different logical error, so it can't be the parallel.",
+      "skill_tested": null,
+      "trap_type": "Flawed but with a different error type",
+      "skill_gap": "Student recognizes flawed reasoning but cannot distinguish between blame-shifting arguments and equivalence-based arguments."
+    },
+    {
+      "text": "Art critics who praise abstract expressionism for its emotional authenticity should acknowledge that representational painting also conveys emotion through compositional choices. Both movements thus achieve similar expressive goals through different techniques, warranting appreciation of each on its own terms.",
+      "is_correct": false,
+      "explanation": "This argument reaches a modest, arguably valid conclusion: both deserve appreciation on their own terms. It does not conclude that one deserves no MORE scrutiny or attention than the other; it advocates for recognizing the merits of each. The stimulus's flaw involves dismissing differential treatment, while this argument supports differential appreciation.",
+      "tutor_explanation": "This looks similar because it says 'both X and Y have property P.' But look at the conclusion: it says appreciate each 'on its own terms'—actually acknowledging they're different! The stimulus concludes that algorithms deserve 'no special scrutiny'—flattening a distinction. This choice preserves the distinction while finding common ground. Similar setup, but the conclusion respects differences rather than erasing them.",
+      "skill_tested": null,
+      "trap_type": "Similar surface structure but different flaw",
+      "skill_gap": "Student matches surface pattern (both X and Y have property P) without checking whether the conclusion commits the same error of illegitimately equating treatment based on shared category."
+    },
+    {
+      "text": "Educators who advocate banning calculators in mathematics courses because they undermine computational skills must concede that slide rules also reduced mental arithmetic. Since we no longer restrict slide rule usage, consistency demands we permit calculators. Opposition to calculators thus reflects technological bias rather than pedagogical principle.",
+      "is_correct": false,
+      "explanation": "This argument commits the stimulus flaw (both technologies reduce mental arithmetic, so treat them equally) BUT adds an additional accusatory conclusion about 'technological bias.' The extra element—attributing bad motives—makes this flaw-plus-additional-error. The stimulus concludes only about equivalent treatment, not about opponents' motivations.",
+      "tutor_explanation": "This is very close! It does commit the same core flaw: 'calculators and slide rules both reduce mental arithmetic, so treat them the same.' But notice the final sentence adds something extra—it accuses opponents of 'technological bias.' The stimulus never makes claims about WHY critics hold their view; it just argues for equal treatment. This extra accusation is an additional flaw not present in the original, making the parallel inexact.",
+      "skill_tested": null,
+      "trap_type": "Commits stimulus flaw plus additional errors",
+      "skill_gap": "Student correctly identifies the shared flaw but fails to notice the additional argumentative move (motive attribution) that makes this answer inexact."
+    }
+  ],
+  "metadata": {
+    "question_type": "Parallel Flaw",
+    "family": "Structure Family",
+    "primary_skill_id": "ABS_02",
+    "primary_skill_name": "Flaw Matching",
+    "secondary_skills": [
+      "S_01",
+      "FL_01",
+      "FL_03"
+    ],
+    "difficulty": "CHALLENGING",
+    "topic": "Media criticism",
+    "word_count": 68,
+    "validation_method": "Correct answer commits the SAME TYPE of logical error (equating category membership with equivalent treatment while ignoring differences in degree or mechanism) with identical structural form."
+  }
+}
+

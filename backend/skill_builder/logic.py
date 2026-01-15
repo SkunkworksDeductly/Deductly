@@ -435,7 +435,7 @@ def get_drill_by_id(drill_id, include_questions=False):
         cursor.execute("""
             SELECT drill_id, user_id, question_count, timing, difficulty,
                    skills, drill_type, question_ids, status, created_at, completed_at,
-                   current_question_index, user_answers, user_highlights
+                   started_at, current_question_index, user_answers, user_highlights
             FROM drills
             WHERE drill_id = %s
         """, (drill_id,))
@@ -449,6 +449,7 @@ def get_drill_by_id(drill_id, include_questions=False):
             'user_id': row['user_id'],
             'question_count': row['question_count'],
             'timing': row['timing'],
+            'time_limit_seconds': row['timing'],  # Alias for frontend consistency
             'difficulty': json.loads(row['difficulty']) if row['difficulty'] else None,
             'skills': json.loads(row['skills']) if row['skills'] else [],
             'drill_type': row['drill_type'],
@@ -456,6 +457,7 @@ def get_drill_by_id(drill_id, include_questions=False):
             'status': row['status'],
             'created_at': row['created_at'],
             'completed_at': row['completed_at'],
+            'started_at': row['started_at'],
             'current_question_index': row['current_question_index'] or 0,
             'user_answers': json.loads(row['user_answers']) if row['user_answers'] else {},
             'user_highlights': json.loads(row['user_highlights']) if row['user_highlights'] else {},

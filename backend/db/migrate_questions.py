@@ -14,7 +14,7 @@ from db.connection import get_db_cursor
 from utils import generate_id
 
 # Path to practice questions file
-QUESTIONS_FILE = os.path.join(os.path.dirname(__file__), 'practice_questions.txt')
+QUESTIONS_FILE = os.path.join(os.path.dirname(__file__), 'claude_questions_gen1.txt')
 
 
 def parse_questions_file(filepath: str) -> list:

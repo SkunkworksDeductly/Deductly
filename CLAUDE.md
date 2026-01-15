@@ -43,6 +43,8 @@ Each layer follows the pattern: `routes.py` (API endpoints) → `logic.py` (busi
 - Rasch model implementation using PyTorch
 - Estimates user ability (theta) and item difficulty (b)
 - Online updates via `rasch_online_update_theta_torch()`
+- Adaptive prior variance: shrinks from 1.0 to floor of 0.15 based on response count
+- Theta clamped to [-3.5, 3.5] range
 
 **3. GLMM (Generalized Linear Mixed Model)** (`backend/insights/glmm_implementation.py`)
 - Skill mastery estimation with frozen Rasch parameters
@@ -256,3 +258,5 @@ When creating drills, `exclusion_mode` controls question selection:
 - Updated skill taxonomy to 32 discrete skills
 - Added adaptive study planning with contextual bandits
 - Frontend Analytics page showing ability and mastery
+- IRT online updates now use adaptive prior variance (shrinks with evidence, floor=0.15)
+- Added theta clamping to [-3.5, 3.5] to prevent runaway estimates

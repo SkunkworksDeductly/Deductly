@@ -1,0 +1,264 @@
+{
+  "stimulus": "Medical ethicists often maintain that physicians must always prioritize their individual patient's wellbeing above all other considerations. However, during severe epidemics, physicians routinely ration scarce treatments to maximize the number of lives saved overall, even when this means some individual patients receive less than optimal care. This demonstrates that the principle of absolute patient priority, while generally sound, admits of exceptions when broader public health is at stake.",
+  "stem": "Which one of the following most accurately describes the technique of reasoning used in the argument?",
+  "options": [
+    {
+      "text": "Citing a counterexample to show that a general principle has limited application",
+      "is_correct": true,
+      "explanation": "The argument correctly identifies the main conclusion (the principle admits exceptions) and describes HOW it arrives there: by presenting epidemic rationing as a counterexample to the 'absolute patient priority' principle. This accurately captures the structural move from specific case to limitation of general rule.",
+      "tutor_explanation": "The argument starts with a general rule (physicians must always prioritize individual patients), then presents a real-world scenario (epidemic rationing) where physicians don't follow this rule. The conclusion drawn is that the principle has exceptions. This is the classic 'counterexample' method—showing one case where a rule doesn't hold to prove the rule isn't absolute.",
+      "skill_tested": "S_01 (Main Conclusion ID)",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Arguing that a principle is entirely invalid because it leads to undesirable consequences",
+      "is_correct": false,
+      "explanation": "Trap type: Matches some but not all structural elements. The argument does discuss consequences of the principle, but it does NOT argue the principle is 'entirely invalid'—it explicitly states the principle is 'generally sound.' Students who miss the nuanced conclusion may select this.",
+      "tutor_explanation": "This choice goes too far. Notice the argument says the principle is 'generally sound'—it's not rejecting the principle entirely, just showing it has limits. When evaluating method-of-reasoning answers, pay close attention to qualifiers like 'entirely' versus 'sometimes' or 'limited.'",
+      "skill_tested": null,
+      "trap_type": "Matches some but not all structural elements",
+      "skill_gap": "Fails to identify that conclusion qualifies rather than rejects the principle"
+    },
+    {
+      "text": "Establishing that two competing ethical principles cannot both be correct",
+      "is_correct": false,
+      "explanation": "Trap type: Describes a method not used in this argument. The argument does not present two competing principles and argue one must be false. It presents one principle and shows it has exceptions. Students may be confused by the apparent tension between individual and public health.",
+      "tutor_explanation": "While the argument does mention both individual patient care and public health, it doesn't set these up as competing principles where only one can be correct. Instead, it shows that the individual-focused principle sometimes gives way to broader concerns—a matter of scope, not mutual exclusivity.",
+      "skill_tested": null,
+      "trap_type": "Describes a method not used in this argument",
+      "skill_gap": "Misreads the argument structure as a conflict between principles"
+    },
+    {
+      "text": "Demonstrating that physicians who ration care act unethically",
+      "is_correct": false,
+      "explanation": "Trap type: Evaluates validity instead of describing method. This choice makes a normative judgment about the physicians' actions rather than describing the argumentative technique. The argument actually suggests rationing is ethically permissible as an exception to the rule.",
+      "tutor_explanation": "This choice describes a possible conclusion about the ethics of rationing, but that's not what the argument concludes. The argument isn't judging physicians as unethical—it's using their behavior as evidence that a principle has exceptions. Always ask: 'What is this argument trying to prove?' not 'What could someone argue about this topic?'",
+      "skill_tested": null,
+      "trap_type": "Evaluates validity instead of describing method",
+      "skill_gap": "Confuses describing method with evaluating content"
+    },
+    {
+      "text": "Supporting a conclusion by appealing to the views of medical ethicists",
+      "is_correct": false,
+      "explanation": "Trap type: Confuses conclusion with premise in description. The medical ethicists' view is mentioned as the premise being challenged, not as support for the conclusion. Students who misidentify the role of this element will select this distractor.",
+      "tutor_explanation": "The medical ethicists' view appears at the start of the argument, but it's the position being challenged, not evidence supporting the conclusion. The argument actually pushes back against what the ethicists say by showing an exception. Watch for the word 'However'—it signals a contrast with what came before.",
+      "skill_tested": null,
+      "trap_type": "Confuses conclusion with premise in description",
+      "skill_gap": "Misidentifies the structural role of the ethicists' position"
+    }
+  ],
+  "metadata": {
+    "question_type": "Method of Reasoning",
+    "family": "Structure Family",
+    "primary_skill_id": "S_01",
+    "primary_skill_name": "Main Conclusion ID",
+    "secondary_skills": [
+      "S_02",
+      "S_04"
+    ],
+    "difficulty": "EASY",
+    "topic": "Medical ethics",
+    "word_count": 78,
+    "validation_method": "Correct answer must accurately describe HOW the argument proceeds—the specific argumentative moves made to reach the conclusion"
+  }
+}
+
+{
+  "stimulus": "Museum curators often assume that displaying ancient Greek pottery in chronological order best serves visitors. However, when visitors were surveyed, most reported greater engagement when artifacts were grouped by artistic style rather than date. This finding might seem to favor stylistic arrangement, yet casual visitors typically cannot articulate what actually enhances their learning. Since research consistently shows that chronological context improves long-term retention of historical knowledge, curators should continue prioritizing temporal arrangement over visitor preferences.",
+  "stem": "The argument employs which one of the following methods of reasoning?",
+  "options": [
+    {
+      "text": "It dismisses survey evidence by questioning the reliability of respondents' self-assessments, then appeals to research findings to support a different conclusion.",
+      "is_correct": true,
+      "explanation": "The argument first introduces survey evidence favoring stylistic arrangement, then undermines this evidence by noting visitors cannot articulate what helps their learning, and finally appeals to research on retention to conclude curators should prioritize chronological display. This accurately captures the argument's structural moves.",
+      "tutor_explanation": "Let's trace the argument's structure. First, survey evidence suggests stylistic arrangement is better. Then the argument undercuts this by saying visitors can't really know what helps them learn. Finally, it cites research on retention to conclude curators should stick with chronological order. This answer captures all three moves: acknowledging evidence, dismissing it via reliability concerns, then offering alternative evidence for the opposite conclusion.",
+      "skill_tested": "S_01 (Main Conclusion ID) - identifying that the final claim about curator practice is the conclusion, and tracing how the argument moves through dismissing counter-evidence to reach it",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "It presents conflicting data from two studies and argues that one methodology is inherently superior to the other.",
+      "is_correct": false,
+      "explanation": "The argument does not present two studies with conflicting data or compare methodologies. It presents a survey and separate research, using the latter to support its conclusion after questioning the former's interpretive value.",
+      "tutor_explanation": "This choice mentions 'two studies' with 'conflicting data,' but that's not quite what happens here. The argument has a survey about visitor preferences and research about learning retention—these address different questions, not conflicting answers to the same question. The argument doesn't compare methodologies either; it questions whether visitors can accurately report what helps them learn.",
+      "skill_tested": null,
+      "trap_type": "Describes a method not used in this argument",
+      "skill_gap": "Failure to accurately identify what evidence types appear in the argument"
+    },
+    {
+      "text": "It demonstrates that the conclusion follows logically and necessarily from the premises provided.",
+      "is_correct": false,
+      "explanation": "This evaluates the argument's validity rather than describing its method. Method of Reasoning questions ask HOW the argument proceeds, not WHETHER it succeeds logically.",
+      "tutor_explanation": "Be careful—this choice tells us the argument is logically sound, but the question asks HOW the argument works, not whether it works well. Method of Reasoning questions want you to describe the argumentative strategy, not judge its quality. Even if the argument were perfectly valid, this wouldn't describe its technique.",
+      "skill_tested": null,
+      "trap_type": "Evaluates validity instead of describing method",
+      "skill_gap": "Confusing description of method with evaluation of validity"
+    },
+    {
+      "text": "It uses evidence about visitor engagement to establish that chronological arrangement should be abandoned.",
+      "is_correct": false,
+      "explanation": "This reverses the argument's direction. The visitor engagement evidence is used to support stylistic arrangement, but the argument ultimately rejects this and concludes in favor of chronological arrangement. This confuses the role of evidence in the argument.",
+      "tutor_explanation": "This gets the argument backwards. The visitor engagement evidence actually pointed toward stylistic arrangement, not chronological. More importantly, the argument's conclusion favors chronological arrangement, not abandoning it. When evaluating Method of Reasoning choices, always verify that the description matches what the argument actually concludes.",
+      "skill_tested": null,
+      "trap_type": "Confuses conclusion with premise in description",
+      "skill_gap": "Misidentifying the conclusion and confusing which evidence supports which position"
+    },
+    {
+      "text": "It offers reasons in support of a conclusion about curatorial practice.",
+      "is_correct": false,
+      "explanation": "While technically true, this description is so generic it could apply to virtually any argument that reaches a practical conclusion. It fails to capture the distinctive features of this argument: the dismissal of counter-evidence and the appeal to research findings.",
+      "tutor_explanation": "This choice isn't wrong exactly—the argument does offer reasons for a conclusion about curatorial practice. But it's far too vague. Almost any argument with a practical conclusion could be described this way. On Method of Reasoning questions, look for the answer that captures the specific strategy used, not just a general description that could fit countless arguments.",
+      "skill_tested": null,
+      "trap_type": "Too generic—could describe any argument",
+      "skill_gap": "Accepting an answer that is true but insufficiently specific"
+    }
+  ],
+  "metadata": {
+    "question_type": "Method of Reasoning",
+    "family": "Structure Family",
+    "primary_skill_id": "S_01",
+    "primary_skill_name": "Main Conclusion ID",
+    "secondary_skills": [
+      "S_02",
+      "S_04"
+    ],
+    "difficulty": "MEDIUM",
+    "topic": "Classical studies",
+    "word_count": 89,
+    "validation_method": "Correct answer must accurately describe the argumentative moves: what types of evidence are introduced, how they are used or dismissed, and what conclusion they support"
+  }
+}
+
+{
+  "stimulus": "Recent atmospheric research has documented that certain coastal mountain ranges generate localized precipitation patterns that deviate substantially from regional climate models. Traditional meteorological theory predicts uniform moisture distribution across comparable elevations, yet researchers observed that southeast-facing slopes received nearly twice the precipitation of northwest-facing slopes at identical altitudes. The researchers concluded that prevailing wind direction, rather than elevation alone, serves as the primary determinant of precipitation distribution in these microclimates—a finding that challenges the conventional emphasis on topographic height in precipitation forecasting.",
+  "stem": "Which one of the following most accurately describes the technique of reasoning used in the argument?",
+  "options": [
+    {
+      "text": "Citing observed data that contradicts a prediction derived from established theory in order to support an alternative explanatory factor",
+      "is_correct": true,
+      "explanation": "This correctly captures the argument's method: it presents traditional theory (elevation determines precipitation), shows data contradicting that theory (different precipitation at same elevation), and uses this to support an alternative explanation (wind direction as primary factor). This requires identifying the main conclusion (wind direction is primary) and understanding how the evidence structurally relates to challenging existing theory.",
+      "tutor_explanation": "This answer captures exactly what the argument does. First, notice the argument presents 'traditional meteorological theory' (the established view). Then it introduces research findings that contradict this theory—same elevation, different precipitation. Finally, it uses this contradiction to support a new claim: wind direction matters more than elevation. When you see an argument challenging conventional wisdom with new data, look for this pattern: old theory → contradicting evidence → alternative explanation.",
+      "skill_tested": "S_01 (Main Conclusion ID) - Requires distinguishing the final claim about wind direction from the intermediate observation about precipitation differences",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Demonstrating that a theoretical prediction is accurate by documenting instances where the predicted outcome was observed",
+      "is_correct": false,
+      "explanation": "This describes confirmation of theory, but the argument does the opposite—it challenges traditional theory with contradicting observations.",
+      "tutor_explanation": "This is tempting if you focus on 'research documented' and 'observed' without noticing the direction of the argument. But look carefully: the observations contradict the traditional prediction (same elevation should mean same precipitation, but it didn't). The argument uses evidence against the theory, not for it. Always check whether data confirms or challenges the existing view.",
+      "skill_tested": null,
+      "trap_type": "Describes a method not used in this argument",
+      "skill_gap": "Confuses the relationship between evidence and theory; fails to recognize the argument challenges rather than confirms the prediction"
+    },
+    {
+      "text": "Questioning whether the research methodology was sufficiently rigorous to support the stated conclusion",
+      "is_correct": false,
+      "explanation": "This evaluates the quality of the argument rather than describing its method. The argument never questions its own methodology—it presents the research as supporting evidence.",
+      "tutor_explanation": "Method of Reasoning questions ask you to describe what the argument does, not whether it does it well. This answer suggests the argument critiques its own evidence—but the argument presents the research confidently as grounds for its conclusion. Don't confuse 'what would a critic say?' with 'what does this argument actually do?'",
+      "skill_tested": null,
+      "trap_type": "Evaluates validity instead of describing method",
+      "skill_gap": "Mistakes critical evaluation for structural description"
+    },
+    {
+      "text": "Presenting evidence that certain slopes receive more precipitation than others to establish that elevation determines precipitation patterns",
+      "is_correct": false,
+      "explanation": "This gets the evidence right but reverses the conclusion. The main conclusion is that wind direction (not elevation) is the primary factor. This choice confuses the rejected traditional view with the argument's actual conclusion.",
+      "tutor_explanation": "This answer correctly notes the precipitation evidence but completely misidentifies the conclusion. The argument concludes that wind direction—not elevation—is primary. Elevation is the traditional view being challenged. When distinguishing conclusions from premises, ask: what is this evidence being used to prove? Here, the slope data disproves elevation's primacy.",
+      "skill_tested": null,
+      "trap_type": "Confuses conclusion with premise in description",
+      "skill_gap": "Misidentifies main conclusion; confuses the traditional theory being challenged with the argument's own position"
+    },
+    {
+      "text": "Drawing an inference about atmospheric conditions based on logical principles",
+      "is_correct": false,
+      "explanation": "While technically applicable to almost any meteorological argument, this description is so vague it fails to capture anything distinctive about this argument's actual method—the contrast with established theory, the role of contradicting evidence, and the support for an alternative factor.",
+      "tutor_explanation": "This answer isn't wrong per se—the argument does draw an inference about atmospheric conditions. But it's too vague to be the best answer. It could describe virtually any scientific argument. Method of Reasoning answers should capture what's distinctive: here, the challenge to traditional theory using contradicting observations. Always prefer specific, accurate descriptions over generic ones.",
+      "skill_tested": null,
+      "trap_type": "Too generic—could describe any argument",
+      "skill_gap": "Accepts an overly abstract description that provides no diagnostic information about the specific reasoning structure"
+    }
+  ],
+  "metadata": {
+    "question_type": "Method of Reasoning",
+    "family": "Structure Family",
+    "primary_skill_id": "S_01",
+    "primary_skill_name": "Main Conclusion ID",
+    "secondary_skills": [
+      "S_02",
+      "S_04"
+    ],
+    "difficulty": "HARD",
+    "topic": "Meteorology",
+    "word_count": 91,
+    "validation_method": "Correct answer must accurately describe the structural moves of the argument, including how premises relate to conclusion and any contrast with alternative positions"
+  }
+}
+
+{
+  "stimulus": "Some evolutionary biologists have proposed that altruistic behavior in social insects cannot be explained by standard kin selection theory, since workers in certain ant species routinely sacrifice themselves for unrelated colony members. However, this objection conflates genetic relatedness with inclusive fitness more broadly construed. Even genetically unrelated individuals may share sufficient phenotypic markers that the \"selfish gene\" calculus still favors self-sacrifice—provided the beneficiaries carry genes promoting similar altruistic responses. The objection, therefore, mistakes a refinement of the theory for evidence against it.",
+  "stem": "Which one of the following most accurately describes the technique of reasoning employed in the argument?",
+  "options": [
+    {
+      "text": "Defending a theory against a criticism by showing that the criticism rests on a mischaracterization of the theory's scope",
+      "is_correct": true,
+      "explanation": "The argument correctly identifies the main conclusion: the objection mistakes a refinement for evidence against the theory. The method involves showing that critics misunderstand kin selection theory's actual scope—inclusive fitness includes phenotypic markers, not just genetic relatedness. This accurately captures the structural move of defending by exposing a mischaracterization.",
+      "tutor_explanation": "The argument's main move is to defend kin selection theory by arguing that critics misunderstand what the theory actually claims. The critics think kin selection requires genetic relatedness, but the argument shows the theory's scope is broader (inclusive fitness via phenotypic markers). When an argument says 'this objection conflates X with Y,' it's showing the objection mischaracterizes what's being criticized. The conclusion—that the objection 'mistakes a refinement for evidence against'—confirms this defensive strategy.",
+      "skill_tested": "Main Conclusion ID",
+      "trap_type": null,
+      "skill_gap": null
+    },
+    {
+      "text": "Demonstrating that an apparent exception to a general principle actually confirms the principle when properly analyzed",
+      "is_correct": false,
+      "explanation": "Trap type: Matches some but not all structural elements. This captures the defensive posture but mischaracterizes the logical move. The argument doesn't claim the exception confirms the theory; it claims the objection misunderstands the theory's scope. The ant behavior isn't shown to confirm kin selection—rather, the criticism is shown to target a strawman.",
+      "tutor_explanation": "This is tempting because the argument does discuss what looks like an exception (altruism toward unrelated ants). But notice the argument doesn't actually show that this exception confirms kin selection—it shows that the critics misunderstand what kin selection theory claims in the first place. The difference is subtle: one says 'the evidence actually supports us,' while the other says 'you've misunderstood what we're claiming.'",
+      "skill_tested": null,
+      "trap_type": "Matches some but not all structural elements",
+      "skill_gap": "Distinguishing between 'exception confirms rule' and 'criticism mischaracterizes rule'"
+    },
+    {
+      "text": "Rejecting a theory by identifying internal inconsistencies between its foundational assumptions and its predictions",
+      "is_correct": false,
+      "explanation": "Trap type: Confuses conclusion with premise in description. This describes what the critics attempt to do (reject the theory), not what the argument itself does (defend the theory). A student who misidentifies the argument's conclusion as the critics' objection would select this.",
+      "tutor_explanation": "Read carefully: the argument is defending kin selection theory, not rejecting it. This answer describes what the critics are trying to do—find problems with the theory. But the argument's actual method is to rebut those critics. Always ask: whose reasoning is the question asking about? Here, it's the author's method, not the critics' attempted method.",
+      "skill_tested": null,
+      "trap_type": "Confuses conclusion with premise in description",
+      "skill_gap": "Failing to distinguish the argument's own conclusion from positions it describes and rejects"
+    },
+    {
+      "text": "Undermining an objection by questioning the empirical accuracy of the evidence cited in support of it",
+      "is_correct": false,
+      "explanation": "Trap type: Describes a method not used in this argument. The argument never questions whether workers actually sacrifice themselves for unrelated colony members—it accepts this empirical claim. Instead, it challenges how that evidence should be interpreted given the theory's actual scope.",
+      "tutor_explanation": "The argument accepts the critics' factual claim that worker ants sacrifice themselves for unrelated colony members. It never says 'that's not true' or 'the evidence is flawed.' Instead, it argues that this fact doesn't mean what the critics think it means, because they've misunderstood kin selection theory. Questioning interpretation is different from questioning accuracy.",
+      "skill_tested": null,
+      "trap_type": "Describes a method not used in this argument",
+      "skill_gap": "Distinguishing between challenging evidence versus challenging interpretation of evidence"
+    },
+    {
+      "text": "Providing reasons in support of a conclusion that is then used as evidence for a broader claim",
+      "is_correct": false,
+      "explanation": "Trap type: Too generic—could describe any argument. This describes a generic argument structure (intermediate conclusion feeding into main conclusion) without capturing what's distinctive about this argument's method—namely, the defensive recharacterization of an opposing view. Any complex argument could be described this way.",
+      "tutor_explanation": "While technically this argument does have sub-conclusions supporting a main point, this description could fit almost any complex argument. Method of Reasoning questions ask you to identify what's distinctive about this particular argument's strategy. The key feature here—defending against criticism by showing the criticism misunderstands its target—isn't captured at all by this generic description.",
+      "skill_tested": null,
+      "trap_type": "Too generic—could describe any argument",
+      "skill_gap": "Recognizing when a description is too vague to distinguish the specific method used"
+    }
+  ],
+  "metadata": {
+    "question_type": "Method of Reasoning",
+    "family": "Structure Family",
+    "primary_skill_id": "S_01",
+    "primary_skill_name": "Main Conclusion ID",
+    "secondary_skills": [
+      "S_02",
+      "S_04"
+    ],
+    "difficulty": "CHALLENGING",
+    "topic": "Evolutionary biology",
+    "word_count": 94,
+    "validation_method": "Correct answer must accurately describe HOW the argument proceeds—identifying the specific argumentative technique used to defend kin selection theory against the critics' objection"
+  }
+}
+

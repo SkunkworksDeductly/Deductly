@@ -1,0 +1,388 @@
+# LSAT LOGICAL REASONING: QUESTION TYPE → SKILL MAPPING
+# Version 2.1 | Designed for Q-Matrix Construction and Adaptive Learning
+
+=============================================================================
+HOW TO READ THIS DOCUMENT
+=============================================================================
+For each question type:
+  - PRIMARY SKILLS: The central cognitive demands (what the question tests)
+  - SECONDARY SKILLS: Frequently required but not the focal point
+  - DIAGNOSTIC NOTES: How to interpret success/failure on this question type
+
+=============================================================================
+FAMILY 1: THE PROVE FAMILY (Stimulus → Answer Choice)
+=============================================================================
+
+[1] MUST BE TRUE (INFERENCE)
+    -------------------------
+    Trigger: "Must be true," "Properly inferred," "Follows logically."
+    Task: Deduce a claim guaranteed by the stimulus.
+    
+    PRIMARY SKILLS:
+      - FL_03 Chain/Transitive Deduction
+      - FL_05 Quantifier Intersection
+      - FL_06 Modal Precision
+    
+    SECONDARY SKILLS:
+      - FL_01 Conditional Translation
+      - FL_02 Contrapositive Operations
+      - FL_04 Quantifier Scope
+    
+    DIAGNOSTIC NOTES:
+      - Pure deductive reasoning; tests formal logic skills
+      - Failure here often indicates weak conditional logic foundation
+      - If student passes Must Be True but fails MSS, the issue is 
+        probabilistic vs. certain reasoning (FL_06, RH_07)
+
+[2] MOST STRONGLY SUPPORTED (MSS)
+    ------------------------------
+    Trigger: "Most strongly supported," "Reasonably drawn."
+    Task: Identify a claim highly likely to be true (95%+).
+    
+    PRIMARY SKILLS:
+      - RH_07 Evidential Weight Assessment
+      - FL_06 Modal Precision
+    
+    SECONDARY SKILLS:
+      - FL_04 Quantifier Scope
+      - FL_05 Quantifier Intersection
+    
+    DIAGNOSTIC NOTES:
+      - Key distinction from Must Be True: allows probabilistic support
+      - Tests ability to compare evidential strength across answer choices
+      - Common error: selecting answer that's possible but not best supported
+
+[3] MAIN POINT
+    ----------
+    Trigger: "Main conclusion," "Accurately expresses the conclusion."
+    Task: Identify the author's final opinion/claim.
+    
+    PRIMARY SKILLS:
+      - S_01 Main Conclusion ID
+    
+    SECONDARY SKILLS:
+      - S_04 Intermediate Conclusion Recognition
+      - S_02 Role Identification
+    
+    DIAGNOSTIC NOTES:
+      - Foundational skill; failure here causes cascading problems
+      - Common error: selecting intermediate conclusion or premise
+      - If weak here, prioritize remediation before gap-analysis skills
+
+[4] POINT AT ISSUE
+    --------------
+    Trigger: "Disagree over," "Point at issue."
+    Task: Find the specific disagreement between two speakers.
+    
+    PRIMARY SKILLS:
+      - S_03 Disagreement Isolation
+    
+    SECONDARY SKILLS:
+      - S_01 Main Conclusion ID
+    
+    DIAGNOSTIC NOTES:
+      - Requires identifying BOTH speakers' positions
+      - Answer must be something Speaker A affirms AND Speaker B denies
+      - Common error: selecting topic they discuss rather than point of conflict
+
+=============================================================================
+FAMILY 2: THE HELP/HURT FAMILY (Answer Choice → Stimulus)
+=============================================================================
+
+[5] STRENGTHEN
+    ----------
+    Trigger: "Strengthen," "Support," "Justify."
+    Task: Make the conclusion more likely to be true.
+    
+    PRIMARY SKILLS:
+      - RH_03 Sufficiency Gaps
+      - RH_07 Evidential Weight Assessment
+    
+    SECONDARY SKILLS:
+      - S_01 Main Conclusion ID
+      - RH_01 Causality vs. Correlation
+      - RH_02 Alternative Explanations
+    
+    DIAGNOSTIC NOTES:
+      - Must identify the gap before finding what fills it
+      - For causal arguments, ruling out alternatives strengthens
+      - If student fails Strengthen but passes Sufficient Assumption,
+        issue is likely RH_07 (comparing partial support)
+
+[6] WEAKEN
+    ------
+    Trigger: "Weaken," "Undermine," "Call into question."
+    Task: Make the conclusion less likely to be true.
+    
+    PRIMARY SKILLS:
+      - RH_04 Necessity Gaps
+      - RH_02 Alternative Explanations
+    
+    SECONDARY SKILLS:
+      - S_01 Main Conclusion ID
+      - RH_07 Evidential Weight Assessment
+      - RH_08 Scope Shift Recognition
+      - RH_01 Causality vs. Correlation
+    
+    DIAGNOSTIC NOTES:
+      - Must identify what the argument depends on, then attack it
+      - For causal arguments, introducing alternatives weakens
+      - Common error: selecting answer that's negative but irrelevant
+
+[7] SUFFICIENT ASSUMPTION (JUSTIFY)
+    --------------------------------
+    Trigger: "Follows logically IF assumed," "Properly drawn IF assumed."
+    Task: Find the bridge that makes the conclusion 100% valid.
+
+    PRIMARY SKILLS:
+      - RH_03 Sufficiency Gaps
+      - FL_03 Chain/Transitive Deduction
+
+    SECONDARY SKILLS:
+      - S_01 Main Conclusion ID
+      - S_04 Intermediate Conclusion Recognition
+      - FL_01 Conditional Translation
+      - FL_02 Contrapositive Operations
+      - FL_07 Conditional Fallacies (tested via trap elimination)
+
+    DIAGNOSTIC NOTES:
+      - Answer + Premises must GUARANTEE conclusion (100%)
+      - Often requires building conditional chains
+      - If student passes this but fails Strengthen, they understand
+        validity but struggle with partial/probabilistic support
+      - FL_07 trap: selecting necessary-but-not-sufficient answer
+        (answer that's required but doesn't guarantee conclusion)
+
+[8] NECESSARY ASSUMPTION
+    --------------------
+    Trigger: "Depends," "Required," "Assumes," "Relies."
+    Task: Find the condition that MUST be true for the argument to exist.
+
+    PRIMARY SKILLS:
+      - RH_04 Necessity Gaps
+
+    SECONDARY SKILLS:
+      - S_01 Main Conclusion ID
+      - S_04 Intermediate Conclusion Recognition
+      - FL_01 Conditional Translation
+      - FL_07 Conditional Fallacies (tested via trap elimination)
+
+    DIAGNOSTIC NOTES:
+      - Negation test: if negated answer destroys argument, it's necessary
+      - Answer is required but may not be sufficient alone
+      - FL_07 trap: selecting sufficient assumption (too strong)
+        This is the converse error - confusing "guarantees" with "required"
+      - If student consistently picks "too strong" answers, FL_07 is weak
+
+[9] EVALUATE THE ARGUMENT
+    ---------------------
+    Trigger: "Most useful to know," "Helpful in evaluating."
+    Task: Find the piece of data that determines validity.
+    
+    PRIMARY SKILLS:
+      - RH_07 Evidential Weight Assessment
+      - RH_01 Causality vs. Correlation
+    
+    SECONDARY SKILLS:
+      - RH_03 Sufficiency Gaps
+      - RH_04 Necessity Gaps
+      - S_01 Main Conclusion ID
+    
+    DIAGNOSTIC NOTES:
+      - Answer is typically phrased as a question
+      - Correct answer: one version strengthens, other version weakens
+      - Tests understanding of what information would resolve uncertainty
+
+[10] PRINCIPLE (JUSTIFY)
+     -------------------
+     Trigger: "Which principle, if valid, justifies the reasoning?"
+     Task: Identify a general rule that bridges the gap.
+     
+     PRIMARY SKILLS:
+       - ABS_03 Principle Application
+       - RH_03 Sufficiency Gaps
+     
+     SECONDARY SKILLS:
+       - S_01 Main Conclusion ID
+       - FL_01 Conditional Translation
+     
+     DIAGNOSTIC NOTES:
+       - Like Sufficient Assumption but answer is a general principle
+       - Principle must be abstract enough to apply beyond this case
+       - Tests ability to identify underlying rule the argument assumes
+
+=============================================================================
+FAMILY 3: THE STRUCTURE FAMILY (Abstract Analysis)
+=============================================================================
+
+[11] FLAW IN REASONING
+     -----------------
+     Trigger: "Flaw," "Vulnerable to criticism," "Error in reasoning."
+     Task: Name the logical error.
+     
+     PRIMARY SKILLS (varies by flaw type):
+       - RH_01 Causality vs. Correlation (causal flaws)
+       - RH_02 Alternative Explanations (causal flaws)
+       - RH_05 Sampling Validity (evidence flaws)
+       - RH_06 Ad Hominem (relevance flaws)
+       - RH_08 Scope Shift Recognition (scope flaws)
+       - FL_01/FL_02 (conditional logic flaws)
+       - FL_07 Conditional Fallacies (for converse/inverse errors)
+     
+     SECONDARY SKILLS:
+       - S_01 Main Conclusion ID
+       - ABS_02 Flaw Matching (for abstract answer choices)
+     
+     DIAGNOSTIC NOTES:
+       - Specific primary skill depends on flaw type in stimulus
+       - Abstract answer choices test ability to recognize flaw categories
+       - Track which flaw types student misses to identify specific weakness
+
+[12] METHOD OF REASONING
+     -------------------
+     Trigger: "Proceeds by," "Technique of argumentation."
+     Task: Describe the argumentative strategy (whole argument).
+     
+     PRIMARY SKILLS:
+       - S_01 Main Conclusion ID
+       - ABS_01 Structural Matching
+     
+     SECONDARY SKILLS:
+       - S_02 Role Identification
+       - S_04 Intermediate Conclusion Recognition
+     
+     DIAGNOSTIC NOTES:
+       - Tests ability to describe HOW argument works, not evaluate validity
+       - Answer choices are abstract descriptions of argumentative moves
+       - Common error: evaluating whether argument is good/bad
+
+[13] ROLE OF A STATEMENT
+     -------------------
+     Trigger: "The claim that X plays which one of the following roles?"
+     Task: Identify the function of a specific sentence.
+     
+     PRIMARY SKILLS:
+       - S_02 Role Identification
+       - S_04 Intermediate Conclusion Recognition
+     
+     SECONDARY SKILLS:
+       - S_01 Main Conclusion ID
+     
+     DIAGNOSTIC NOTES:
+       - Must determine if statement is: premise, intermediate conclusion,
+         main conclusion, background, counterargument, or concession
+       - Isolated skill; strong diagnostic value for structural understanding
+
+[14] PARALLEL REASONING
+     ------------------
+     Trigger: "Pattern of reasoning," "Most similar to."
+     Task: Match the valid logical structure.
+     
+     PRIMARY SKILLS:
+       - ABS_01 Structural Matching
+       - FL_01 Conditional Translation (if conditional)
+       - FL_02 Contrapositive Operations (if conditional)
+       - FL_03 Chain Deduction (if conditional)
+     
+     SECONDARY SKILLS:
+       - S_01 Main Conclusion ID
+       - FL_04 Quantifier Scope (if quantified)
+     
+     DIAGNOSTIC NOTES:
+       - Must strip content and match abstract logical form
+       - Time-intensive; often saved for last
+       - Failure may indicate: weak formal logic OR weak abstraction ability
+       - Test FL skills separately to disambiguate
+
+[15] PARALLEL FLAW
+     -------------
+     Trigger: "Pattern of flawed reasoning," "Same error as."
+     Task: Match the invalid logical structure.
+     
+     PRIMARY SKILLS:
+       - ABS_02 Flaw Matching
+       - [Specific flaw skill from stimulus: RH_01, RH_05, RH_08, etc.]
+     
+     SECONDARY SKILLS:
+       - S_01 Main Conclusion ID
+       - FL_01-03 (if conditional flaw)
+     
+     DIAGNOSTIC NOTES:
+       - Two-step process: identify flaw type, then find matching flaw
+       - If student identifies flaw correctly but picks wrong answer,
+         issue is ABS_02 (matching), not flaw recognition
+       - Track which flaw types cause matching errors
+
+[16] PRINCIPLE (APPLICATION)
+     -----------------------
+     Trigger: "Conforms to the principle," "Illustrates the principle."
+     Task: Apply a general rule to a specific case.
+     
+     PRIMARY SKILLS:
+       - ABS_03 Principle Application
+       - FL_01 Conditional Translation
+     
+     SECONDARY SKILLS:
+       - None
+     
+     DIAGNOSTIC NOTES:
+       - Given principle in stimulus; find case that matches in answers
+       - Inverse of Principle Justify (10)
+       - Often involves conditional logic (if X then Y)
+
+=============================================================================
+FAMILY 4: THE DISCREPANCY FAMILY (Reconciliation)
+=============================================================================
+
+[17] RESOLVE THE PARADOX
+     -------------------
+     Trigger: "Resolve the apparent discrepancy," "Explain the conflict."
+     Task: Allow two contradictory facts to coexist.
+     
+     PRIMARY SKILLS:
+       - RH_02 Alternative Explanations
+       - RH_07 Evidential Weight Assessment
+     
+     SECONDARY SKILLS:
+       - FL_04 Quantifier Scope
+       - S_01 Main Conclusion ID (if argument present)
+     
+     DIAGNOSTIC NOTES:
+       - No argument to attack; just two facts that seem contradictory
+       - Correct answer makes both facts simultaneously true
+       - Common error: selecting answer that only addresses one fact
+
+=============================================================================
+DIAGNOSTIC PATTERNS
+=============================================================================
+
+IF STUDENT FAILS: Must Be True (1)
+   CHECK: Other FL-heavy questions (7, 14)
+   IF ALSO WEAK: Core formal logic deficiency (FL_01-03)
+   IF STRONG ELSEWHERE: Issue is FL_05/FL_06 (quantifiers/modals)
+
+IF STUDENT FAILS: Strengthen (5) AND Weaken (6)
+   CHECK: Sufficient Assumption (7) and Necessary Assumption (8)
+   IF ALSO WEAK: Core gap-analysis deficiency (RH_03, RH_04)
+   IF STRONG ON 7/8: Issue is RH_07 (comparing partial support)
+
+IF STUDENT FAILS: Flaw (11) AND Parallel Flaw (15)
+   CHECK: Which flaw types are missed
+   IF CONSISTENT TYPE: Specific flaw skill weakness (RH_01, RH_05, etc.)
+   IF RANDOM: General flaw recognition weakness
+
+IF STUDENT FAILS: Parallel Reasoning (14) BUT PASSES Must Be True (1)
+   DIAGNOSIS: Issue is abstraction (ABS_01), not formal logic
+   REMEDIATION: Practice stripping content from arguments
+
+IF STUDENT FAILS: Main Point (3)
+   PRIORITY: Address immediately; affects all other question types
+   CHECK: Role of Statement (13) to isolate S_01 vs S_04
+
+IF STUDENT FAILS: Sufficient Assumption (7) AND/OR Necessary Assumption (8)
+   CHECK: Answer choice patterns on missed questions
+   IF PICKING "TOO STRONG" ON NA: FL_07 weakness (confusing sufficient for necessary)
+   IF PICKING "TOO WEAK" ON SA: FL_07 weakness (confusing necessary for sufficient)
+   IF BOTH PATTERNS: Core necessary/sufficient distinction not understood
+   CROSS-CHECK: Flaw questions (11) involving conditional fallacies
+   NOTE: FL_07 can be diagnosed via SA/NA trap patterns even without Flaw questions

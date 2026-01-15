@@ -21,6 +21,13 @@ from .elo_system import (
 )
 
 
+# --- IRT Adaptive Variance Parameters ---
+THETA_MIN = -3.5          # Hard floor for ability estimate
+THETA_MAX = 3.5           # Hard ceiling for ability estimate
+VAR_INIT = 1.0            # Starting prior variance for new users
+VAR_FLOOR = 0.15          # Minimum variance (SD≈0.39, allows continued learning)
+VARIANCE_SCALE = 30       # Controls decay rate of variance
+N_CAP = 150               # Cap on effective sample size (prevents over-shrinking)
 
 
 # Skill Taxonomy v2.1 - Updated from lsat_lr_skill_taxonomy_v2.txt and lsat_rc_skill_taxonomy_v2.txt
@@ -79,6 +86,37 @@ def transform_response_payload(responses: List[Dict[str, Any]]) -> List[Dict[str
     return qid_list, torch.tensor(response_vals, dtype=torch.float32)
 
 
+def get_user_response_count(user_id: str) -> int:
+    """
+    Get the total number of questions a user has answered.
+    Counts from user_question_history table.
+    """
+    query = "SELECT COUNT(*) as count FROM user_question_history WHERE user_id = %s"
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (user_id,))
+        row = cursor.fetchone()
+        return row['count'] if row else 0
+
+
+def compute_adaptive_prior_var(n_responses: int) -> float:
+    """
+    Compute adaptive prior variance based on number of responses.
+
+    Formula: prior_var = max(VAR_FLOOR, VAR_INIT / (1 + effective_n / VARIANCE_SCALE))
+
+    This allows:
+    - Rapid calibration for new users (high variance)
+    - Increasing stability as evidence accumulates
+    - Continued responsiveness via VAR_FLOOR (never fully "locked in")
+    """
+    effective_n = min(n_responses, N_CAP)
+    computed_var = VAR_INIT / (1.0 + effective_n / VARIANCE_SCALE)
+    return max(VAR_FLOOR, computed_var)
+
+
+def clamp_theta(theta: float) -> float:
+    """Clamp theta to reasonable bounds."""
+    return max(THETA_MIN, min(THETA_MAX, theta))
 
 
 def prepare_ability_estimation(payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -259,19 +297,46 @@ def fetch_skill_mastery_history(user_id: str) -> Dict[str, Any]:
     }
 
 
-def irt_online_update(user_id: str, new_evidence: List[Dict[str, Any]]) -> None:
-    """Perform an online IRT update for the given user with new evidence."""
-    # ASSUMES NO ITEM DUPLICATES IN EACH PAYLOAD, UPDATE b TENSOR TO FIX IF NEEDED
-    prior_var = 1.0  # HAVE NOT YET IMPLEMENTED VAR UPDATES
+def irt_online_update(user_id: str, new_evidence: List[Dict[str, Any]]) -> dict:
+    """
+    Perform an online IRT update for the given user with new evidence.
+
+    Uses adaptive prior variance that shrinks with accumulated evidence,
+    while maintaining a floor to allow for continued learning improvement.
+    """
     qids, responses = transform_response_payload(new_evidence)
 
+    # Get current state
     theta0 = fetch_current_ability("irt", user_id)['ability_theta']
     prior_mean = theta0
     b = get_item_difficulties(qids)
+
+    # Compute adaptive prior variance based on user's history
+    n_responses = get_user_response_count(user_id)
+    prior_var = compute_adaptive_prior_var(n_responses)
+
+    # Perform MAP update
     new_theta = rasch_online_update_theta_torch(responses, b, theta0, prior_mean, prior_var)
+
+    # Clamp to reasonable bounds
+    new_theta = clamp_theta(new_theta)
+
+    # Persist
     with get_db_cursor() as cursor:
-        cursor.execute("""UPDATE user_abilities SET theta_scalar = %s, last_updated = CURRENT_TIMESTAMP WHERE user_id = %s;""", (new_theta, user_id))
-    return "Successfully updated user ability theta."
+        cursor.execute(
+            """UPDATE user_abilities
+               SET theta_scalar = %s, last_updated = CURRENT_TIMESTAMP
+               WHERE user_id = %s;""",
+            (new_theta, user_id)
+        )
+
+    return {
+        "message": "Successfully updated user ability theta.",
+        "theta_old": theta0,
+        "theta_new": new_theta,
+        "prior_var": prior_var,
+        "n_responses": n_responses
+    }
 
 
 def get_skill_vector_for_question(question_id: str) -> torch.Tensor:
@@ -450,6 +515,70 @@ def irt_b_to_elo(b_value: float) -> float:
     Mapping: b=0 -> 1500, b=1 -> 1700, b=-1 -> 1300 (approx 200 points per unit b)
     """
     return 1500.0 + (b_value * 200.0)
+
+
+def update_item_difficulty(question_id: str, new_b: float) -> Dict[str, Any]:
+    """
+    Update item difficulty (b-value) for a question.
+    Automatically syncs Elo rating derived from b.
+
+    Updates both:
+    - questions table (b, difficulty_elo_base)
+    - item_difficulties table (b)
+
+    Args:
+        question_id: The question ID
+        new_b: New b-value (item difficulty parameter)
+
+    Returns:
+        Dict with old and new values
+    """
+    new_elo = irt_b_to_elo(new_b)
+
+    with get_db_cursor() as cursor:
+        # Get current values
+        cursor.execute(
+            "SELECT b, difficulty_elo_base FROM questions WHERE id = %s",
+            (question_id,)
+        )
+        row = cursor.fetchone()
+        old_b = row['b'] if row else None
+        old_elo = row['difficulty_elo_base'] if row else None
+
+        # Update questions table
+        cursor.execute("""
+            UPDATE questions
+            SET b = %s, difficulty_elo_base = %s
+            WHERE id = %s
+        """, (new_b, new_elo, question_id))
+
+        # Upsert item_difficulties table
+        cursor.execute(
+            "SELECT id FROM item_difficulties WHERE question_id = %s",
+            (question_id,)
+        )
+        existing = cursor.fetchone()
+
+        if existing:
+            cursor.execute("""
+                UPDATE item_difficulties
+                SET b = %s, last_updated = CURRENT_TIMESTAMP
+                WHERE question_id = %s
+            """, (new_b, question_id))
+        else:
+            new_id = generate_id("ID")
+            cursor.execute("""
+                INSERT INTO item_difficulties (id, question_id, b, last_updated)
+                VALUES (%s, %s, %s, CURRENT_TIMESTAMP)
+            """, (new_id, question_id, new_b))
+
+    return {
+        "question_id": question_id,
+        "old_b": old_b,
+        "new_b": new_b,
+        "old_elo": old_elo,
+        "new_elo": new_elo
+    }
 
 
 def fetch_user_elo_ratings(user_id: str) -> Dict[str, UserSkillRating]:

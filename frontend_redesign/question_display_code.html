@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Deductly: Boutique Modernist Practice</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5de619",
+                        "terracotta": "#E07A5F",
+                        "terracotta-soft": "#F8EBE8",
+                        "sand": "#F0EFE9",
+                        "sand-dark": "#DDDBCF",
+                        "sage": "#81B29A",
+                        "sage-light": "#CFE0D9",
+                        "sage-soft": "#EBF5F1",
+                        "text-main": "#252822",
+                        "background-light": "#FDFCF9",
+                        "background-dark": "#23261F",
+                    },
+                    fontFamily: {
+                        "sans": ["Schibsted Grotesk", "sans-serif"],
+                        "slab": ["Zilla Slab", "serif"],
+                        "display": ["Schibsted Grotesk", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "3xl": "3rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'soft-xl': '0 20px 40px -4px rgba(0, 0, 0, 0.08)',
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Schibsted Grotesk', sans-serif;
+        }
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Schibsted Grotesk', sans-serif;
+        }
+        .font-slab {
+            font-family: 'Zilla Slab', serif;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .answer-choice:hover .choice-letter {
+            @apply bg-terracotta text-white border-terracotta;
+        }
+        .answer-choice.selected {
+            @apply border-terracotta bg-terracotta-soft/30;
+        }
+        .answer-choice.selected .choice-letter {
+            @apply bg-terracotta text-white border-terracotta;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-sand overflow-hidden h-screen flex">
+<aside class="w-64 h-full bg-white dark:bg-white/5 border-r border-sand-dark/50 dark:border-white/10 flex flex-col justify-between py-10 transition-all duration-300 z-20 shrink-0">
+<div class="flex flex-col gap-12 px-6">
+<div class="flex items-center gap-4">
+<div class="size-10 shrink-0 text-terracotta bg-terracotta-soft dark:bg-white/10 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">spa</span>
+</div>
+<h2 class="text-sm font-black tracking-[0.2em] uppercase text-text-main dark:text-white opacity-80">
+                Deductly
+            </h2>
+</div>
+<nav class="flex flex-col gap-2 w-full">
+<a class="group flex items-center gap-4 py-3 px-4 w-full opacity-60 hover:opacity-100 transition-opacity text-text-main dark:text-white" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-terracotta transition-colors">grid_view</span>
+<span class="text-[11px] font-bold uppercase tracking-widest">Dashboard</span>
+</a>
+<a class="group flex items-center gap-4 py-3 px-4 w-full opacity-60 hover:opacity-100 transition-opacity text-text-main dark:text-white" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-sage transition-colors">auto_stories</span>
+<span class="text-[11px] font-bold uppercase tracking-widest">Lessons</span>
+</a>
+<a class="group relative flex items-center gap-4 py-3 px-4 w-full bg-terracotta-soft/30 dark:bg-white/5 rounded-xl text-terracotta" href="#">
+<div class="absolute left-0 w-1 h-6 bg-terracotta rounded-r-full"></div>
+<span class="material-symbols-outlined text-2xl">quiz</span>
+<span class="text-[11px] font-bold uppercase tracking-widest">Practice</span>
+</a>
+<a class="group flex items-center gap-4 py-3 px-4 w-full opacity-60 hover:opacity-100 transition-opacity text-text-main dark:text-white" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-sage transition-colors">analytics</span>
+<span class="text-[11px] font-bold uppercase tracking-widest">Analytics</span>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-6 px-6">
+<a class="flex items-center gap-4 py-3 px-4 text-text-main/50 hover:text-terracotta transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[11px] font-bold uppercase tracking-widest">Settings</span>
+</a>
+<div class="flex items-center gap-4 px-4">
+<div class="w-10 h-10 shrink-0 rounded-full overflow-hidden border border-sand-dark dark:border-white/20">
+<img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1iIG9-ts1oheWG8Trs9mJ9cuvNRrbTDXBzt4O7PxqzZPvIfL7zqJpsC_9ISVdcgb5vgg8d_efjzUoqSOaS6uUkCHUoqIj7ThnTUCHTlPojkTdDlmUjqRgzjtUtWf-h_F1JYVGt5JA31Dlf7kUIHyRX4Ajrv5GecDVnxN0n1G6kYGBtFkkWJeR9jpu_hOAVgjBG1kGtUuietZiJ9_cWYxMlchK-06dvF7g1utTFKj6tsO2iOwc2V7CiduDe2qbA4IVD9-y1kgmgYk"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="text-xs font-bold text-text-main dark:text-white truncate">Alex Doe</span>
+<span class="text-[10px] text-text-main/40 dark:text-white/40 uppercase tracking-tight">Pro Plan</span>
+</div>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col h-screen bg-background-light dark:bg-background-dark overflow-hidden">
+<header class="h-20 border-b border-sand-dark/30 dark:border-white/5 flex items-center justify-between px-10 shrink-0 bg-background-light/80 backdrop-blur-md z-10">
+<div class="flex items-center gap-6">
+<div class="flex flex-col">
+<span class="text-[10px] font-black uppercase tracking-[0.2em] text-terracotta">Section 3</span>
+<span class="font-slab font-semibold text-text-main dark:text-white">Logical Reasoning</span>
+</div>
+<div class="h-8 w-px bg-sand-dark/50"></div>
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold text-text-main/40 dark:text-white/40 uppercase tracking-widest">Question</span>
+<span class="text-lg font-slab font-bold text-text-main dark:text-white">14 of 25</span>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 bg-white dark:bg-white/5 px-5 py-2.5 rounded-full border border-sand-dark/30 dark:border-white/10 shadow-soft">
+<span class="material-symbols-outlined text-sage text-xl">timer</span>
+<span class="text-sm font-slab font-bold tracking-widest text-text-main dark:text-white">24:12</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-sand/50 dark:hover:bg-white/5 transition-colors group">
+<span class="material-symbols-outlined text-text-main/40 group-hover:text-terracotta transition-colors">flag</span>
+<span class="text-[11px] font-bold uppercase tracking-widest text-text-main/60">Flag for Review</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full border border-sand-dark/30 hover:bg-terracotta-soft/50 hover:border-terracotta transition-all text-text-main/40 hover:text-terracotta">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto no-scrollbar p-10 lg:p-16">
+<div class="max-w-5xl mx-auto flex flex-col gap-12">
+<section class="bg-white dark:bg-white/5 rounded-[2.5rem] p-10 md:p-14 shadow-soft border border-sand-dark/20 dark:border-white/5 relative overflow-hidden group">
+<div class="absolute -right-24 -top-24 w-64 h-64 bg-sage-soft/30 dark:bg-sage/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-3 mb-8">
+<span class="w-1.5 h-1.5 rounded-full bg-sage"></span>
+<span class="text-xs font-bold uppercase tracking-[0.2em] text-sage">Stimulus</span>
+</div>
+<div class="space-y-6 text-xl md:text-2xl font-light text-text-main dark:text-sand leading-relaxed">
+<p>
+                            Economists argue that the introduction of a universal basic income (UBI) would lead to a decrease in the overall productivity of a nation's workforce. They claim that without the pressure of needing to earn a living, individuals will lack the motivation to seek out employment or improve their skill sets.
+                        </p>
+<p>
+                            However, recent pilot programs in several small communities have shown that recipients of UBI often use the financial security to pursue higher education or start small businesses—activities that, in the long run, contribute significantly to economic growth and diversity.
+                        </p>
+</div>
+</div>
+</section>
+<section class="space-y-10">
+<div class="max-w-3xl">
+<h3 class="text-2xl md:text-3xl font-slab font-semibold text-text-main dark:text-white leading-tight">
+                        Which one of the following most accurately describes the role played in the argument by the claim that individuals will lack the motivation to seek out employment?
+                    </h3>
+</div>
+<div class="grid grid-cols-1 gap-4 max-w-4xl">
+<button class="answer-choice group flex items-start gap-6 p-6 rounded-2xl border border-sand-dark/40 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-terracotta transition-all text-left">
+<span class="choice-letter size-10 shrink-0 rounded-full border border-sand-dark/60 dark:border-white/20 flex items-center justify-center font-slab font-bold text-lg text-text-main/50 dark:text-white/50 transition-colors">A</span>
+<span class="text-lg text-text-main/80 dark:text-sand/80 pt-1.5 leading-relaxed">It is a premise offered in support of the conclusion that UBI leads to a decrease in overall productivity.</span>
+</button>
+<button class="answer-choice group flex items-start gap-6 p-6 rounded-2xl border border-sand-dark/40 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-terracotta transition-all text-left">
+<span class="choice-letter size-10 shrink-0 rounded-full border border-sand-dark/60 dark:border-white/20 flex items-center justify-center font-slab font-bold text-lg text-text-main/50 dark:text-white/50 transition-colors">B</span>
+<span class="text-lg text-text-main/80 dark:text-sand/80 pt-1.5 leading-relaxed">It is the main conclusion of the argument, which the rest of the passage is intended to support.</span>
+</button>
+<button class="answer-choice selected group flex items-start gap-6 p-6 rounded-2xl border-terracotta bg-terracotta-soft/20 dark:bg-terracotta/10 transition-all text-left shadow-soft">
+<span class="choice-letter size-10 shrink-0 rounded-full bg-terracotta border border-terracotta flex items-center justify-center font-slab font-bold text-lg text-white transition-colors">C</span>
+<span class="text-lg text-text-main dark:text-white font-medium pt-1.5 leading-relaxed">It is a claim that the argument seeks to call into question by providing counter-evidence from pilot programs.</span>
+</button>
+<button class="answer-choice group flex items-start gap-6 p-6 rounded-2xl border border-sand-dark/40 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-terracotta transition-all text-left">
+<span class="choice-letter size-10 shrink-0 rounded-full border border-sand-dark/60 dark:border-white/20 flex items-center justify-center font-slab font-bold text-lg text-text-main/50 dark:text-white/50 transition-colors">D</span>
+<span class="text-lg text-text-main/80 dark:text-sand/80 pt-1.5 leading-relaxed">It is an intermediate conclusion that is supported by the evidence of pilot programs mentioned later.</span>
+</button>
+<button class="answer-choice group flex items-start gap-6 p-6 rounded-2xl border border-sand-dark/40 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-terracotta transition-all text-left">
+<span class="choice-letter size-10 shrink-0 rounded-full border border-sand-dark/60 dark:border-white/20 flex items-center justify-center font-slab font-bold text-lg text-text-main/50 dark:text-white/50 transition-colors">E</span>
+<span class="text-lg text-text-main/80 dark:text-sand/80 pt-1.5 leading-relaxed">It provides independent support for the idea that financial security is necessary for higher education.</span>
+</button>
+</div>
+</section>
+<footer class="mt-8 flex items-center justify-between border-t border-sand-dark/30 pt-12 pb-20">
+<button class="flex items-center gap-3 text-text-main/40 hover:text-text-main transition-colors font-bold uppercase tracking-widest text-xs">
+<span class="material-symbols-outlined">arrow_back</span>
+                    Previous
+                </button>
+<div class="flex gap-2">
+<div class="w-2 h-2 rounded-full bg-sand-dark"></div>
+<div class="w-8 h-2 rounded-full bg-terracotta"></div>
+<div class="w-2 h-2 rounded-full bg-sand-dark"></div>
+<div class="w-2 h-2 rounded-full bg-sand-dark"></div>
+</div>
+<button class="bg-text-main dark:bg-white text-white dark:text-background-dark px-10 py-4 rounded-xl font-bold hover:shadow-lg transition-all flex items-center gap-3 group">
+                    Next Question <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</footer>
+</div>
+</div>
+</main>
+
+</body></html>

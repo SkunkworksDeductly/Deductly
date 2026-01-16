@@ -365,20 +365,26 @@ class TestDisplayScaling:
             assert abs(recovered - elo) < 15
 
     def test_get_rating_tier(self):
-        """Rating tiers are assigned correctly."""
-        assert get_rating_tier(1900) == "Advanced"
+        """Rating tiers are assigned correctly (4-tier system)."""
+        assert get_rating_tier(1900) == "Strong"
+        assert get_rating_tier(1750) == "Strong"
         assert get_rating_tier(1700) == "Proficient"
+        assert get_rating_tier(1600) == "Proficient"
         assert get_rating_tier(1500) == "Developing"
-        assert get_rating_tier(1300) == "Foundational"
-        assert get_rating_tier(1100) == "Beginning"
+        assert get_rating_tier(1400) == "Developing"
+        assert get_rating_tier(1300) == "Emerging"
+        assert get_rating_tier(1100) == "Emerging"
 
     def test_format_rating_for_display(self):
-        """Format function returns expected structure."""
+        """Format function returns expected structure with colors."""
         result = format_rating_for_display(1500.0)
         assert "display_score" in result
         assert "tier" in result
+        assert "tier_color" in result
+        assert "tier_bg_color" in result
         assert result["display_score"] == 150
         assert result["tier"] == "Developing"
+        assert result["tier_color"] == "#F59E0B"  # Amber
 
     def test_format_rating_with_raw(self):
         """Format function includes raw rating when requested."""

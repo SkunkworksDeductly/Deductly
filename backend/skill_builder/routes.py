@@ -13,6 +13,7 @@ from .adaptive_diagnostic_logic import (
     process_answer,
     complete_diagnostic,
     check_existing_session,
+    get_diagnostic_status,
 )
 from .evaluate import evaluate_diagnostic
 import firebase_admin
@@ -454,3 +455,27 @@ def evaluate_diagnostic_session(session_id):
     except Exception as e:
         print(f"Error evaluating diagnostic: {e}")
         return jsonify({'error': 'Failed to evaluate diagnostic'}), 500
+
+
+@skill_builder_bp.route('/adaptive-diagnostic/status', methods=['GET'])
+def check_diagnostic_status():
+    """
+    Check the user's diagnostic status.
+
+    Returns:
+    - status: 'completed', 'in_progress', or 'none'
+    - For completed: session_id, drill_id, completed_at, summary
+    - For in_progress: session_id, current_position, progress, created_at
+    """
+    user_id = get_user_id_from_token()
+
+    if not user_id:
+        user_id = request.args.get('user_id', 'anonymous')
+
+    try:
+        result = get_diagnostic_status(user_id)
+        return jsonify(result)
+
+    except Exception as e:
+        print(f"Error checking diagnostic status: {e}")
+        return jsonify({'error': 'Failed to check diagnostic status'}), 500

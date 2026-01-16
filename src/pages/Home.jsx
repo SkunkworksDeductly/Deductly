@@ -57,8 +57,8 @@ const Home = () => {
       <section className="relative">
         <Card variant="featured" className="overflow-hidden p-12 md:p-16">
           {/* Ambient background glow */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-brand-primary/10 rounded-full blur-3xl -z-10" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-secondary/10 rounded-full blur-3xl -z-10" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-sage/10 rounded-full blur-3xl -z-10" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-terracotta/10 rounded-full blur-3xl -z-10" />
 
           <div className="max-w-3xl relative z-10">
             <p className="text-xs uppercase tracking-[0.3em] text-muted mb-6">LSAT mastery, simplified</p>
@@ -126,7 +126,7 @@ const Home = () => {
 
         {/* Right Column - Trust Card */}
         <div>
-          <Card className="bg-brand-primary/5 border-brand-primary/20 h-full flex flex-col">
+          <Card className="bg-sage/5 border-sage/20 h-full flex flex-col">
             <p className="text-xs uppercase tracking-[0.3em] text-muted mb-6">Trusted by test takers</p>
             <h3 className="font-display text-3xl md:text-4xl text-primary mb-6 tracking-tight leading-tight">
               Built by tutors, refined by students
@@ -138,8 +138,8 @@ const Home = () => {
 
             <div className="flex flex-col gap-6">
               <div className="flex items-center gap-5">
-                <div className="bg-brand-primary/15 rounded-2xl p-4 flex-shrink-0">
-                  <svg className="w-7 h-7 text-brand-primary" fill="currentColor" viewBox="0 0 20 20">
+                <div className="bg-sage/15 rounded-2xl p-4 flex-shrink-0">
+                  <svg className="w-7 h-7 text-sage" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                   </svg>
                 </div>
@@ -182,12 +182,12 @@ const Home = () => {
             <Card
               key={tier.name}
               variant={tier.highlight ? "featured" : "default"}
-              className={`flex flex-col ${tier.highlight ? 'border-brand-primary/40 transform scale-105' : ''}`}
+              className={`flex flex-col ${tier.highlight ? 'border-sage/40 transform scale-105' : ''}`}
             >
               {/* Highlight Badge */}
               <div className="h-8 mb-4">
                 {tier.highlight && (
-                  <Badge variant="default" className="bg-brand-primary text-white border-0">
+                  <Badge variant="default" className="bg-sage text-white border-0">
                     {tier.highlight}
                   </Badge>
                 )}
@@ -204,7 +204,7 @@ const Home = () => {
               <ul className="flex-1 flex flex-col gap-3 mb-8">
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3 text-secondary">
-                    <svg className="w-5 h-5 text-brand-primary flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span className="leading-relaxed">{feature}</span>

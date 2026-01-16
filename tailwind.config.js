@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        "primary": "#5de619",
+        "primary": "#81B29A",
         "terracotta": "#E07A5F",
         "terracotta-soft": "#F8EBE8",
         "sand": "#F0EFE9",

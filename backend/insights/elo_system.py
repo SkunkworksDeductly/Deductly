@@ -5,8 +5,9 @@ from typing import List, Dict, Optional
 
 # --- Parameters ---
 DEFAULT_RATING = 1500.0
-BASE_K_USER = 64.0          # Increased from 40 for faster learning
+BASE_K_USER = 300           # High initial K for rapid calibration during diagnostic
 K_FLOOR_USER = 16.0         # Minimum K-factor to prevent stagnation
+K_NO_DECAY_THRESHOLD = 5    # No K decay until this many updates per skill (initial calibration)
 BASE_K_QUESTION = 20.0
 ELO_SCALE = 400.0
 DELTA_BOUND = 100.0
@@ -55,10 +56,17 @@ def adaptive_k(base_k: float, num_updates: int, k_floor: float = K_FLOOR_USER) -
 
     For a learning platform, we use a gentler decay than traditional ELO:
     - New users start with high K for rapid calibration
-    - K decays but never below the floor (16) to ensure continued responsiveness
+    - No decay during initial calibration phase (first K_NO_DECAY_THRESHOLD updates)
+    - After that, K decays but never below the floor (16) to ensure continued responsiveness
     - This prevents the "stuck" feeling where progress seems invisible
     """
-    decayed_k = base_k / math.sqrt(num_updates + 1)
+    # No decay during initial calibration - gives skills with few questions a fair chance
+    if num_updates < K_NO_DECAY_THRESHOLD:
+        return base_k
+
+    # After calibration phase, decay kicks in (using updates beyond threshold)
+    effective_updates = num_updates - K_NO_DECAY_THRESHOLD + 1
+    decayed_k = base_k / math.sqrt(effective_updates)
     return max(decayed_k, k_floor)
 
 def clamp(value: float, low: float, high: float) -> float:

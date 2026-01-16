@@ -186,6 +186,7 @@ CREATE TABLE IF NOT EXISTS user_abilities (
     id VARCHAR(50) PRIMARY KEY,
     user_id VARCHAR(100) UNIQUE NOT NULL,
     theta_scalar FLOAT NOT NULL,
+    theta_variance FLOAT DEFAULT 1.0,
     mastery_vector TEXT,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

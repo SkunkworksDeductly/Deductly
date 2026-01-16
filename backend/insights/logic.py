@@ -5,11 +5,12 @@ These helpers back the ability estimation (IRT) and skill mastery (CDM) routes.
 from datetime import datetime, timedelta
 from typing import Any, Dict, List
 from utils import generate_id, generate_sequential_id
+import math
 import os
 import json
 import torch
 from db import get_db_connection, get_db_cursor, execute_query
-from .irt_implementation import rasch_online_update_theta_torch
+from .irt_implementation import rasch_online_update_theta_torch, rasch_online_theta_variance_torch
 from .glmm_implementation import RaschFrozenSkillGLMM, micro_update_one
 from .elo_system import (
     UserSkillRating,
@@ -25,7 +26,7 @@ from .elo_system import (
 THETA_MIN = -3.5          # Hard floor for ability estimate
 THETA_MAX = 3.5           # Hard ceiling for ability estimate
 VAR_INIT = 1.0            # Starting prior variance for new users
-VAR_FLOOR = 0.15          # Minimum variance (SD≈0.39, allows continued learning)
+VAR_FLOOR = 1.5          # Minimum variance (SD≈0.39, allows continued learning)
 VARIANCE_SCALE = 30       # Controls decay rate of variance
 N_CAP = 150               # Cap on effective sample size (prevents over-shrinking)
 
@@ -155,32 +156,35 @@ def get_item_difficulties(question_ids) -> torch.Tensor:
     return torch.tensor(difficulties, dtype=torch.float32)
 
 def fetch_current_ability(model_name: str, user_id: str) -> Dict[str, Any]:
-    """Retrieve the latest overall ability score, creating a new record if none exists."""
-    query = "SELECT theta_scalar FROM user_abilities WHERE user_id = %s"
+    """Retrieve the latest overall ability score and variance, creating a new record if none exists."""
+    query = "SELECT theta_scalar, theta_variance FROM user_abilities WHERE user_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_id,))
         row = cursor.fetchone()
         if row:
             theta = row['theta_scalar']
+            variance = row['theta_variance'] if row['theta_variance'] is not None else VAR_INIT
         else:
-            # No ability record found, create a new one with theta = 0.0
+            # No ability record found, create a new one with theta = 0.0 and variance = VAR_INIT
             new_id = generate_id("UA")
             theta = 0.0
+            variance = VAR_INIT
             cursor.execute(
-                """INSERT INTO user_abilities (id, user_id, theta_scalar, mastery_vector, last_updated)
-                   VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)""",
-                (new_id, user_id, theta, json.dumps([0.0] * len(skill_taxonomy)))
+                """INSERT INTO user_abilities (id, user_id, theta_scalar, theta_variance, mastery_vector, last_updated)
+                   VALUES (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP)""",
+                (new_id, user_id, theta, variance, json.dumps([0.0] * len(skill_taxonomy)))
             )
 
     return {
         'user_id': user_id,
         'model': model_name,
         'ability_theta': theta,
-        'standard_error': 0.21,
+        'theta_variance': variance,
+        'standard_error': math.sqrt(variance),
         'last_updated': datetime.utcnow().isoformat() + 'Z',
         'metadata': {
-            'message': 'Placeholder ability record.',
-            'source': 'synthetic-run-001'
+            'message': 'IRT ability estimate with Laplace variance.',
+            'source': 'rasch-online'
         }
     }
 
@@ -301,19 +305,21 @@ def irt_online_update(user_id: str, new_evidence: List[Dict[str, Any]]) -> dict:
     """
     Perform an online IRT update for the given user with new evidence.
 
-    Uses adaptive prior variance that shrinks with accumulated evidence,
-    while maintaining a floor to allow for continued learning improvement.
+    Uses Laplace variance estimation from the previous posterior as the prior
+    for the current update, allowing variance to shrink naturally with evidence.
+    Maintains a floor (VAR_FLOOR) to allow continued learning improvement.
     """
     qids, responses = transform_response_payload(new_evidence)
 
-    # Get current state
-    theta0 = fetch_current_ability("irt", user_id)['ability_theta']
+    # Get current state (theta and variance)
+    current_state = fetch_current_ability("irt", user_id)
+    theta0 = current_state['ability_theta']
+    prior_var = current_state['theta_variance']
     prior_mean = theta0
     b = get_item_difficulties(qids)
 
-    # Compute adaptive prior variance based on user's history
-    n_responses = get_user_response_count(user_id)
-    prior_var = compute_adaptive_prior_var(n_responses)
+    # Ensure prior variance doesn't drop below floor
+    prior_var = max(VAR_FLOOR, prior_var)
 
     # Perform MAP update
     new_theta = rasch_online_update_theta_torch(responses, b, theta0, prior_mean, prior_var)
@@ -321,13 +327,22 @@ def irt_online_update(user_id: str, new_evidence: List[Dict[str, Any]]) -> dict:
     # Clamp to reasonable bounds
     new_theta = clamp_theta(new_theta)
 
-    # Persist
+    # Compute new posterior variance using Laplace approximation
+    theta_tensor = torch.tensor(new_theta, dtype=torch.float32)
+    new_var = rasch_online_theta_variance_torch(theta_tensor, b, prior_var)
+    if isinstance(new_var, torch.Tensor):
+        new_var = new_var.item()
+
+    # Ensure variance doesn't drop below floor
+    new_var = max(VAR_FLOOR, new_var)
+
+    # Persist both theta and variance
     with get_db_cursor() as cursor:
         cursor.execute(
             """UPDATE user_abilities
-               SET theta_scalar = %s, last_updated = CURRENT_TIMESTAMP
+               SET theta_scalar = %s, theta_variance = %s, last_updated = CURRENT_TIMESTAMP
                WHERE user_id = %s;""",
-            (new_theta, user_id)
+            (new_theta, new_var, user_id)
         )
 
     return {
@@ -335,7 +350,8 @@ def irt_online_update(user_id: str, new_evidence: List[Dict[str, Any]]) -> dict:
         "theta_old": theta0,
         "theta_new": new_theta,
         "prior_var": prior_var,
-        "n_responses": n_responses
+        "posterior_var": new_var,
+        "standard_error": math.sqrt(new_var)
     }
 
 
@@ -605,22 +621,28 @@ def fetch_user_elo_ratings(user_id: str) -> Dict[str, UserSkillRating]:
     return ratings
 
 
-def fetch_skill_names() -> Dict[str, str]:
+def fetch_skill_names() -> Dict[str, Dict[str, str]]:
     """
-    Fetch all skill names from the database.
-    Returns a dict mapping skill id (e.g., 'skill-j5y9by') -> skill_name (e.g., 'Main Conclusion ID').
+    Fetch all skill info from the database.
+    Returns a dict mapping internal id (e.g., 'skill-j5y9by') -> {
+        'skill_name': e.g., 'Main Conclusion ID',
+        'taxonomy_id': e.g., 'S_01'
+    }
     """
-    query = "SELECT id, skill_name FROM skills"
-    skill_names = {}
+    query = "SELECT id, skill_id, skill_name FROM skills"
+    skill_info = {}
 
     with get_db_cursor() as cursor:
         cursor.execute(query)
         rows = cursor.fetchall()
 
         for row in rows:
-            skill_names[row['id']] = row['skill_name']
+            skill_info[row['id']] = {
+                'skill_name': row['skill_name'],
+                'taxonomy_id': row['skill_id']  # The taxonomy ID like S_01, FL_01, RC_01
+            }
 
-    return skill_names
+    return skill_info
 
 
 def fetch_question_elo_data(question_id: str):

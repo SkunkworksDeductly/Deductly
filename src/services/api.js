@@ -93,7 +93,7 @@ class ApiService {
 
   async getSkillMastery(userId) {
     // Hit Elo endpoint which returns { user_id, model_name, ratings: [...] }
-    // Each rating has: skill_id, skill_name, rating, num_updates, last_updated
+    // Each rating has: skill_id, skill_name, rating, display_score, tier, tier_color, tier_bg_color, num_updates, last_updated
     const resp = await this.get(`/insights/elo/${userId}`)
     if (resp && resp.ratings) {
       // Transform to match expected format with skill_name and mastery info
@@ -103,7 +103,11 @@ class ApiService {
         skills: resp.ratings.map(r => ({
           skill_id: r.skill_id,
           skill_name: r.skill_name || r.skill_id, // Use skill_name from backend, fallback to skill_id
-          rating: r.rating,
+          rating: r.rating,  // Raw Elo rating (kept for backwards compatibility)
+          display_score: r.display_score || 150,  // LSAT-scaled score (120-180)
+          tier: r.tier || 'Developing',  // Human-readable tier (Emerging, Developing, Proficient, Strong)
+          tier_color: r.tier_color || '#F59E0B',  // Tier text color
+          tier_bg_color: r.tier_bg_color || '#FEF3C7',  // Tier background color
           num_updates: r.num_updates,
           last_updated: r.last_updated
         }))
@@ -113,6 +117,11 @@ class ApiService {
   }
 
   // Adaptive Diagnostic API
+  async getDiagnosticStatus(userId = null) {
+    const query = userId ? `?user_id=${userId}` : ''
+    return this.get(`/skill-builder/adaptive-diagnostic/status${query}`)
+  }
+
   async startAdaptiveDiagnostic(userId = null) {
     const body = userId ? { user_id: userId } : {}
     return this.post('/skill-builder/adaptive-diagnostic', body)
@@ -132,6 +141,11 @@ class ApiService {
   async completeDiagnostic(sessionId, userId = null) {
     const body = userId ? { user_id: userId } : {}
     return this.post(`/skill-builder/adaptive-diagnostic/${sessionId}/complete`, body)
+  }
+
+  async getDiagnosticEvaluation(sessionId, userId = null) {
+    const query = userId ? `?user_id=${userId}` : ''
+    return this.get(`/skill-builder/adaptive-diagnostic/${sessionId}/evaluate${query}`)
   }
 }
 

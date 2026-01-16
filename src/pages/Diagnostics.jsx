@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Card } from '../components/ui/Card'
@@ -11,6 +11,43 @@ const Diagnostics = () => {
   const { currentUser } = useAuth()
   const [isStarting, setIsStarting] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Check if user has already completed a diagnostic
+  useEffect(() => {
+    const checkDiagnosticStatus = async () => {
+      if (!currentUser?.uid) {
+        setIsLoading(false)
+        return
+      }
+
+      try {
+        const status = await api.getDiagnosticStatus(currentUser.uid)
+
+        if (status.status === 'completed') {
+          // User has completed diagnostic - redirect to summary
+          navigate('/diagnostics/summary', {
+            state: {
+              sessionId: status.session_id,
+              summary: {
+                totalQuestions: status.summary.total_questions,
+                correctAnswers: status.summary.correct_answers,
+                score: status.summary.score_percentage,
+              },
+            },
+            replace: true,
+          })
+        }
+      } catch (error) {
+        console.error('Error checking diagnostic status:', error)
+        // On error, just show the page normally
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    checkDiagnosticStatus()
+  }, [currentUser, navigate])
 
   const handleStartDiagnostic = async () => {
     try {
@@ -35,6 +72,18 @@ const Diagnostics = () => {
     } finally {
       setIsStarting(false)
     }
+  }
+
+  // Show loading state while checking diagnostic status
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center min-h-screen bg-background-light dark:bg-background-dark">
+        <div className="text-center">
+          <div className="size-12 border-4 border-sand-dark/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-text-main/60 dark:text-white/60">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

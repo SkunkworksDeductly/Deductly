@@ -8,14 +8,14 @@ const DesignDemo = () => {
     const [score, setScore] = useState(158);
 
     return (
-        <div className="min-h-screen bg-bg-primary font-sans text-text-primary selection:bg-brand-primary/30 selection:text-white overflow-x-hidden p-8">
+        <div className="min-h-screen bg-bg-primary font-sans text-text-primary selection:bg-sage/30 selection:text-white overflow-x-hidden p-8">
             <div className="max-w-6xl mx-auto space-y-16">
 
                 {/* Header */}
                 <header className="text-center space-y-6">
                     <Badge variant="default">Design System v2.0</Badge>
                     <h1 className="font-display text-6xl md:text-8xl text-white">
-                        Dark <span className="text-brand-primary italic">Editorial</span>
+                        Dark <span className="text-sage italic">Editorial</span>
                     </h1>
                     <p className="text-xl text-text-secondary max-w-2xl mx-auto">
                         A sophisticated diagnostic tool that feels approachable, not clinical.
@@ -96,7 +96,7 @@ const DesignDemo = () => {
                         </Card>
 
                         <Card variant="featured" className="relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-32 bg-brand-primary/10 blur-[100px] rounded-full pointer-events-none" />
+                            <div className="absolute top-0 right-0 p-32 bg-sage/10 blur-[100px] rounded-full pointer-events-none" />
                             <h3 className="font-display text-3xl mb-4 relative z-10">Logical Reasoning</h3>
                             <p className="text-text-secondary mb-6 relative z-10">
                                 Your strongest section. You're performing in the top 15% of students.

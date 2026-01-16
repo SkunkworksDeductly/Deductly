@@ -29,7 +29,6 @@ const ScaleBar = ({ score, min = 120, max = 180, className }) => {
 
     // Determine color based on ranges (example logic, can be refined)
     const getColor = (s) => {
-        if (s >= 170) return '#5de619'; // Primary Green
         if (s >= 160) return '#81B29A'; // Sage
         if (s >= 150) return '#E07A5F'; // Terracotta
         return '#E07A5F';

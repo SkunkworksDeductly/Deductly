@@ -14,7 +14,8 @@ from typing import Dict, List, Optional, Any, Tuple
 import json
 
 from db.connection import execute_query, get_db_cursor
-from insights.logic import fetch_user_elo_ratings, skill_taxonomy
+from insights.logic import fetch_user_elo_ratings, skill_taxonomy, fetch_current_ability
+from insights.scaling import get_rating_tier_info
 
 from .adaptive_diagnostic_logic import get_diagnostic_session
 from .adaptive_diagnostic_config import (
@@ -129,6 +130,9 @@ class SkillStrength:
     evidence: str
     elo_rating: float
     accuracy: float
+    tier: str = "Developing"
+    tier_color: str = "#F59E0B"
+    tier_bg_color: str = "#FEF3C7"
 
 
 @dataclass
@@ -183,6 +187,8 @@ class EvaluationResult:
     weaknesses: List[SkillWeakness]
     evaluated_at: datetime
     diagnostic_patterns_applied: List[str]
+    total_questions: int = 0
+    correct_count: int = 0
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
@@ -199,6 +205,8 @@ class EvaluationResult:
             'weaknesses': [asdict(w) for w in self.weaknesses],
             'evaluated_at': self.evaluated_at.isoformat(),
             'diagnostic_patterns_applied': self.diagnostic_patterns_applied,
+            'total_questions': self.total_questions,
+            'correct_count': self.correct_count,
         }
 
 
@@ -252,6 +260,8 @@ def evaluate_diagnostic(session_id: str, user_id: str) -> EvaluationResult:
         weaknesses=weaknesses,
         evaluated_at=datetime.utcnow(),
         diagnostic_patterns_applied=[m.pattern_id for m in diagnostic_matches],
+        total_questions=metrics.total_questions,
+        correct_count=metrics.correct_count,
     )
 
 
@@ -909,6 +919,9 @@ def _identify_strengths(
         else:
             evidence = f"Best relative performance among skills"
 
+        # Get tier info for coloring
+        tier_info = get_rating_tier_info(elo_rating)
+
         strengths.append(SkillStrength(
             skill_id=skill_id,
             skill_name=SKILL_NAMES.get(skill_id, skill_id),
@@ -916,6 +929,9 @@ def _identify_strengths(
             evidence=evidence,
             elo_rating=elo_rating,
             accuracy=accuracy,
+            tier=tier_info['label'],
+            tier_color=tier_info['color'],
+            tier_bg_color=tier_info['bg_color'],
         ))
 
         if len(strengths) >= 3:
@@ -1025,7 +1041,14 @@ def _identify_weaknesses(
 
 def _get_theta_estimate(user_id: str) -> float:
     """
-    Get Rasch ability estimate for user. Placeholder for now.
+    Get Rasch ability estimate (theta) for user from the IRT system.
+
+    This fetches the theta_scalar from user_abilities, which is updated
+    by irt_online_update() when the diagnostic is completed.
     """
-    # TODO: Integrate with actual IRT/Rasch system
-    return 0.0
+    try:
+        ability_data = fetch_current_ability("irt", user_id)
+        return ability_data.get('ability_theta', 0.0)
+    except Exception as e:
+        print(f"Error fetching theta estimate for user {user_id}: {e}")
+        return 0.0

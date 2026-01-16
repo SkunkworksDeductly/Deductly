@@ -20,8 +20,6 @@ const AdaptiveDiagnosticSession = () => {
   const [progress, setProgress] = useState(initialState.progress || { current: 1, total: 30 })
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showFeedback, setShowFeedback] = useState(false)
-  const [lastResult, setLastResult] = useState(null)
   const [error, setError] = useState(null)
 
   // Redirect if no session data
@@ -32,7 +30,7 @@ const AdaptiveDiagnosticSession = () => {
   }, [sessionId, currentQuestion, navigate])
 
   const handleAnswerSelect = (index) => {
-    if (isSubmitting || showFeedback) return
+    if (isSubmitting) return
     setSelectedAnswer(index)
   }
 
@@ -46,24 +44,17 @@ const AdaptiveDiagnosticSession = () => {
       const answerLetter = letterFromIndex(selectedAnswer)
       const result = await api.submitDiagnosticAnswer(sessionId, answerLetter, currentUser?.uid)
 
-      setLastResult(result)
-      setShowFeedback(true)
-
-      // Brief feedback delay, then move to next question or complete
-      setTimeout(() => {
-        if (result.is_complete) {
-          // Complete the diagnostic
-          handleComplete()
-        } else {
-          // Move to next question
-          setCurrentQuestion(result.next_question)
-          setProgress(result.progress)
-          setSelectedAnswer(null)
-          setShowFeedback(false)
-          setLastResult(null)
-        }
-        setIsSubmitting(false)
-      }, 1500)
+      // Move immediately to next question or complete (no feedback shown)
+      if (result.is_complete) {
+        // Complete the diagnostic
+        handleComplete()
+      } else {
+        // Move to next question
+        setCurrentQuestion(result.next_question)
+        setProgress(result.progress)
+        setSelectedAnswer(null)
+      }
+      setIsSubmitting(false)
 
     } catch (err) {
       console.error('Error submitting answer:', err)
@@ -79,6 +70,7 @@ const AdaptiveDiagnosticSession = () => {
       // Navigate to results/summary page
       navigate('/diagnostics/summary', {
         state: {
+          sessionId,
           drillId: result.drill_id,
           summary: result.summary,
         }
@@ -181,53 +173,36 @@ const AdaptiveDiagnosticSession = () => {
               {answerChoices.map((choice, index) => {
                 const letter = letterFromIndex(index)
                 const isSelected = selectedAnswer === index
-                const isCorrect = showFeedback && lastResult?.correct_answer === letter
-                const isWrong = showFeedback && isSelected && !lastResult?.is_correct
-
-                // Determine styles based on state
-                let containerClasses = "border-sand-dark/40 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-border-active hover:bg-white dark:hover:bg-white/10"
-                let badgeClasses = "border-sand-dark/60 dark:border-white/20 text-text-main/50 dark:text-white/50 group-hover:bg-border-active group-hover:text-white group-hover:border-border-active "
-                let textClasses = "text-text-main/80 dark:text-sand/80"
-
-                if (isSelected && !showFeedback) {
-                  containerClasses = "border-primary bg-primary/5 shadow-soft"
-                  badgeClasses = "bg-primary border-primary text-white"
-                  textClasses = "text-text-main dark:text-white font-medium"
-                } else if (isCorrect) {
-                  containerClasses = "border-success bg-success/10 shadow-soft"
-                  badgeClasses = "bg-success border-success text-white"
-                  textClasses = "text-text-main dark:text-white font-medium"
-                } else if (isWrong) {
-                  containerClasses = "border-danger bg-danger/5"
-                  badgeClasses = "bg-danger border-danger text-white"
-                  textClasses = "text-text-main/60 dark:text-sand/60"
-                }
 
                 return (
                   <button
                     key={index}
                     onClick={() => handleAnswerSelect(index)}
-                    disabled={isSubmitting || showFeedback}
+                    disabled={isSubmitting}
                     className={cn(
                       "group flex items-start gap-6 p-6 rounded-2xl border transition-all text-left",
-                      containerClasses,
-                      (isSubmitting || showFeedback) && !isSelected && !isCorrect ? "opacity-50 cursor-not-allowed" : ""
+                      isSelected
+                        ? "border-primary bg-primary/5 shadow-soft"
+                        : "border-sand-dark/40 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:border-border-active hover:bg-white dark:hover:bg-white/10",
+                      isSubmitting && !isSelected ? "opacity-50 cursor-not-allowed" : ""
                     )}
                   >
                     <span className={cn(
                       "size-10 shrink-0 rounded-full border flex items-center justify-center font-slab font-bold text-lg transition-colors",
-                      badgeClasses
+                      isSelected
+                        ? "bg-primary border-primary text-white"
+                        : "border-sand-dark/60 dark:border-white/20 text-text-main/50 dark:text-white/50 group-hover:bg-border-active group-hover:text-white group-hover:border-border-active"
                     )}>
                       {letter}
                     </span>
                     <span className={cn(
                       "text-lg pt-1.5 leading-relaxed flex-1",
-                      textClasses
+                      isSelected
+                        ? "text-text-main dark:text-white font-medium"
+                        : "text-text-main/80 dark:text-sand/80"
                     )}>
                       {typeof choice === 'string' ? choice : choice.text || choice.content}
                     </span>
-                    {isCorrect && <span className="material-symbols-outlined text-success">check_circle</span>}
-                    {isWrong && <span className="material-symbols-outlined text-danger">cancel</span>}
                   </button>
                 )
               })}
@@ -248,15 +223,15 @@ const AdaptiveDiagnosticSession = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-end">
           <Button
             onClick={handleSubmitAnswer}
-            disabled={selectedAnswer === null || isSubmitting || showFeedback}
+            disabled={selectedAnswer === null || isSubmitting}
             size="lg"
             className={cn(
               "shadow-lg transition-all",
-              isSubmitting || showFeedback ? "opacity-90" : "hover:-translate-y-1"
+              isSubmitting ? "opacity-90" : "hover:-translate-y-1"
             )}
           >
-            {isSubmitting ? 'Submitting...' : showFeedback ? 'Loading Next...' : 'Submit Answer'}
-            {!isSubmitting && !showFeedback && <span className="material-symbols-outlined text-sm ml-2">arrow_forward</span>}
+            {isSubmitting ? 'Submitting...' : 'Submit Answer'}
+            {!isSubmitting && <span className="material-symbols-outlined text-sm ml-2">arrow_forward</span>}
           </Button>
         </div>
       </footer>

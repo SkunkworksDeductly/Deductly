@@ -28,12 +28,14 @@ const routerBaseName = import.meta.env.BASE_URL
 
 function AppLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed)
 
   return (
     <div className="bg-background-light dark:bg-background-dark text-text-main dark:text-sand overflow-hidden h-screen flex transition-colors duration-300">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} isCollapsed={isCollapsed} toggleCollapse={toggleCollapse} />
 
       <main className="flex-1 overflow-y-auto no-scrollbar relative bg-background-light dark:bg-background-dark w-full">
         <Header toggleSidebar={toggleSidebar} />

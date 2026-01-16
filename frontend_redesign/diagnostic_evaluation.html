@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Deductly: Diagnostic Evaluation Report</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5de619",
+                        "terracotta": "#E07A5F",
+                        "terracotta-soft": "#F8EBE8",
+                        "sand": "#F0EFE9",
+                        "sand-dark": "#DDDBCF",
+                        "sage": "#81B29A",
+                        "sage-light": "#CFE0D9",
+                        "sage-soft": "#EBF5F1",
+                        "text-main": "#252822",
+                        "background-light": "#FDFCF9",
+                        "background-dark": "#23261F",
+                    },
+                    fontFamily: {
+                        "sans": ["Schibsted Grotesk", "sans-serif"],
+                        "slab": ["Zilla Slab", "serif"],
+                        "display": ["Schibsted Grotesk", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "3xl": "3rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'soft-xl': '0 20px 40px -4px rgba(0, 0, 0, 0.08)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        body {
+            font-family: 'Schibsted Grotesk', sans-serif;
+        }
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Schibsted Grotesk', sans-serif;
+        }
+        .font-slab {
+            font-family: 'Zilla Slab', serif;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .chart-grid line, .chart-grid polygon {
+            stroke-width: 1;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-sand overflow-hidden h-screen flex">
+    <aside
+        class="w-64 h-full bg-white dark:bg-white/5 border-r border-sand-dark/50 dark:border-white/10 flex flex-col justify-between py-10 transition-all duration-300 z-20 shrink-0">
+        <div class="flex flex-col gap-12 px-6">
+            <div class="flex items-center gap-4">
+                <div
+                    class="size-10 shrink-0 text-terracotta bg-terracotta-soft dark:bg-white/10 rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-3xl">spa</span>
+                </div>
+                <h2 class="text-sm font-black tracking-[0.2em] uppercase text-text-main dark:text-white opacity-80">
+                    Deductly
+                </h2>
+            </div>
+            <nav class="flex flex-col gap-2 w-full">
+                <a class="group flex items-center gap-4 py-3 px-4 w-full opacity-60 hover:opacity-100 transition-opacity text-text-main dark:text-white"
+                    href="#">
+                    <span
+                        class="material-symbols-outlined text-2xl group-hover:text-sage transition-colors">grid_view</span>
+                    <span class="text-[11px] font-bold uppercase tracking-widest">Dashboard</span>
+                </a>
+                <a class="group flex items-center gap-4 py-3 px-4 w-full opacity-60 hover:opacity-100 transition-opacity text-text-main dark:text-white"
+                    href="#">
+                    <span
+                        class="material-symbols-outlined text-2xl group-hover:text-sage transition-colors">auto_stories</span>
+                    <span class="text-[11px] font-bold uppercase tracking-widest">Lessons</span>
+                </a>
+                <a class="group flex items-center gap-4 py-3 px-4 w-full opacity-60 hover:opacity-100 transition-opacity text-text-main dark:text-white"
+                    href="#">
+                    <span class="material-symbols-outlined text-2xl group-hover:text-sage transition-colors">quiz</span>
+                    <span class="text-[11px] font-bold uppercase tracking-widest">Practice</span>
+                </a>
+                <a class="group relative flex items-center gap-4 py-3 px-4 w-full bg-sage-soft/30 dark:bg-white/5 rounded-xl text-sage"
+                    href="#">
+                    <div class="absolute left-0 w-1 h-6 bg-sage rounded-r-full"></div>
+                    <span class="material-symbols-outlined text-2xl">analytics</span>
+                    <span class="text-[11px] font-bold uppercase tracking-widest">Analytics</span>
+                </a>
+            </nav>
+        </div>
+        <div class="flex flex-col gap-6 px-6">
+            <div class="flex items-center gap-4 px-4">
+                <div
+                    class="w-10 h-10 shrink-0 rounded-full overflow-hidden border border-sand-dark dark:border-white/20">
+                    <img alt="Profile" class="w-full h-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqTmrT-AAiUHfYHNu476u8dJjFds-ROI5reqIa13_bFD5eOHelLy0_K4S-3M-sGjILenQEdCiRZkjHXJ-ka9EhRi7ATIAN5W30Aux9X-Yu3HRvdLg0dLmrZeTF3xsYp3rs6V3r3H7FXgmu2Nl1P0fcG_R44DoutGTQ2ceNZvxeiTkK06A9MEuRHabrmGaeWM9SuQxmyQnfm2TN8BjkB3oJ7Gi3XrquyluLTpRTV0VNSDiiQbPO1rfjfa9zFG-jVDFUvN5s1-W4gLA" />
+                </div>
+                <div class="flex flex-col overflow-hidden">
+                    <span class="text-xs font-bold text-text-main dark:text-white truncate">Alex Doe</span>
+                    <span class="text-[10px] text-text-main/40 dark:text-white/40 uppercase tracking-tight">Pro
+                        Plan</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <main class="flex-1 overflow-y-auto no-scrollbar relative bg-background-light dark:bg-background-dark">
+        <div class="max-w-5xl mx-auto p-8 md:p-12 lg:p-16 flex flex-col gap-10 relative z-10 h-full">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-2">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-sage mb-2">Initial Assessment</p>
+                    <h1 class="text-3xl md:text-4xl font-slab font-semibold text-text-main dark:text-white">Diagnostic
+                        Evaluation</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg border border-sand-dark/50 hover:bg-sand transition-colors text-xs font-bold uppercase tracking-wider text-text-main/60">
+                        <span class="material-symbols-outlined text-base">download</span>
+                        Export PDF
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg bg-text-main text-white hover:bg-black transition-colors text-xs font-bold uppercase tracking-wider">
+                        View Plan
+                    </button>
+                </div>
+            </header>
+            <section
+                class="relative bg-white dark:bg-white/5 rounded-[2.5rem] p-12 text-center shadow-soft-xl border border-sand-dark/20 overflow-hidden group">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-sage to-terracotta opacity-60"></div>
+                <div
+                    class="absolute -left-10 -top-10 w-40 h-40 bg-sage-soft rounded-full blur-3xl opacity-50 dark:opacity-10">
+                </div>
+                <div
+                    class="absolute -right-10 -bottom-10 w-40 h-40 bg-terracotta-soft rounded-full blur-3xl opacity-50 dark:opacity-10">
+                </div>
+                <div class="relative z-10 flex flex-col items-center justify-center gap-2">
+                    <p class="text-sm font-bold uppercase tracking-[0.2em] text-text-main/40 dark:text-white/40">
+                        Estimated LSAT Score</p>
+                    <div
+                        class="font-slab font-bold text-[8rem] leading-none text-text-main dark:text-white tracking-tighter mix-blend-multiply dark:mix-blend-normal">
+                        158
+                    </div>
+                    <div class="flex items-center gap-4 mt-2">
+                        <span
+                            class="px-3 py-1 bg-sage-soft text-sage-800 rounded-full text-xs font-bold uppercase tracking-wider border border-sage/20">74th
+                            Percentile</span>
+                        <span class="text-text-main/40 dark:text-white/40 text-sm font-medium">Potential Range: 155 -
+                            162</span>
+                    </div>
+                </div>
+            </section>
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 flex flex-col justify-center space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-terracotta text-3xl">fingerprint</span>
+                        <h3 class="text-xl font-bold font-slab text-text-main dark:text-white">Cognitive Fingerprint
+                        </h3>
+                    </div>
+                    <p class="text-text-main/70 dark:text-sand/70 leading-relaxed text-sm">
+                        Your assessment reveals a strong intuitive grasp of formal logic but indicates fatigue in dense
+                        reading passages. This unique shape represents your current baseline across the LSAT's core
+                        cognitive domains.
+                    </p>
+                </div>
+                <div
+                    class="lg:col-span-2 bg-sand/30 dark:bg-white/5 rounded-3xl p-8 border border-sand-dark/20 flex items-center justify-center relative min-h-[300px]">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+                        <div class="w-64 h-64 rounded-full border border-text-main"></div>
+                        <div class="absolute w-48 h-48 rounded-full border border-text-main"></div>
+                        <div class="absolute w-32 h-32 rounded-full border border-text-main"></div>
+                    </div>
+                    <svg class="w-64 h-64 overflow-visible transform rotate-0 hover:scale-105 transition-transform duration-500"
+                        viewBox="0 0 100 100">
+                        <g class="chart-grid stroke-sand-dark dark:stroke-white/20">
+                            <line x1="50" x2="50" y1="50" y2="5"></line>
+                            <line x1="50" x2="93" y1="50" y2="25"></line>
+                            <line x1="50" x2="93" y1="50" y2="75"></line>
+                            <line x1="50" x2="50" y1="50" y2="95"></line>
+                            <line x1="50" x2="7" y1="50" y2="75"></line>
+                            <line x1="50" x2="7" y1="50" y2="25"></line>
+                            <polygon fill="none" points="50,5 93,25 93,75 50,95 7,75 7,25"></polygon>
+                        </g>
+                        <polygon class="drop-shadow-lg" fill="rgba(129, 178, 154, 0.4)"
+                            points="50,15 85,35 65,70 50,85 20,65 15,35" stroke="#81B29A" stroke-width="2"></polygon>
+                        <circle class="fill-terracotta" cx="50" cy="15" r="2"></circle>
+                        <circle class="fill-sage" cx="85" cy="35" r="2"></circle>
+                        <circle class="fill-sage" cx="65" cy="70" r="2"></circle>
+                        <circle class="fill-sage" cx="50" cy="85" r="2"></circle>
+                        <circle class="fill-terracotta" cx="20" cy="65" r="2"></circle>
+                        <circle class="fill-terracotta" cx="15" cy="35" r="2"></circle>
+                    </svg>
+                    <div
+                        class="absolute top-4 left-1/2 -translate-x-1/2 text-[10px] font-bold uppercase tracking-widest text-text-main/60">
+                        Logical Reasoning</div>
+                    <div
+                        class="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-bold uppercase tracking-widest text-text-main/60">
+                        Reading Comp</div>
+                    <div
+                        class="absolute top-1/2 left-4 -translate-y-1/2 -translate-x-full text-[10px] font-bold uppercase tracking-widest text-text-main/60 rotate-[-90deg]">
+                        Speed</div>
+                    <div
+                        class="absolute top-1/2 right-4 -translate-y-1/2 translate-x-full text-[10px] font-bold uppercase tracking-widest text-text-main/60 rotate-[90deg]">
+                        Accuracy</div>
+                </div>
+            </section>
+            <div class="h-px w-full bg-sand-dark/30 dark:bg-white/10"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 pb-12">
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="size-8 rounded-full bg-sage-soft flex items-center justify-center text-sage">
+                            <span class="material-symbols-outlined text-sm">arrow_upward</span>
+                        </div>
+                        <h4 class="text-sm font-bold uppercase tracking-widest text-text-main dark:text-white">Top 3
+                            Strengths</h4>
+                    </div>
+                    <div class="flex flex-col gap-6">
+                        <div class="group flex items-start gap-4">
+                            <span class="material-symbols-outlined text-sage mt-1">psychology</span>
+                            <div>
+                                <h5
+                                    class="text-base font-bold text-text-main dark:text-white group-hover:text-sage transition-colors">
+                                    Conditional Logic</h5>
+                                <p class="text-sm text-text-main/60 dark:text-white/60 mt-1 leading-snug">
+                                    You have a natural ability to identify sufficient vs. necessary conditions in
+                                    complex arguments.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="group flex items-start gap-4">
+                            <span class="material-symbols-outlined text-sage mt-1">rule</span>
+                            <div>
+                                <h5
+                                    class="text-base font-bold text-text-main dark:text-white group-hover:text-sage transition-colors">
+                                    Rule Substitution</h5>
+                                <p class="text-sm text-text-main/60 dark:text-white/60 mt-1 leading-snug">
+                                    Exceptional performance on "which rule is equivalent" questions in analytical games.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="group flex items-start gap-4">
+                            <span class="material-symbols-outlined text-sage mt-1">science</span>
+                            <div>
+                                <h5
+                                    class="text-base font-bold text-text-main dark:text-white group-hover:text-sage transition-colors">
+                                    Causal Reasoning</h5>
+                                <p class="text-sm text-text-main/60 dark:text-white/60 mt-1 leading-snug">
+                                    You consistently spot alternate causes and reverse causality flaws.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="size-8 rounded-full bg-terracotta-soft flex items-center justify-center text-terracotta">
+                            <span class="material-symbols-outlined text-sm">arrow_downward</span>
+                        </div>
+                        <h4 class="text-sm font-bold uppercase tracking-widest text-text-main dark:text-white">Top 3
+                            Weaknesses</h4>
+                    </div>
+                    <div class="flex flex-col gap-6">
+                        <div class="group flex items-start gap-4">
+                            <span class="material-symbols-outlined text-terracotta mt-1">timer_off</span>
+                            <div>
+                                <h5
+                                    class="text-base font-bold text-text-main dark:text-white group-hover:text-terracotta transition-colors">
+                                    Pacing (Reading Comp)</h5>
+                                <p class="text-sm text-text-main/60 dark:text-white/60 mt-1 leading-snug">
+                                    Time spent on the first passage was 40% higher than the recommended average.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="group flex items-start gap-4">
+                            <span class="material-symbols-outlined text-terracotta mt-1">menu_book</span>
+                            <div>
+                                <h5
+                                    class="text-base font-bold text-text-main dark:text-white group-hover:text-terracotta transition-colors">
+                                    Dense Science Passages</h5>
+                                <p class="text-sm text-text-main/60 dark:text-white/60 mt-1 leading-snug">
+                                    Accuracy drops significantly when subject matter involves biological or physical
+                                    sciences.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="group flex items-start gap-4">
+                            <span class="material-symbols-outlined text-terracotta mt-1">question_exchange</span>
+                            <div>
+                                <h5
+                                    class="text-base font-bold text-text-main dark:text-white group-hover:text-terracotta transition-colors">
+                                    Assumption Negation</h5>
+                                <p class="text-sm text-text-main/60 dark:text-white/60 mt-1 leading-snug">
+                                    Struggle to apply the negation technique effectively on Necessary Assumption
+                                    questions.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

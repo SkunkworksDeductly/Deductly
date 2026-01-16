@@ -79,7 +79,7 @@ const Curriculum = () => {
     return (
       <div className="flex items-center justify-center h-[50vh]">
         <div className="flex flex-col items-center gap-4">
-          <div className="size-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
+          <div className="size-8 border-2 border-sage border-t-transparent rounded-full animate-spin" />
           <p className="text-text-main/60 text-sm font-medium animate-pulse">Loading Academy...</p>
         </div>
       </div>

@@ -1,17 +1,14 @@
 from flask import Blueprint, jsonify, request
 from .logic import (
-    prepare_ability_estimation,
     fetch_current_ability,
-    fetch_ability_history,
-    prepare_skill_mastery_estimation,
     fetch_skill_mastery,
-    fetch_skill_mastery_history,
     irt_online_update,
     glmm_online_update,
     fetch_user_elo_ratings,
     fetch_skill_names,
     elo_online_update,
 )
+from .scaling import elo_to_display, get_rating_tier_info
 
 insights_bp = Blueprint('insights', __name__, url_prefix='/api/insights')
 
@@ -82,14 +79,24 @@ def get_elo_ratings(user_id):
     """Fetch Elo ratings for a specific user."""
     try:
         ratings = fetch_user_elo_ratings(user_id)
-        skill_names = fetch_skill_names()
+        skill_info = fetch_skill_names()
         # Convert to JSON-friendly format
         response_data = []
-        for skill_id, rating_obj in ratings.items():
+        for internal_id, rating_obj in ratings.items():
+            info = skill_info.get(internal_id, {})
+            # Use taxonomy_id (e.g., S_01, FL_01, RC_01) as skill_id for frontend filtering
+            taxonomy_id = info.get('taxonomy_id', internal_id)
+            skill_name = info.get('skill_name', internal_id)
+            raw_rating = rating_obj.rating
+            tier_info = get_rating_tier_info(raw_rating)
             response_data.append({
-                "skill_id": skill_id,  # Already a string
-                "skill_name": skill_names.get(skill_id, skill_id),  # Fallback to skill_id if name not found
-                "rating": rating_obj.rating,
+                "skill_id": taxonomy_id,  # Taxonomy ID for frontend filtering (S_01, FL_01, RC_01, etc.)
+                "skill_name": skill_name,
+                "rating": raw_rating,  # Raw Elo rating (for backwards compatibility)
+                "display_score": elo_to_display(raw_rating),  # LSAT-scaled score (120-180)
+                "tier": tier_info['label'],  # Human-readable tier label (Emerging, Developing, Proficient, Strong)
+                "tier_color": tier_info['color'],  # Tier color hex code
+                "tier_bg_color": tier_info['bg_color'],  # Tier background color hex code
                 "num_updates": rating_obj.num_updates,
                 "last_updated": rating_obj.last_updated_at.isoformat() if rating_obj.last_updated_at else None
             })

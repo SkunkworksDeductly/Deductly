@@ -34,10 +34,15 @@ Each layer follows the pattern: `routes.py` (API endpoints) → `logic.py` (busi
 ### Psychometric Models (Insights Layer)
 
 **1. ELO Rating System** (`backend/insights/elo_system.py`)
-- Per-skill ratings with adaptive K-factors (BASE_K=64, FLOOR_K=16)
-- Multi-skill question handling with weight normalization
+- Per-skill ratings with adaptive K-factors (BASE_K=300, FLOOR_K=16, NO_DECAY_THRESHOLD=5)
+- No K-factor decay during initial calibration (first 5 updates per skill) for faster skill estimation
+- Multi-skill question handling with weight normalization (primary skills get 70%)
 - Parameters: DEFAULT_RATING=1500, ELO_SCALE=400
-- Rating tiers: Beginning (<1200), Foundational (1200+), Developing (1400+), Proficient (1600+), Advanced (1800+)
+- 4-tier rating system (`backend/insights/scaling.py`) - colors aligned with app design palette:
+  - Emerging (<1400): Terracotta #E07A5F
+  - Developing (1400-1600): Warm Gold #C9A962
+  - Proficient (1600-1750): Sage #81B29A
+  - Strong (1750+): Deep Sage #3D7A68
 
 **2. IRT (Item Response Theory)** (`backend/insights/irt_implementation.py`)
 - Rasch model implementation using PyTorch
@@ -224,6 +229,11 @@ GET  /questions/history                - Get question stats
 GET  /curriculum/videos                - Get all videos
 GET  /curriculum/videos/<id>           - Get video details
 POST /curriculum/videos/<id>/complete  - Mark video complete
+GET  /adaptive-diagnostic/status       - Check user's diagnostic status (completed/in_progress/none)
+POST /adaptive-diagnostic              - Start/resume adaptive diagnostic
+POST /adaptive-diagnostic/<id>/answer  - Submit answer for current question
+POST /adaptive-diagnostic/<id>/complete - Complete diagnostic session
+GET  /adaptive-diagnostic/<id>/evaluate - Get diagnostic evaluation
 ```
 
 ### Question Exclusion Modes
@@ -260,3 +270,5 @@ When creating drills, `exclusion_mode` controls question selection:
 - Frontend Analytics page showing ability and mastery
 - IRT online updates now use adaptive prior variance (shrinks with evidence, floor=0.15)
 - Added theta clamping to [-3.5, 3.5] to prevent runaway estimates
+- Single diagnostic enforcement: Users can only take one diagnostic test; subsequent visits to `/diagnostics` redirect to summary
+- Updated tier rating colors to align with app design palette (sage/terracotta theme)

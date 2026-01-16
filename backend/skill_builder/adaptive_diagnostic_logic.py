@@ -24,6 +24,7 @@ from .adaptive_diagnostic_config import (
     DEFAULT_ELO,
     get_tier_for_position,
 )
+from .logic import get_user_answered_questions
 
 
 # Cache for taxonomy_id -> database_id mapping
@@ -210,8 +211,11 @@ def create_adaptive_diagnostic_session(user_id: str) -> Dict[str, Any]:
     # Get user's effective Elo for this question type
     target_elo = get_user_effective_elo(user_id, first_question_type)
 
+    # Get previously answered questions to exclude
+    previously_answered = get_user_answered_questions(user_id, 'all_seen')
+
     # Select first question
-    first_question = select_question_for_slot(first_question_type, target_elo, set())
+    first_question = select_question_for_slot(first_question_type, target_elo, previously_answered)
 
     if not first_question:
         raise ValueError(f"No questions available for type: {first_question_type}")
@@ -437,10 +441,9 @@ def process_answer(
     next_position = current_position + 1
     is_complete = next_position >= len(DIAGNOSTIC_SEQUENCE)
 
+    # Don't reveal correctness - user finds out at the end
     result = {
-        'is_correct': is_correct,
-        'correct_answer': correct_answer,
-        'elo_changes': elo_changes,
+        'answer_recorded': True,
         'progress': {
             'current': next_position + (0 if is_complete else 1),
             'total': len(DIAGNOSTIC_SEQUENCE),
@@ -454,24 +457,25 @@ def process_answer(
         next_question_type = DIAGNOSTIC_SEQUENCE[next_position]
         target_elo = get_user_effective_elo(user_id, next_question_type)
 
-        # Exclude already selected questions
-        exclude_ids = set(selected_question_ids)
+        # Build comprehensive exclusion set:
+        # 1. Questions already selected in this session
+        # 2. Questions user has answered in previous sessions
+        previously_answered = get_user_answered_questions(user_id, 'all_seen')
+        exclude_ids = set(selected_question_ids) | previously_answered
 
         next_question = select_question_for_slot(next_question_type, target_elo, exclude_ids)
 
-        if not next_question:
-            # Fallback: try without exclusions
-            next_question = select_question_for_slot(next_question_type, target_elo, set())
-
+        # No fallback to allow duplicates - if no questions available, that's an error
         if next_question:
             selected_question_ids.append(next_question['id'])
             result['next_question'] = next_question
             result['target_elo'] = target_elo
         else:
-            # No questions available - mark as complete
+            # No questions available - mark as complete early
             is_complete = True
             result['is_complete'] = True
-            result['error'] = f"No questions available for type: {next_question_type}"
+            result['early_completion'] = True
+            result['message'] = f"No more unique questions available for type: {next_question_type}"
 
     # Update session in database
     with get_db_cursor() as cursor:
@@ -688,4 +692,83 @@ def check_existing_session(user_id: str) -> Optional[Dict[str, Any]]:
             'total': len(DIAGNOSTIC_SEQUENCE),
         },
         'created_at': row['created_at'].isoformat() if row['created_at'] else None,
+    }
+
+
+def get_completed_diagnostic(user_id: str) -> Optional[Dict[str, Any]]:
+    """
+    Get the user's completed diagnostic session if one exists.
+
+    Args:
+        user_id: The user ID
+
+    Returns:
+        Completed session info with summary data, or None if no completed diagnostic
+    """
+    query = """
+        SELECT ads.id as session_id, ads.drill_id, ads.completed_at, ads.user_answers,
+               dr.total_questions, dr.correct_answers, dr.score_percentage
+        FROM adaptive_diagnostic_sessions ads
+        LEFT JOIN drill_results dr ON dr.drill_id = ads.drill_id
+        WHERE ads.user_id = %s AND ads.status = 'completed'
+        ORDER BY ads.completed_at DESC
+        LIMIT 1
+    """
+
+    rows = execute_query(query, (user_id,))
+
+    if not rows:
+        return None
+
+    row = rows[0]
+    return {
+        'session_id': row['session_id'],
+        'drill_id': row['drill_id'],
+        'completed_at': row['completed_at'].isoformat() if row['completed_at'] else None,
+        'summary': {
+            'total_questions': row['total_questions'] or 0,
+            'correct_answers': row['correct_answers'] or 0,
+            'score_percentage': float(row['score_percentage']) if row['score_percentage'] else 0,
+        },
+    }
+
+
+def get_diagnostic_status(user_id: str) -> Dict[str, Any]:
+    """
+    Get the overall diagnostic status for a user.
+
+    Returns status: 'completed', 'in_progress', or 'none'
+    along with relevant session data.
+
+    Args:
+        user_id: The user ID
+
+    Returns:
+        Dict with status and session data if applicable
+    """
+    # First check for completed diagnostic
+    completed = get_completed_diagnostic(user_id)
+    if completed:
+        return {
+            'status': 'completed',
+            'session_id': completed['session_id'],
+            'drill_id': completed['drill_id'],
+            'completed_at': completed['completed_at'],
+            'summary': completed['summary'],
+        }
+
+    # Then check for in-progress
+    in_progress = check_existing_session(user_id)
+    if in_progress:
+        return {
+            'status': 'in_progress',
+            'session_id': in_progress['session_id'],
+            'current_position': in_progress['current_position'],
+            'progress': in_progress['progress'],
+            'created_at': in_progress['created_at'],
+        }
+
+    # No diagnostic
+    return {
+        'status': 'none',
     }
